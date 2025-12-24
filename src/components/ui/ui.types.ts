@@ -1,0 +1,117 @@
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+export type BadgeVariant = 'default' | 'accent';
+export type LogoLayout = 'inline' | 'stacked';
+export type LogoSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps {
+  children: React.ReactNode;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+export interface BadgeProps {
+  children: React.ReactNode;
+  variant?: BadgeVariant;
+  className?: string;
+}
+
+export interface LogoProps {
+  className?: string;
+  compact?: boolean;
+  showText?: boolean;
+  layout?: LogoLayout;
+  size?: LogoSize;
+}
+
+export interface LinkGroupProps {
+  title: string;
+  links: readonly { label: string; href: string }[];
+}
+
+export interface LightboxProps {
+  images: string[];
+  currentIndex: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  onGoTo: (index: number) => void;
+}
+
+export type CardVariant = 'default' | 'horizontal' | 'compact';
+export type CardSize = 'sm' | 'md' | 'lg';
+
+export interface CardProps {
+  title: string;
+  subtitle?: string;
+  image?: string;
+  variant?: CardVariant;
+  size?: CardSize;
+  href?: string;
+  onClick?: () => void;
+  className?: string;
+}
+
+export interface CardModalItem {
+  image?: string;
+  tag?: string;
+  title: string;
+  subtitle?: string;
+  price?: string;
+  buttonText?: string;
+  buttonHref?: string;
+}
+
+export interface CardModalProps {
+  items: CardModalItem[];
+  currentIndex: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  onGoTo: (index: number) => void;
+}
+
+export type InputVariant = 'default' | 'search' | 'rounded';
+export type InputSize = 'sm' | 'md' | 'lg';
+
+export interface InputProps {
+  type?: 'text' | 'email' | 'tel' | 'password' | 'search';
+  placeholder?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  variant?: InputVariant;
+  size?: InputSize;
+  className?: string;
+  autoFocus?: boolean;
+  required?: boolean;
+}
+
+export interface TextareaProps {
+  placeholder?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  variant?: InputVariant;
+  size?: InputSize;
+  className?: string;
+  rows?: number;
+  required?: boolean;
+}
+
+export interface FormField {
+  name: string;
+  type: 'text' | 'email' | 'tel';
+  placeholder: string;
+}
+
+export interface FormProps {
+  fields: FormField[];
+  textareaPlaceholder?: string;
+  submitText: string;
+  minContentLength?: number;
+  onSubmit?: (data: Record<string, string>) => void;
+  className?: string;
+}

@@ -1,0 +1,131 @@
+'use client';
+
+import { memo, useState } from 'react';
+import Link from 'next/link';
+import { Button, Badge, CardModal } from '@/components/ui';
+import {
+  ROUTES,
+  MOCK_COURSES,
+  COURSES_LABELS,
+  COURSES_IMAGES,
+  formatPrice,
+} from '@/constants';
+import {
+  COURSES_SECTION,
+  COURSES_CONTAINER,
+  COURSES_HEADER,
+  COURSES_HEADER_TITLE,
+  COURSES_GRID,
+  COURSES_CARD_BASE,
+  COURSES_CARD_1,
+  COURSES_CARD_2,
+  COURSES_CARD_3,
+  COURSES_CARD_IMAGE,
+  COURSES_CARD_GRADIENT,
+  COURSES_CARD_CONTENT,
+  COURSES_CARD_BADGE,
+  COURSES_CARD_TITLE,
+} from './landing.styles';
+
+const CARD_GRID_STYLES = [
+  COURSES_CARD_1,
+  COURSES_CARD_2,
+  COURSES_CARD_3,
+];
+
+const MODAL_ITEMS = MOCK_COURSES.slice(0, 3).map((course, index) => ({
+  image: COURSES_IMAGES[index],
+  tag: course.tag,
+  title: course.title,
+  subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructor}`,
+  price: formatPrice(course.price),
+  buttonText: COURSES_LABELS.viewDetail,
+  buttonHref: `/courses/${course.id}`,
+}));
+
+function CoursesComponent() {
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+  const openModal = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  const closeModal = () => {
+    setCurrentIndex(null);
+  };
+
+  const goToPrev = () => {
+    if (currentIndex !== null) {
+      setCurrentIndex((currentIndex - 1 + MODAL_ITEMS.length) % MODAL_ITEMS.length);
+    }
+  };
+
+  const goToNext = () => {
+    if (currentIndex !== null) {
+      setCurrentIndex((currentIndex + 1) % MODAL_ITEMS.length);
+    }
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  return (
+    <section className={COURSES_SECTION}>
+      <div className={COURSES_CONTAINER}>
+        <div className={COURSES_HEADER}>
+          <h2 className={COURSES_HEADER_TITLE}>
+            {COURSES_LABELS.sectionTitle}
+          </h2>
+          <Link href={ROUTES.COURSES}>
+            <Button variant="ghost">
+              {COURSES_LABELS.viewAll}
+            </Button>
+          </Link>
+        </div>
+        <div className={COURSES_GRID}>
+          {MOCK_COURSES.slice(0, 3).map((course, index) => (
+            <div
+              key={course.id}
+              className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES[index]} cursor-pointer`}
+              onClick={() => openModal(index)}
+            >
+              <img
+                src={COURSES_IMAGES[index]}
+                alt={course.title}
+                className={COURSES_CARD_IMAGE}
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
+              />
+              <div className={COURSES_CARD_GRADIENT} />
+              <div className={COURSES_CARD_CONTENT}>
+                <Badge
+                  variant="accent"
+                  className={COURSES_CARD_BADGE}
+                >
+                  {course.tag}
+                </Badge>
+                <h3 className={COURSES_CARD_TITLE}>
+                  {course.title}
+                </h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {currentIndex !== null && (
+        <CardModal
+          items={MODAL_ITEMS}
+          currentIndex={currentIndex}
+          onClose={closeModal}
+          onPrev={goToPrev}
+          onNext={goToNext}
+          onGoTo={goToSlide}
+        />
+      )}
+    </section>
+  );
+}
+
+export const Courses = memo(CoursesComponent);

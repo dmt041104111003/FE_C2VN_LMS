@@ -1,13 +1,33 @@
 import './globals.css';
+import { Metadata, Viewport } from 'next';
+
+export const metadata: Metadata = {
+  title: 'LMS - C2VN',
+  description: 'Nền tảng học trực tuyến',
+  icons: {
+    icon: '/loading.png',
+    apple: '/loading.png',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
+interface Props {
+  children: React.ReactNode;
+}
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Props) {
   return (
     <html lang="vi">
-      <body>{children}</body>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }

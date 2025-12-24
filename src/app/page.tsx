@@ -1,9 +1,38 @@
-export default function Home() {
+import {
+  Header,
+  Footer,
+} from '@/components/ui';
+
+import {
+  Hero,
+  Features,
+  Courses,
+  CTASection,
+  Demo,
+} from '@/components/landing';
+
+const PAGE = 'min-h-screen flex flex-col bg-[var(--bg)]';
+
+const SPACER = 'h-14 sm:h-16';
+
+const MAIN = 'flex-1';
+
+export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-spring-bg">
-      <h1 className="text-4xl font-bold text-spring-text">
-        Hello World
-      </h1>
-    </main>
+    <div className={PAGE}>
+      <Header />
+
+      <div className={SPACER} />
+
+      <main className={MAIN}>
+        <Hero />
+        <Features />
+        <Courses />
+        <CTASection />
+        <Demo />
+      </main>
+
+      <Footer />
+    </div>
   );
 }
