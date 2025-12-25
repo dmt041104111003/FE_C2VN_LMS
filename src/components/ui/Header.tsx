@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback, useMemo, Suspense } from 'react';
+import { memo, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from './Logo';
@@ -91,10 +91,6 @@ function HeaderInner() {
     setIsSearchOpen(false);
   }, []);
 
-  const navItemsWithChildren = useMemo(() => 
-    NAV_ITEMS.filter(item => 'children' in item),
-  []);
-
   return (
     <>
       <header className={HEADER}>
@@ -137,31 +133,28 @@ function HeaderInner() {
         <div className={HEADER_MEGA}>
           <div className={HEADER_MEGA_CONTAINER}>
             <div className={HEADER_MEGA_GRID}>
-              {navItemsWithChildren.map((item) => {
-                if (!('children' in item)) return null;
-                return (
-                  <div key={item.label} className={HEADER_MEGA_COL}>
+              {NAV_ITEMS.map((item) => (
+                <div key={item.label} className={HEADER_MEGA_COL}>
+                  <Link
+                    href={item.href}
+                    className={isActive(item.href) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                    {'children' in item && <ChevronDownIcon className={ICON_SM} />}
+                  </Link>
+                  {'children' in item && item.children.map((child) => (
                     <Link
-                      href={item.href}
-                      className={isActive(item.href) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
+                      key={child.href}
+                      href={child.href}
+                      className={isChildActive(child.href) ? HEADER_MEGA_LINK_ACTIVE : HEADER_MEGA_LINK}
                       onClick={closeMenu}
                     >
-                      {item.label}
-                      <ChevronDownIcon className={ICON_SM} />
+                      {child.label}
                     </Link>
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className={isChildActive(child.href) ? HEADER_MEGA_LINK_ACTIVE : HEADER_MEGA_LINK}
-                        onClick={closeMenu}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                );
-              })}
+                  ))}
+                </div>
+              ))}
             </div>
 
             <div className={HEADER_MEGA_FOOTER}>
