@@ -178,12 +178,14 @@ export interface RatingProps {
   className?: string;
 }
 
-export type UserAvatarSize = 'xs' | 'sm' | 'md';
+export type UserAvatarSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export interface UserProps {
   name: string;
   avatar?: string;
   label?: string;
+  description?: string;
+  maxDescriptionLength?: number;
   size?: UserAvatarSize;
   className?: string;
 }

@@ -1,3 +1,5 @@
+import { Review } from './review';
+
 export interface Course {
   id: string;
   title: string;
@@ -48,17 +50,6 @@ export interface Enrollment {
   enrolledAt: string;
 }
 
-export interface Review {
-  id: string;
-  userId: string;
-  userName: string;
-  userAvatar?: string;
-  rating: number;
-  content: string;
-  createdAt: string;
-  helpful?: number;
-}
-
 export interface CourseCardProps {
   course: Course;
   featured?: boolean;
@@ -67,9 +58,12 @@ export interface CourseCardProps {
   className?: string;
 }
 
+import { ReviewStats } from './review';
+
 export interface CourseDetailProps {
   course: Course;
   reviews?: Review[];
+  reviewStats?: ReviewStats;
   isEnrolled?: boolean;
   progress?: number;
 }

@@ -295,6 +295,40 @@ function HeartIconComponent({ className }: IconProps) {
   );
 }
 
+function ThumbsUpIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+    </svg>
+  );
+}
+
+function ThumbsDownIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
+    </svg>
+  );
+}
+
+function FlagIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" y1="22" x2="4" y2="15" />
+    </svg>
+  );
+}
+
+function SendIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  );
+}
+
 export const GitHubIcon = memo(GitHubIconComponent);
 export const YouTubeIcon = memo(YouTubeIconComponent);
 export const XIcon = memo(XIconComponent);
@@ -319,6 +353,10 @@ export const BookIcon = memo(BookIconComponent);
 export const CalendarIcon = memo(CalendarIconComponent);
 export const ShareIcon = memo(ShareIconComponent);
 export const HeartIcon = memo(HeartIconComponent);
+export const ThumbsUpIcon = memo(ThumbsUpIconComponent);
+export const ThumbsDownIcon = memo(ThumbsDownIconComponent);
+export const FlagIcon = memo(FlagIconComponent);
+export const SendIcon = memo(SendIconComponent);
 
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,

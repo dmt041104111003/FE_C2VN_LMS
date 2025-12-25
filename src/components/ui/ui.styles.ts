@@ -54,8 +54,8 @@ export const SEARCH_INPUT_WRAPPER = 'flex items-center border-b border-[var(--bg
 export const SEARCH_INPUT = 'flex-1 py-4 text-base outline-none bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/50';
 export const SEARCH_INPUT_BTN = 'p-2 text-[var(--accent)]';
 export const SEARCH_CONTENT = 'p-4 max-h-[60vh] overflow-y-auto';
-export const SEARCH_SECTION = 'mb-6 flex flex-col gap-2';
-export const SEARCH_SECTION_TITLE = 'text-sm font-semibold text-[var(--text)] mb-1';
+export const SEARCH_SECTION = 'mb-8 flex flex-col gap-4';
+export const SEARCH_SECTION_TITLE = 'text-sm font-semibold text-[var(--text)] mb-2';
 export const SEARCH_COURSE_ITEM = 'flex items-center gap-3 py-2';
 export const SEARCH_COURSE_IMG = 'w-10 h-10 rounded object-cover';
 export const SEARCH_COURSE_INFO = 'flex-1';
@@ -250,10 +250,11 @@ export const RATING_SIZES: Record<RatingSize, { star: string; text: string; gap:
   md: { star: 'w-4 h-4', text: 'text-sm', gap: 'gap-1.5' },
 };
 
-export const USER_AVATAR_SIZES: Record<UserAvatarSize, { avatar: string; name: string; label: string; gap: string }> = {
-  xs: { avatar: 'w-4 h-4', name: 'text-[10px]', label: 'text-[9px]', gap: 'gap-1.5' },
-  sm: { avatar: 'w-5 h-5', name: 'text-xs', label: 'text-[10px]', gap: 'gap-2' },
-  md: { avatar: 'w-6 h-6', name: 'text-sm', label: 'text-xs', gap: 'gap-2' },
+export const USER_AVATAR_SIZES: Record<UserAvatarSize, { avatar: string; name: string; label: string; description: string; gap: string }> = {
+  xs: { avatar: 'w-4 h-4', name: 'text-[10px]', label: 'text-[9px]', description: 'text-[9px]', gap: 'gap-1.5' },
+  sm: { avatar: 'w-5 h-5', name: 'text-xs', label: 'text-[10px]', description: 'text-[10px]', gap: 'gap-2' },
+  md: { avatar: 'w-6 h-6', name: 'text-sm', label: 'text-xs', description: 'text-xs', gap: 'gap-2' },
+  lg: { avatar: 'w-12 h-12', name: 'text-lg font-medium', label: 'text-sm', description: 'text-sm', gap: 'gap-4' },
 };
 
 export const PRICE_SIZES: Record<'xs' | 'sm' | 'md' | 'lg', { price: string; original: string }> = {

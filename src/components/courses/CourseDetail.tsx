@@ -10,13 +10,12 @@ import {
   RequirementsSectionProps,
   LectureItemProps,
   ChapterItemProps,
-  ReviewItemProps,
 } from '@/types/course';
+import { ReviewSection } from './ReviewSection';
 import { COURSE_DETAIL, COURSE_PAGE } from '@/constants/course';
 import { ROUTES } from '@/constants/navigation';
 import { formatCurrency, formatDuration, formatDate } from '@/constants/config';
-import { getAvatarFromName } from '@/utils';
-import { Rating, PriceDisplay, Tags, VideoModal } from '@/components/ui';
+import { Rating, PriceDisplay, Tags, VideoModal, User } from '@/components/ui';
 import {
   CheckCircleIcon,
   ChevronDownIcon,
@@ -25,8 +24,6 @@ import {
   UsersIcon,
   BookIcon,
   CalendarIcon,
-  ShareIcon,
-  HeartIcon,
 } from '@/components/ui/icons';
 import * as S from './courses.styles';
 
@@ -117,35 +114,7 @@ const ChapterItem = memo(function ChapterItem({ chapter, isExpanded, onToggle, o
   );
 });
 
-const ReviewItem = memo(function ReviewItem({ review }: ReviewItemProps) {
-  const avatarSrc = useMemo(
-    () => review.userAvatar || getAvatarFromName(review.userName),
-    [review.userAvatar, review.userName]
-  );
-
-  return (
-    <div className={S.COURSE_DETAIL_REVIEW}>
-      <div className={S.COURSE_DETAIL_REVIEW_HEADER}>
-        <div className={S.COURSE_DETAIL_REVIEW_USER}>
-          <img src={avatarSrc} alt={review.userName} className={`${S.COURSE_DETAIL_REVIEW_AVATAR} !bg-transparent`} />
-          <div>
-            <p className={S.COURSE_DETAIL_REVIEW_NAME}>{review.userName}</p>
-            <p className={S.COURSE_DETAIL_REVIEW_DATE}>{formatDate(review.createdAt)}</p>
-          </div>
-        </div>
-        <Rating value={review.rating} size="sm" showValue={false} showCount={false} />
-      </div>
-      <p className={S.COURSE_DETAIL_REVIEW_CONTENT}>{review.content}</p>
-      {(review.helpful ?? 0) > 0 && (
-        <p className={S.COURSE_DETAIL_REVIEW_HELPFUL}>
-          {review.helpful} người thấy {COURSE_DETAIL.helpfulText.toLowerCase()}
-        </p>
-      )}
-    </div>
-  );
-});
-
-export const CourseDetail = ({ course, reviews = [], isEnrolled = false, progress = 0 }: CourseDetailProps) => {
+export const CourseDetail = ({ course, reviews = [], reviewStats, isEnrolled = false, progress = 0 }: CourseDetailProps) => {
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [videoDuration, setVideoDuration] = useState<number | null>(null);
@@ -274,34 +243,23 @@ export const CourseDetail = ({ course, reviews = [], isEnrolled = false, progres
 
             <section className={S.COURSE_DETAIL_SECTION}>
               <h2 className={S.COURSE_DETAIL_SECTION_TITLE}>{COURSE_DETAIL.instructorTitle}</h2>
-              <div className={S.COURSE_DETAIL_INSTRUCTOR}>
-                <img 
-                  src={course.instructorAvatar || getAvatarFromName(course.instructorName)} 
-                  alt={course.instructorName} 
-                  className={`${S.COURSE_DETAIL_INSTRUCTOR_AVATAR} !bg-transparent`} 
-                />
-                <div className={S.COURSE_DETAIL_INSTRUCTOR_INFO}>
-                  <h3 className={S.COURSE_DETAIL_INSTRUCTOR_NAME}>{course.instructorName}</h3>
-                  {course.instructorBio && <p className={S.COURSE_DETAIL_INSTRUCTOR_BIO}>{course.instructorBio}</p>}
-                </div>
-              </div>
+              <User
+                name={course.instructorName}
+                avatar={course.instructorAvatar}
+                description={course.instructorBio}
+                size="lg"
+              />
             </section>
 
-            {reviews.length > 0 && (
-              <section className={S.COURSE_DETAIL_SECTION}>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className={`${S.COURSE_DETAIL_SECTION_TITLE} !mb-0`}>{COURSE_DETAIL.reviewsTitle}</h2>
-                  {course.rating && <Rating value={course.rating} size="md" showValue showCount={false} />}
-                </div>
-                <div>
-                  {reviews.slice(0, 4).map(review => <ReviewItem key={review.id} review={review} />)}
-                </div>
-                {reviews.length > 4 && (
-                  <button className="mt-4 text-sm text-[var(--accent)] hover:underline">
-                    {COURSE_DETAIL.allReviewsText} ({reviews.length})
-                  </button>
-                )}
-              </section>
+            {reviewStats && (
+              <ReviewSection
+                stats={reviewStats}
+                reviews={reviews}
+                canReview
+                onSubmitReview={(data) => console.log('Submit review:', data)}
+                onVote={(id, vote) => console.log('Vote:', id, vote)}
+                onReport={(id) => console.log('Report:', id)}
+              />
             )}
           </div>
 
@@ -375,16 +333,6 @@ export const CourseDetail = ({ course, reviews = [], isEnrolled = false, progres
                   </div>
                 </div>
 
-                <div className={S.COURSE_DETAIL_CARD_ACTIONS}>
-                  <button className={S.COURSE_DETAIL_CARD_ACTION}>
-                    <ShareIcon className="w-4 h-4 inline mr-1" />
-                    {COURSE_DETAIL.shareText}
-                  </button>
-                  <button className={S.COURSE_DETAIL_CARD_ACTION}>
-                    <HeartIcon className="w-4 h-4 inline mr-1" />
-                    {COURSE_DETAIL.wishlistText}
-                  </button>
-                </div>
               </div>
             </div>
           </div>

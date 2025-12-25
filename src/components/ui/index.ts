@@ -16,12 +16,14 @@ export { WalletModal } from './WalletModal';
 export { Pagination } from './Pagination';
 export { Filter } from './Filter';
 export { Rating } from './Rating';
+export { RatingInput } from './RatingInput';
 export { User } from './User';
 export { Tags } from './Tags';
 export { PriceDisplay } from './PriceDisplay';
 export { FeatureList } from './FeatureList';
 export { VideoPlayer } from './VideoPlayer';
 export { VideoModal } from './VideoModal';
+export { ShowMore } from './ShowMore';
 export type {
   PriceRange,
   RatingFilterType,
@@ -40,6 +42,8 @@ export type {
   VideoPlayerProps,
   VideoModalProps,
 } from './ui.types';
+export type { RatingInputProps } from '@/types/review';
+export type { ShowMoreProps } from './ShowMore';
 export {
   GitHubIcon,
   YouTubeIcon,
@@ -63,5 +67,9 @@ export {
   CalendarIcon,
   ShareIcon,
   HeartIcon,
+  ThumbsUpIcon,
+  ThumbsDownIcon,
+  FlagIcon,
+  SendIcon,
   SOCIAL_ICONS,
 } from './icons';

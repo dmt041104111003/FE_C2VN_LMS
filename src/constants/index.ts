@@ -59,3 +59,8 @@ export {
   PROTECTION_EVENTS,
   type ProtectionEventType,
 } from './protection';
+export {
+  REVIEW_LABELS,
+  RATING_LABELS,
+  REVIEW_CONFIG,
+} from './review';

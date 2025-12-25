@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Header, Footer } from '@/components/ui';
 import { CourseDetail } from '@/components/courses';
-import { getMockCourseDetail, MOCK_REVIEWS } from '@/constants/course';
+import { getMockCourseDetail, MOCK_REVIEWS, MOCK_REVIEW_STATS } from '@/constants/course';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
 
 interface CourseDetailPageProps {
@@ -21,7 +21,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       <Header />
       <div className={HEADER_SPACER} />
       <main>
-        <CourseDetail course={course} reviews={MOCK_REVIEWS} />
+        <CourseDetail course={course} reviews={MOCK_REVIEWS} reviewStats={MOCK_REVIEW_STATS} />
       </main>
       <Footer />
     </>
