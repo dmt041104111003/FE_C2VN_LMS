@@ -2,7 +2,7 @@
 
 import { memo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Button, Input, GoogleIcon, GitHubIcon, WalletModal } from '@/components/ui';
+import { Button, Input, PasswordInput, GoogleIcon, GitHubIcon, WalletModal } from '@/components/ui';
 import { LOGIN } from '@/constants/login';
 import { ROUTES } from '@/constants/navigation';
 import { getAvailableWallets, CardanoWallet } from '@/constants/wallet';
@@ -70,8 +70,7 @@ function LoginFormComponent() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Mật khẩu</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={LOGIN.passwordPlaceholder}
             value={password}
             onChange={(e) => setPassword(e.target.value)}

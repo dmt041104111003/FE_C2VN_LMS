@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState, useCallback } from 'react';
-import { Button, Input } from '@/components/ui';
+import { Button, PasswordInput } from '@/components/ui';
 import { CHANGE_PASSWORD } from '@/constants/auth';
 import {
   AUTH_FORM_TITLE,
@@ -30,8 +30,7 @@ function ChangePasswordFormComponent() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Mật khẩu hiện tại</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={CHANGE_PASSWORD.currentPasswordPlaceholder}
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -42,8 +41,7 @@ function ChangePasswordFormComponent() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Mật khẩu mới</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={CHANGE_PASSWORD.newPasswordPlaceholder}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -54,8 +52,7 @@ function ChangePasswordFormComponent() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={CHANGE_PASSWORD.confirmPasswordPlaceholder}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

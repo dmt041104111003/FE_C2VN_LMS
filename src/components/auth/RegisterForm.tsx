@@ -3,7 +3,7 @@
 import { memo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, PasswordInput } from '@/components/ui';
 import { REGISTER } from '@/constants/register';
 import { ROUTES } from '@/constants/navigation';
 import {
@@ -63,8 +63,7 @@ function RegisterFormComponent() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Mật khẩu</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={REGISTER.passwordPlaceholder}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -75,8 +74,7 @@ function RegisterFormComponent() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={REGISTER.confirmPasswordPlaceholder}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

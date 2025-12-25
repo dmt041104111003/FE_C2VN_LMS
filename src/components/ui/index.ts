@@ -2,6 +2,7 @@ export { Button } from './Button';
 export { ContentProtection } from './ContentProtection';
 export { Badge } from './Badge';
 export { Input } from './Input';
+export { PasswordInput } from './PasswordInput';
 export { Textarea } from './Textarea';
 export { Form } from './Form';
 export { Logo } from './Logo';
@@ -104,5 +105,7 @@ export {
   HorizontalRuleIcon,
   InfoIcon,
   PlusIcon,
+  EyeIcon,
+  EyeOffIcon,
   SOCIAL_ICONS,
 } from './icons';

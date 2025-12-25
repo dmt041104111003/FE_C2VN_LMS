@@ -3,7 +3,7 @@
 import { memo, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, PasswordInput } from '@/components/ui';
 import { RESET_PASSWORD } from '@/constants/auth';
 import { ROUTES } from '@/constants/navigation';
 import {
@@ -55,8 +55,7 @@ function ResetPasswordFormInner() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Mật khẩu mới</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={RESET_PASSWORD.newPasswordPlaceholder}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -67,8 +66,7 @@ function ResetPasswordFormInner() {
         </div>
         <div className={AUTH_FORM_FIELD}>
           <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
-          <Input
-            type="password"
+          <PasswordInput
             placeholder={RESET_PASSWORD.confirmPasswordPlaceholder}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
