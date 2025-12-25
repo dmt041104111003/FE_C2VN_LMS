@@ -14,7 +14,7 @@ import {
 } from '@/types/course';
 import { COURSE_DETAIL, COURSE_PAGE } from '@/constants/course';
 import { ROUTES } from '@/constants/navigation';
-import { formatCurrency, formatDuration } from '@/constants/config';
+import { formatCurrency, formatDuration, formatDate } from '@/constants/config';
 import { getAvatarFromName } from '@/utils';
 import { Rating, PriceDisplay, Tags, VideoModal } from '@/components/ui';
 import {
@@ -130,7 +130,7 @@ const ReviewItem = memo(function ReviewItem({ review }: ReviewItemProps) {
           <img src={avatarSrc} alt={review.userName} className={`${S.COURSE_DETAIL_REVIEW_AVATAR} !bg-transparent`} />
           <div>
             <p className={S.COURSE_DETAIL_REVIEW_NAME}>{review.userName}</p>
-            <p className={S.COURSE_DETAIL_REVIEW_DATE}>{review.createdAt}</p>
+            <p className={S.COURSE_DETAIL_REVIEW_DATE}>{formatDate(review.createdAt)}</p>
           </div>
         </div>
         <Rating value={review.rating} size="sm" showValue={false} showCount={false} />
@@ -230,7 +230,7 @@ export const CourseDetail = ({ course, reviews = [], isEnrolled = false, progres
             {course.updatedAt && (
               <div className={S.COURSE_DETAIL_META_ITEM}>
                 <CalendarIcon className="w-4 h-4" />
-                <span>{COURSE_DETAIL.lastUpdatedText}: {course.updatedAt}</span>
+                <span>{COURSE_DETAIL.lastUpdatedText}: {formatDate(course.updatedAt)}</span>
               </div>
             )}
           </div>

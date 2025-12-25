@@ -270,10 +270,11 @@ export const FEATURE_SIZES: Record<'xs' | 'sm', { icon: string; text: string; ga
 
 export const TAG_BASE = 'text-[10px] px-2 py-0.5 bg-[var(--bg-alt)] text-[var(--text)]/60 rounded';
 
-export const VIDEO_PLAYER_WRAPPER = 'aspect-video';
+export const VIDEO_PLAYER_WRAPPER = 'relative aspect-video';
 export const VIDEO_PLAYER_ERROR = 'aspect-video bg-black flex items-center justify-center';
 export const VIDEO_PLAYER_ERROR_TEXT = 'text-white/50 text-sm';
 export const VIDEO_PLAYER_IFRAME = 'w-full h-full';
+export const VIDEO_PLAYER_OVERLAY = 'absolute inset-0 pointer-events-none';
 
 export const VIDEO_MODAL_OVERLAY = 'fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4';
 export const VIDEO_MODAL_CLOSE = 'absolute top-4 right-4 text-white z-10 p-2 hover:bg-white/10 rounded-full transition-colors';

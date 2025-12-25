@@ -2,12 +2,13 @@
 
 import { memo, useEffect, useRef, useCallback } from 'react';
 import { VideoPlayerProps } from './ui.types';
-import { getYouTubeId, VIDEO_UNAVAILABLE_TEXT } from '@/constants/config';
+import { getYouTubeId, VIDEO_UNAVAILABLE_TEXT, YOUTUBE_PLAYER_VARS } from '@/constants/config';
 import {
   VIDEO_PLAYER_WRAPPER,
   VIDEO_PLAYER_ERROR,
   VIDEO_PLAYER_ERROR_TEXT,
   VIDEO_PLAYER_IFRAME,
+  VIDEO_PLAYER_OVERLAY,
 } from './ui.styles';
 
 declare global {
@@ -33,7 +34,6 @@ interface YTPlayerConfig {
 }
 
 const YOUTUBE_API_URL = 'https://www.youtube.com/iframe_api';
-const PLAYER_VARS = { autoplay: 1, rel: 0 } as const;
 
 let apiLoadPromise: Promise<void> | null = null;
 
@@ -87,7 +87,7 @@ function VideoPlayerComponent({ url, className = '', onDurationChange }: VideoPl
 
       playerRef.current = new window.YT.Player(containerRef.current, {
         videoId,
-        playerVars: PLAYER_VARS,
+        playerVars: YOUTUBE_PLAYER_VARS,
         events: { onReady: handlePlayerReady },
       });
     };
@@ -112,6 +112,7 @@ function VideoPlayerComponent({ url, className = '', onDurationChange }: VideoPl
   return (
     <div className={`${VIDEO_PLAYER_WRAPPER} ${className}`}>
       <div ref={containerRef} className={VIDEO_PLAYER_IFRAME} />
+      <div className={VIDEO_PLAYER_OVERLAY} />
     </div>
   );
 }

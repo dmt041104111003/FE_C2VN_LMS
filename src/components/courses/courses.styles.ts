@@ -1,5 +1,6 @@
 import { Course, CardType, CardConfig } from '@/types/course';
 import { COURSE_PAGE } from '@/constants/course';
+import { formatDate } from '@/constants/config';
 
 export const COURSE_CARD_BASE = 'group block bg-[var(--bg)] rounded-2xl overflow-hidden border border-[var(--text)]/5 hover:border-[var(--accent)]/30 transition-colors';
 export const COURSE_CARD_IMAGE_BASE = 'flex-shrink-0 bg-[var(--bg-alt)] relative overflow-hidden';
@@ -54,7 +55,7 @@ export const CARD_CONFIGS: Record<CardType, CardConfig> = {
     features: (c: Course) => [
       `${c.totalLessons} ${COURSE_PAGE.lessonsText}`,
       `${c.totalStudents} ${COURSE_PAGE.studentsText} đã đăng ký`,
-      `Cập nhật ${new Date(c.createdAt).toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' })}`,
+      `Cập nhật ${formatDate(c.createdAt)}`,
       'Chứng chỉ NFT hoàn thành',
       'Truy cập trọn đời',
       'Hỗ trợ Q&A trực tiếp',
