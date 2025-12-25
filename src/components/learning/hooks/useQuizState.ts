@@ -2,16 +2,24 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import type { Quiz, QuizAttempt, QuizState } from '@/types/learning';
 import { calculateQuizScore, createCorrectAnswersMap } from '@/constants/learning';
 
-export function useQuizState(quiz: Quiz, onSubmit: (answers: Record<string, string | string[]>) => void) {
-  const [state, setState] = useState<QuizState>(() => ({
-    started: false,
-    currentIndex: 0,
-    answers: new Map(),
-    showResults: false,
-    attempt: undefined,
-    timeLeft: quiz.timeLimit ? quiz.timeLimit * 60 : 0,
-  }));
+const SECONDS_PER_MINUTE = 60;
+const TIMER_INTERVAL_MS = 1000;
+const WARNING_THRESHOLD_SECONDS = 60;
 
+const createInitialState = (timeLimit?: number): QuizState => ({
+  started: false,
+  currentIndex: 0,
+  answers: new Map(),
+  showResults: false,
+  attempt: undefined,
+  timeLeft: timeLimit ? timeLimit * SECONDS_PER_MINUTE : 0,
+});
+
+const getTimeLimitInSeconds = (timeLimit?: number) => 
+  timeLimit ? timeLimit * SECONDS_PER_MINUTE : 0;
+
+export function useQuizState(quiz: Quiz, onSubmit: (answers: Record<string, string | string[]>) => void) {
+  const [state, setState] = useState<QuizState>(() => createInitialState(quiz.timeLimit));
   const timerRef = useRef<NodeJS.Timeout>();
 
   const correctAnswersMap = useMemo(
@@ -22,13 +30,21 @@ export function useQuizState(quiz: Quiz, onSubmit: (answers: Record<string, stri
   const totalQuestions = quiz.questions.length;
   const currentQuestion = quiz.questions[state.currentIndex];
   const progress = ((state.currentIndex + 1) / totalQuestions) * 100;
-  const isTimeWarning = state.timeLeft > 0 && state.timeLeft < 60;
+  const isTimeWarning = state.timeLeft > 0 && state.timeLeft < WARNING_THRESHOLD_SECONDS;
+  const isQuizInProgress = state.started && !state.showResults;
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = undefined;
+    }
+  }, []);
 
   const start = useCallback(() => {
     setState(prev => ({
       ...prev,
       started: true,
-      timeLeft: quiz.timeLimit ? quiz.timeLimit * 60 : 0,
+      timeLeft: getTimeLimitInSeconds(quiz.timeLimit),
     }));
   }, [quiz.timeLimit]);
 
@@ -41,26 +57,28 @@ export function useQuizState(quiz: Quiz, onSubmit: (answers: Record<string, stri
   }, []);
 
   const goTo = useCallback((index: number) => {
-    if (index >= 0 && index < totalQuestions) {
+    const isValidIndex = index >= 0 && index < totalQuestions;
+    if (isValidIndex) {
       setState(prev => ({ ...prev, currentIndex: index }));
     }
   }, [totalQuestions]);
 
   const submit = useCallback(() => {
-    clearInterval(timerRef.current);
+    clearTimer();
+    
     const score = calculateQuizScore(quiz.questions, state.answers);
-    const passed = score >= quiz.passingScore;
-    
+    const isPassed = score >= quiz.passingScore;
     const answersObject = Object.fromEntries(state.answers);
-    
+    const now = new Date().toISOString();
+
     const newAttempt: QuizAttempt = {
       id: Date.now().toString(),
       quizId: quiz.id,
       answers: answersObject,
       score,
-      passed,
-      startedAt: new Date().toISOString(),
-      completedAt: new Date().toISOString(),
+      passed: isPassed,
+      startedAt: now,
+      completedAt: now,
     };
 
     setState(prev => ({
@@ -71,42 +89,41 @@ export function useQuizState(quiz: Quiz, onSubmit: (answers: Record<string, stri
     }));
     
     onSubmit(answersObject);
-  }, [quiz, state.answers, onSubmit]);
+  }, [quiz, state.answers, onSubmit, clearTimer]);
 
   const retry = useCallback(() => {
     setState({
+      ...createInitialState(quiz.timeLimit),
       started: true,
-      currentIndex: 0,
-      answers: new Map(),
-      showResults: false,
-      attempt: undefined,
-      timeLeft: quiz.timeLimit ? quiz.timeLimit * 60 : 0,
     });
   }, [quiz.timeLimit]);
 
   const getAttempt = useCallback(() => state.attempt, [state.attempt]);
 
   useEffect(() => {
-    if (!state.started || !quiz.timeLimit || state.showResults) return;
+    const shouldRunTimer = isQuizInProgress && quiz.timeLimit;
+    if (!shouldRunTimer) return;
     
     timerRef.current = setInterval(() => {
       setState(prev => {
-        if (prev.timeLeft <= 1) {
-          clearInterval(timerRef.current);
+        const isTimeUp = prev.timeLeft <= 1;
+        if (isTimeUp) {
+          clearTimer();
           return prev;
         }
         return { ...prev, timeLeft: prev.timeLeft - 1 };
       });
-    }, 1000);
+    }, TIMER_INTERVAL_MS);
 
-    return () => clearInterval(timerRef.current);
-  }, [state.started, state.showResults, quiz.timeLimit]);
+    return clearTimer;
+  }, [isQuizInProgress, quiz.timeLimit, clearTimer]);
 
   useEffect(() => {
-    if (state.timeLeft === 0 && state.started && !state.showResults && quiz.timeLimit) {
+    const shouldAutoSubmit = state.timeLeft === 0 && isQuizInProgress && quiz.timeLimit;
+    if (shouldAutoSubmit) {
       submit();
     }
-  }, [state.timeLeft, state.started, state.showResults, quiz.timeLimit, submit]);
+  }, [state.timeLeft, isQuizInProgress, quiz.timeLimit, submit]);
 
   return {
     state,

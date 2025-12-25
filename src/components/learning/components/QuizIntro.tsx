@@ -8,7 +8,27 @@ import { QuestionIcon, TimerIcon, TargetIcon } from '@/components/ui/icons';
 import type { QuizIntroProps } from '@/types/learning';
 import { QUIZ } from '../learning.styles';
 
+const LABELS = LEARNING_LABELS.quiz;
+const ICON_SIZE = 'w-4 h-4';
+
+interface MetaItemProps {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}
+
+const MetaItem = memo(function MetaItem({ icon, children }: MetaItemProps) {
+  return (
+    <span className={QUIZ.INTRO_META_ITEM}>
+      {icon}
+      {children}
+    </span>
+  );
+});
+
 function QuizIntroComponent({ quiz, onStart }: QuizIntroProps) {
+  const questionCount = quiz.questions.length;
+  const hasTimeLimit = !!quiz.timeLimit;
+
   return (
     <div className={QUIZ.CONTAINER}>
       <div className={QUIZ.INTRO}>
@@ -18,6 +38,7 @@ function QuizIntroComponent({ quiz, onStart }: QuizIntroProps) {
           width={120}
           height={120}
           className="mb-6 rounded-lg"
+          priority
         />
         <h1 className={QUIZ.INTRO_TITLE}>{quiz.title}</h1>
         
@@ -26,26 +47,23 @@ function QuizIntroComponent({ quiz, onStart }: QuizIntroProps) {
         )}
 
         <div className={QUIZ.INTRO_META}>
-          <span className={QUIZ.INTRO_META_ITEM}>
-            <QuestionIcon className="w-4 h-4" />
-            {quiz.questions.length} câu hỏi
-          </span>
+          <MetaItem icon={<QuestionIcon className={ICON_SIZE} />}>
+            {questionCount} câu hỏi
+          </MetaItem>
 
-          {quiz.timeLimit && (
-            <span className={QUIZ.INTRO_META_ITEM}>
-              <TimerIcon className="w-4 h-4" />
+          {hasTimeLimit && (
+            <MetaItem icon={<TimerIcon className={ICON_SIZE} />}>
               {quiz.timeLimit} phút
-            </span>
+            </MetaItem>
           )}
 
-          <span className={QUIZ.INTRO_META_ITEM}>
-            <TargetIcon className="w-4 h-4" />
-            {LEARNING_LABELS.quiz.passingScore}: {quiz.passingScore}%
-          </span>
+          <MetaItem icon={<TargetIcon className={ICON_SIZE} />}>
+            {LABELS.passingScore}: {quiz.passingScore}%
+          </MetaItem>
         </div>
 
         <Button size="lg" onClick={onStart} className="mt-8 px-10 py-4 text-base">
-          {LEARNING_LABELS.quiz.start}
+          {LABELS.start}
         </Button>
       </div>
     </div>
