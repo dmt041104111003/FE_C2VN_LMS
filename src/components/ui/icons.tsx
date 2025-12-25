@@ -329,6 +329,25 @@ function SendIconComponent({ className }: IconProps) {
   );
 }
 
+function WalletIconComponent({ className = 'w-5 h-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="6" width="20" height="14" rx="2" />
+      <path d="M2 10h20" />
+      <circle cx="16" cy="14" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function MailIconComponent({ className = 'w-5 h-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="M22 6l-10 7L2 6" />
+    </svg>
+  );
+}
+
 export const GitHubIcon = memo(GitHubIconComponent);
 export const YouTubeIcon = memo(YouTubeIconComponent);
 export const XIcon = memo(XIconComponent);
@@ -357,6 +376,8 @@ export const ThumbsUpIcon = memo(ThumbsUpIconComponent);
 export const ThumbsDownIcon = memo(ThumbsDownIconComponent);
 export const FlagIcon = memo(FlagIconComponent);
 export const SendIcon = memo(SendIconComponent);
+export const WalletIcon = memo(WalletIconComponent);
+export const MailIcon = memo(MailIconComponent);
 
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,

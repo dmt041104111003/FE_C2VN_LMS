@@ -71,5 +71,7 @@ export {
   ThumbsDownIcon,
   FlagIcon,
   SendIcon,
+  WalletIcon,
+  MailIcon,
   SOCIAL_ICONS,
 } from './icons';

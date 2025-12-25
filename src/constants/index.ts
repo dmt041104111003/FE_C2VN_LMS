@@ -64,3 +64,15 @@ export {
   RATING_LABELS,
   REVIEW_CONFIG,
 } from './review';
+export {
+  USER_LABELS,
+  USER_CONFIG,
+  ROLE_LABELS,
+  LOGIN_METHOD_ICONS,
+  STATS_ITEMS,
+  truncateWalletAddress,
+  MOCK_USER_PROFILE,
+  MOCK_USER_STATS,
+  MOCK_USER_COURSES,
+  MOCK_USER_CERTIFICATES,
+} from './user';
