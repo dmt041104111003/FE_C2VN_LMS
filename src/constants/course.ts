@@ -22,15 +22,33 @@ export const COURSE_PAGE = {
 } as const;
 
 export const COURSE_DETAIL = {
-  descriptionTitle: 'Mô tả',
+  descriptionTitle: 'Mô tả khóa học',
+  objectivesTitle: 'Bạn sẽ học được gì',
+  requirementsTitle: 'Yêu cầu',
   chaptersTitle: 'Nội dung khóa học',
   instructorTitle: 'Giảng viên',
-  reviewsTitle: 'Đánh giá',
+  reviewsTitle: 'Đánh giá từ học viên',
   enrollButton: 'Đăng ký ngay',
+  enrollFreeButton: 'Đăng ký miễn phí',
   startButton: 'Bắt đầu học',
   continueButton: 'Tiếp tục học',
   completedText: 'Đã hoàn thành',
   progressText: 'Tiến độ',
+  lessonsText: 'bài học',
+  hoursText: 'giờ',
+  studentsText: 'học viên',
+  lastUpdatedText: 'Cập nhật',
+  previewText: 'Xem trước',
+  lecturesText: 'bài giảng',
+  totalText: 'Tổng cộng',
+  expandAll: 'Mở tất cả',
+  collapseAll: 'Thu gọn',
+  helpfulText: 'Hữu ích',
+  writeReviewText: 'Viết đánh giá',
+  allReviewsText: 'Xem tất cả đánh giá',
+  backToCourses: 'Quay lại danh sách',
+  shareText: 'Chia sẻ',
+  wishlistText: 'Yêu thích',
 } as const;
 
 export const COURSE_GRID = {
@@ -658,5 +676,116 @@ export const MOCK_COURSES: Course[] = [
     tags: ['Architecture', 'Performance', 'Advanced'],
     status: 'PUBLISHED',
     createdAt: '2027-02-01',
+  },
+];
+
+export const getMockCourseDetail = (id: string): Course | undefined => {
+  const course = MOCK_COURSES.find(c => c.id === id);
+  if (!course) return undefined;
+  
+  return {
+    ...course,
+    instructorBio: 'Chuyên gia blockchain với hơn 5 năm kinh nghiệm phát triển trên nền tảng Cardano. Đã tham gia nhiều dự án DeFi và NFT thành công.',
+    totalDuration: 1200,
+    reviewCount: Math.floor(course.totalStudents * 0.3),
+    updatedAt: '2025-01-15',
+    objectives: [
+      'Hiểu rõ các khái niệm cơ bản về blockchain và Cardano',
+      'Nắm vững cách thức hoạt động của mạng lưới phi tập trung',
+      'Có khả năng phân tích và đánh giá các dự án blockchain',
+      'Xây dựng được ứng dụng đơn giản trên Cardano',
+      'Hiểu về tokenomics và cơ chế staking',
+    ],
+    requirements: [
+      'Kiến thức cơ bản về lập trình',
+      'Máy tính với kết nối internet ổn định',
+      'Tinh thần học hỏi và kiên nhẫn',
+    ],
+    chapters: [
+      {
+        id: 'ch1',
+        title: 'Giới thiệu về Blockchain',
+        orderIndex: 1,
+        lectures: [
+          { id: 'l1', title: 'Blockchain là gì?', duration: 15, isPreview: true, orderIndex: 1, videoUrl: 'https://www.youtube.com/watch?v=G9b2NqNp4VM' },
+          { id: 'l2', title: 'Lịch sử phát triển blockchain', duration: 12, isPreview: true, orderIndex: 2, videoUrl: 'https://www.youtube.com/watch?v=G9b2NqNp4VM' },
+          { id: 'l3', title: 'Các thành phần của blockchain', duration: 20, isPreview: false, orderIndex: 3 },
+          { id: 'l4', title: 'Bài tập thực hành', duration: 30, isPreview: false, orderIndex: 4 },
+        ],
+      },
+      {
+        id: 'ch2',
+        title: 'Cardano Fundamentals',
+        orderIndex: 2,
+        lectures: [
+          { id: 'l5', title: 'Giới thiệu về Cardano', duration: 18, isPreview: false, orderIndex: 1 },
+          { id: 'l6', title: 'Kiến trúc Cardano', duration: 25, isPreview: false, orderIndex: 2 },
+          { id: 'l7', title: 'Ouroboros Consensus', duration: 22, isPreview: false, orderIndex: 3 },
+          { id: 'l8', title: 'ADA và Native Tokens', duration: 20, isPreview: false, orderIndex: 4 },
+        ],
+      },
+      {
+        id: 'ch3',
+        title: 'Ví và Staking',
+        orderIndex: 3,
+        lectures: [
+          { id: 'l9', title: 'Các loại ví Cardano', duration: 15, isPreview: false, orderIndex: 1 },
+          { id: 'l10', title: 'Cách thiết lập ví', duration: 20, isPreview: false, orderIndex: 2 },
+          { id: 'l11', title: 'Staking là gì?', duration: 18, isPreview: false, orderIndex: 3 },
+          { id: 'l12', title: 'Chọn Stake Pool', duration: 22, isPreview: false, orderIndex: 4 },
+        ],
+      },
+      {
+        id: 'ch4',
+        title: 'Smart Contract cơ bản',
+        orderIndex: 4,
+        lectures: [
+          { id: 'l13', title: 'Smart Contract là gì?', duration: 20, isPreview: false, orderIndex: 1 },
+          { id: 'l14', title: 'Plutus và Aiken', duration: 25, isPreview: false, orderIndex: 2 },
+          { id: 'l15', title: 'Viết smart contract đầu tiên', duration: 35, isPreview: false, orderIndex: 3 },
+          { id: 'l16', title: 'Deploy và testing', duration: 40, isPreview: false, orderIndex: 4 },
+        ],
+      },
+    ],
+  };
+};
+
+export const MOCK_REVIEWS = [
+  {
+    id: 'r1',
+    userId: 'u1',
+    userName: 'Nguyễn Minh Tuấn',
+    userAvatar: '',
+    rating: 5,
+    content: 'Khóa học rất hay và chi tiết. Giảng viên giải thích dễ hiểu, có nhiều ví dụ thực tế. Tôi đã áp dụng được kiến thức vào dự án của mình.',
+    createdAt: '2025-01-10',
+    helpful: 24,
+  },
+  {
+    id: 'r2',
+    userId: 'u2',
+    userName: 'Trần Thị Mai',
+    rating: 5,
+    content: 'Nội dung đầy đủ từ cơ bản đến nâng cao. Bài tập thực hành giúp củng cố kiến thức rất tốt.',
+    createdAt: '2025-01-08',
+    helpful: 18,
+  },
+  {
+    id: 'r3',
+    userId: 'u3',
+    userName: 'Lê Văn Hùng',
+    rating: 4,
+    content: 'Khóa học tốt, tuy nhiên một số phần có thể giải thích kỹ hơn. Nhìn chung vẫn rất đáng để học.',
+    createdAt: '2025-01-05',
+    helpful: 12,
+  },
+  {
+    id: 'r4',
+    userId: 'u4',
+    userName: 'Phạm Thu Hương',
+    rating: 5,
+    content: 'Tuyệt vời! Đây là khóa học blockchain tốt nhất mà tôi từng học. Cảm ơn giảng viên rất nhiều!',
+    createdAt: '2025-01-03',
+    helpful: 31,
   },
 ];

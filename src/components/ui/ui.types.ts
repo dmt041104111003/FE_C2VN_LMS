@@ -221,3 +221,19 @@ export interface FilterProps {
   ratingOptions: FilterOption<RatingFilterType>[];
   className?: string;
 }
+
+export interface VideoPlayerProps {
+  url: string;
+  title?: string;
+  className?: string;
+  onDurationChange?: (minutes: number) => void;
+}
+
+export interface VideoModalProps {
+  isOpen: boolean;
+  videoUrl: string;
+  title?: string;
+  subtitle?: string;
+  onClose: () => void;
+  onDurationChange?: (minutes: number) => void;
+}

@@ -269,3 +269,17 @@ export const FEATURE_SIZES: Record<'xs' | 'sm', { icon: string; text: string; ga
 };
 
 export const TAG_BASE = 'text-[10px] px-2 py-0.5 bg-[var(--bg-alt)] text-[var(--text)]/60 rounded';
+
+export const VIDEO_PLAYER_WRAPPER = 'aspect-video';
+export const VIDEO_PLAYER_ERROR = 'aspect-video bg-black flex items-center justify-center';
+export const VIDEO_PLAYER_ERROR_TEXT = 'text-white/50 text-sm';
+export const VIDEO_PLAYER_IFRAME = 'w-full h-full';
+
+export const VIDEO_MODAL_OVERLAY = 'fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4';
+export const VIDEO_MODAL_CLOSE = 'absolute top-4 right-4 text-white z-10 p-2 hover:bg-white/10 rounded-full transition-colors';
+export const VIDEO_MODAL_CLOSE_ICON = 'w-8 h-8';
+export const VIDEO_MODAL_CONTAINER = 'relative w-full max-w-4xl';
+export const VIDEO_MODAL_HEADER = 'mb-4';
+export const VIDEO_MODAL_TITLE = 'text-xl font-semibold text-white';
+export const VIDEO_MODAL_SUBTITLE = 'text-sm text-white/60 mt-1';
+export const VIDEO_MODAL_VIDEO = 'rounded-xl overflow-hidden bg-black';

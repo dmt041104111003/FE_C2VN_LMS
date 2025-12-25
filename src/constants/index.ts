@@ -34,4 +34,4 @@ export {
 } from './validation';
 export { FEEDBACK_FIELDS } from './feedback';
 export { LOGIN, LOGIN_FIELDS } from './login';
-export { SYSTEM_CONFIG, formatCurrency } from './config';
+export { SYSTEM_CONFIG, formatCurrency, formatDuration, getInitials, getYouTubeId, VIDEO_UNAVAILABLE_TEXT } from './config';

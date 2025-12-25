@@ -20,6 +20,8 @@ export { Instructor } from './Instructor';
 export { Tags } from './Tags';
 export { PriceDisplay } from './PriceDisplay';
 export { FeatureList } from './FeatureList';
+export { VideoPlayer } from './VideoPlayer';
+export { VideoModal } from './VideoModal';
 export type {
   PriceRange,
   RatingFilterType,
@@ -33,6 +35,8 @@ export type {
   TagsProps,
   PriceDisplayProps,
   FeatureListProps,
+  VideoPlayerProps,
+  VideoModalProps,
 } from './ui.types';
 export {
   GitHubIcon,
@@ -50,5 +54,12 @@ export {
   StarIcon,
   StarOutlineIcon,
   CheckCircleIcon,
+  PlayIcon,
+  ClockIcon,
+  UsersIcon,
+  BookIcon,
+  CalendarIcon,
+  ShareIcon,
+  HeartIcon,
   SOCIAL_ICONS,
 } from './icons';
