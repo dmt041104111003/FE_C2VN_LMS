@@ -326,3 +326,139 @@ export interface CheckboxProps {
   disabled?: boolean;
   className?: string;
 }
+
+export type StatusBadgeVariant = 'default' | 'success' | 'danger' | 'warning' | 'info';
+
+export interface StatusBadgeProps {
+  children: React.ReactNode;
+  variant?: StatusBadgeVariant;
+  className?: string;
+}
+
+export interface PageLayoutProps {
+  children: React.ReactNode;
+}
+
+export interface PageHeaderProps {
+  title: string;
+  subtitle?: string;
+}
+
+export interface PanelProps {
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  action?: React.ReactNode;
+}
+
+export interface StatCardProps {
+  value: string | number;
+  label: string;
+  icon?: React.ReactNode;
+}
+
+export interface DataTableProps {
+  headers: string[];
+  children: React.ReactNode;
+  emptyMessage?: string;
+  isEmpty?: boolean;
+}
+
+export interface TableCellProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface ActionButtonProps {
+  icon: React.ReactNode;
+  onClick: () => void;
+  title?: string;
+  danger?: boolean;
+}
+
+export interface DropdownItem {
+  label: string;
+  icon?: React.ReactNode;
+  onClick: () => void;
+  danger?: boolean;
+}
+
+export interface ActionDropdownProps {
+  items: DropdownItem[];
+  label?: string;
+}
+
+export interface ConfirmModalProps {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  danger?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export interface UserCellProps {
+  name: string;
+  email: string;
+  avatar?: string;
+  showAvatar?: boolean;
+}
+
+export interface SearchFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  onSearch?: () => void;
+}
+
+export interface SelectFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+}
+
+export interface SidebarItem {
+  id: string;
+  title: string;
+  icon?: React.FC<{ className?: string }>;
+  meta?: string;
+  disabled?: boolean;
+  href?: string;
+}
+
+export interface SidebarSection {
+  id: string;
+  title: string;
+  items: SidebarItem[];
+  defaultOpen?: boolean;
+}
+
+export interface SidebarProps {
+  sections?: SidebarSection[];
+  items?: SidebarItem[];
+  activeId?: string;
+  onSelect?: (id: string) => void;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
+  backLink?: { href: string; label: string };
+  collapsible?: boolean;
+}
+
+export interface SidebarLayoutHeaderProps {
+  title?: string;
+  subtitle?: string;
+  onPrev?: () => void;
+  onNext?: () => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
+  rightContent?: React.ReactNode;
+}
+
+export interface SidebarLayoutProps {
+  sidebar: React.ReactNode;
+  children: React.ReactNode;
+  header?: SidebarLayoutHeaderProps;
+  sidebarWidth?: string;
+}

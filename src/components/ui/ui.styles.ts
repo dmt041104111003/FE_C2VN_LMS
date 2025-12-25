@@ -392,3 +392,129 @@ export const CHECKBOX = {
   DISABLED: 'opacity-50 cursor-not-allowed',
   CHECK_ICON: 'w-2.5 h-2.5 text-white',
 } as const;
+
+export const PAGE = {
+  LAYOUT: 'min-h-screen bg-[var(--bg)]',
+  CONTAINER: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8',
+  HEADER: 'mb-8',
+  HEADER_TITLE: 'text-2xl font-light text-[var(--text)] tracking-wide',
+  HEADER_SUBTITLE: 'text-sm text-[var(--text)]/50 mt-1',
+} as const;
+
+export const PANEL = {
+  BASE: 'bg-white border border-[var(--border)] rounded-lg overflow-hidden',
+  HEADER: 'px-6 py-4 border-b border-[var(--border)] flex items-center justify-between',
+  TITLE: 'text-sm font-medium text-[var(--text)]/80 uppercase tracking-wider',
+  BODY: 'p-6',
+  FOOTER: 'px-6 py-4 border-t border-[var(--border)] bg-[var(--bg-alt)]/30',
+} as const;
+
+export const STAT = {
+  GRID: 'grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6',
+  CARD: 'bg-white border border-[var(--border)] rounded-lg p-4',
+  VALUE: 'text-2xl font-light text-[var(--text)]',
+  LABEL: 'text-xs text-[var(--text)]/50 mt-1 uppercase tracking-wider',
+} as const;
+
+export const TABLE = {
+  WRAPPER: 'overflow-x-auto',
+  BASE: 'w-full',
+  THEAD: 'bg-[var(--bg-alt)]/50',
+  TH: 'px-4 py-3 text-left text-xs font-medium text-[var(--text)]/50 uppercase tracking-wider',
+  TBODY: 'divide-y divide-[var(--border)]',
+  TR: 'hover:bg-[var(--bg-alt)]/30 transition-colors',
+  TD: 'px-4 py-4 text-sm text-[var(--text)]/70',
+  EMPTY: 'text-center py-12 text-sm text-[var(--text)]/40',
+} as const;
+
+export const STATUS_BADGE = {
+  BASE: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+  DEFAULT: 'bg-[var(--text)]/5 text-[var(--text)]/60',
+  SUCCESS: 'bg-[var(--correct)]/10 text-[var(--correct)]',
+  DANGER: 'bg-[var(--incorrect)]/10 text-[var(--incorrect)]',
+  WARNING: 'bg-[var(--warning)]/10 text-[var(--warning)]',
+  INFO: 'bg-[var(--accent)]/10 text-[var(--accent)]',
+} as const;
+
+export const DROPDOWN = {
+  CONTAINER: 'absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border)] rounded-lg shadow-lg py-1 z-20',
+  ITEM: 'w-full px-4 py-2 text-left text-sm text-[var(--text)]/70 hover:bg-[var(--bg-alt)] transition-colors flex items-center gap-2',
+  ITEM_DANGER: 'w-full px-4 py-2 text-left text-sm text-[var(--incorrect)] hover:bg-[var(--incorrect)]/5 transition-colors flex items-center gap-2',
+  LABEL: 'px-4 py-2 text-xs text-[var(--text)]/40 uppercase tracking-wider',
+} as const;
+
+export const ACTION_BTN = {
+  BASE: 'p-2 rounded-lg text-[var(--text)]/40 hover:text-[var(--text)]/70 hover:bg-[var(--text)]/5 transition-colors',
+  DANGER: 'p-2 rounded-lg text-[var(--text)]/40 hover:text-[var(--incorrect)] hover:bg-[var(--incorrect)]/5 transition-colors',
+  GROUP: 'flex items-center gap-1',
+} as const;
+
+export const CONFIRM_MODAL = {
+  OVERLAY: 'fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4',
+  CONTAINER: 'bg-white rounded-lg shadow-xl max-w-md w-full',
+  HEADER: 'px-6 py-4 border-b border-[var(--border)]',
+  TITLE: 'text-lg font-medium text-[var(--text)]',
+  BODY: 'px-6 py-4',
+  MESSAGE: 'text-sm text-[var(--text)]/70',
+  FOOTER: 'px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3',
+} as const;
+
+export const USER_CELL = {
+  CONTAINER: 'flex items-center gap-3',
+  AVATAR: 'w-9 h-9 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-xs font-medium text-[var(--accent)] overflow-hidden',
+  INFO: 'min-w-0',
+  NAME: 'text-sm font-medium text-[var(--text)] truncate',
+  EMAIL: 'text-xs text-[var(--text)]/50 truncate',
+} as const;
+
+export const FILTERS = {
+  BAR: 'flex flex-col sm:flex-row gap-4 mb-6',
+  SEARCH_WRAPPER: 'flex-1 relative',
+  SEARCH_ICON: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text)]/30',
+  SEARCH_INPUT: 'w-full pl-10 pr-4 py-2.5 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors',
+  SELECT_WRAPPER: 'relative',
+  SELECT: 'appearance-none px-4 py-2.5 pr-10 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer min-w-[140px]',
+  SELECT_ICON: 'absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text)]/30 pointer-events-none',
+} as const;
+
+export const SIDEBAR = {
+  CONTAINER: 'flex flex-col h-full bg-[var(--bg)] border-r border-[var(--border)]',
+  BACK_LINK: 'px-5 py-4 text-sm text-[var(--text)]/40 hover:text-[var(--accent)] transition-colors border-b border-[var(--border)] flex items-center gap-2',
+  HEADER: 'px-5 py-5 border-b border-[var(--border)]',
+  TITLE: 'text-xs uppercase tracking-[0.2em] text-[var(--text)]/40 mb-3',
+  SUBTITLE: 'text-xs text-[var(--text)]/30 mt-2',
+  NAV: 'flex-1 overflow-y-auto',
+  SECTION: 'border-b border-[var(--border)]',
+  SECTION_HEADER: 'flex items-center justify-between px-5 py-4 cursor-pointer group',
+  SECTION_TITLE: 'text-sm text-[var(--text)]/50 group-hover:text-[var(--text)]/70 transition-colors',
+  SECTION_ICON: 'w-4 h-4 text-[var(--text)]/30 transition-transform duration-200',
+  SECTION_ICON_OPEN: 'rotate-180',
+  SECTION_CONTENT: 'pb-2',
+  ITEM: 'flex items-center gap-3 mx-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200',
+  ITEM_ACTIVE: 'bg-[var(--accent)]/10 text-[var(--accent)]',
+  ITEM_DEFAULT: 'text-[var(--text)]/60 hover:bg-[var(--text)]/5',
+  ITEM_DISABLED: 'text-[var(--text)]/20 cursor-not-allowed',
+  ITEM_ICON: 'w-4 h-4 flex-shrink-0',
+  ITEM_CONTENT: 'flex-1 min-w-0',
+  ITEM_TITLE: 'text-sm truncate',
+  ITEM_META: 'text-xs opacity-50 mt-0.5',
+  FOOTER: 'px-5 py-4 border-t border-[var(--border)]',
+} as const;
+
+export const SIDEBAR_LAYOUT = {
+  CONTAINER: 'h-screen bg-[var(--bg)] flex overflow-hidden',
+  SIDEBAR_DESKTOP: 'w-72 flex-shrink-0 hidden lg:block border-r border-[var(--border)]',
+  SIDEBAR_MOBILE_OVERLAY: 'fixed inset-0 z-50 bg-black/30 lg:hidden',
+  SIDEBAR_MOBILE_CONTENT: 'w-72 h-full bg-[var(--bg)]',
+  MAIN: 'flex-1 flex flex-col min-w-0 h-full',
+  HEADER: 'h-14 border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 flex-shrink-0',
+  HEADER_LEFT: 'flex items-center gap-3',
+  HEADER_MENU_BTN: 'p-1.5 -ml-1.5 text-[var(--text)]/30 hover:text-[var(--text)]/60 transition-colors lg:hidden',
+  HEADER_INFO: 'flex flex-col gap-0.5',
+  HEADER_SUBTITLE: 'text-xs text-[var(--text)]/30 uppercase tracking-[0.15em]',
+  HEADER_TITLE: 'text-sm text-[var(--text)]/80',
+  HEADER_RIGHT: 'flex items-center gap-1',
+  HEADER_NAV_BTN: 'p-2 text-[var(--text)]/30 hover:text-[var(--text)]/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors',
+  HEADER_NAV_ICON: 'w-5 h-5',
+  CONTENT: 'flex-1 overflow-y-auto min-h-0',
+} as const;

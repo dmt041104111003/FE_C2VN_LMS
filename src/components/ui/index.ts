@@ -30,6 +30,15 @@ export { PrevNext } from './PrevNext';
 export { ProgressBar } from './ProgressBar';
 export { Radio } from './Radio';
 export { Checkbox } from './Checkbox';
+export { PageLayout, PageHeader, Panel, StatCard, StatsGrid } from './Panel';
+export { DataTable, TableRow, TableCell } from './Table';
+export { StatusBadge } from './StatusBadge';
+export { ActionButton, ActionDropdown, ActionsCell } from './ActionMenu';
+export { SearchFilter, SelectFilter, FiltersBar } from './DataFilters';
+export { ConfirmModal } from './ConfirmModal';
+export { UserCell } from './UserCell';
+export { Sidebar } from './Sidebar';
+export { SidebarLayout } from './SidebarLayout';
 export type {
   PriceRange,
   RatingFilterType,
@@ -58,6 +67,26 @@ export type {
   ProgressBarSize,
   RadioProps,
   CheckboxProps,
+  StatusBadgeVariant,
+  StatusBadgeProps,
+  PageLayoutProps,
+  PageHeaderProps,
+  PanelProps,
+  StatCardProps,
+  DataTableProps,
+  TableCellProps,
+  ActionButtonProps,
+  DropdownItem,
+  ActionDropdownProps,
+  ConfirmModalProps,
+  UserCellProps,
+  SearchFilterProps,
+  SelectFilterProps,
+  SidebarItem,
+  SidebarSection,
+  SidebarProps,
+  SidebarLayoutProps,
+  SidebarLayoutHeaderProps,
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
@@ -124,6 +153,12 @@ export {
   XMarkIcon,
   TimerIcon,
   TargetIcon,
+  MoreVerticalIcon,
+  TrashIcon,
+  EditIcon,
+  ShieldIcon,
+  BanIcon,
+  UnlockIcon,
   SOCIAL_ICONS,
 } from './icons';
 export type { IconProps } from './icons';

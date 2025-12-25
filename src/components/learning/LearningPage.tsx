@@ -1,8 +1,8 @@
 'use client';
 
 import { memo, useState, useCallback, useMemo } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, MenuIcon, CheckCircleIcon } from '@/components/ui/icons';
-import { VideoPlayer, ShowMore } from '@/components/ui';
+import { CheckCircleIcon } from '@/components/ui/icons';
+import { VideoPlayer, ShowMore, SidebarLayout } from '@/components/ui';
 import { TipTapPreview } from '@/components/editor';
 import { LEARNING_LABELS } from '@/constants/learning';
 import { LearningSidebar } from './LearningSidebar';
@@ -10,43 +10,10 @@ import { QuizSection } from './QuizSection';
 import type { 
   LearningPageProps, 
   LearningLesson, 
-  LessonHeaderProps, 
   VideoLessonContentProps, 
   ReadingLessonContentProps 
 } from '@/types/learning';
 import * as S from './learning.styles';
-
-const LessonHeader = memo(function LessonHeader({
-  chapterTitle,
-  lessonTitle,
-  onPrev,
-  onNext,
-  hasPrev,
-  hasNext,
-  onToggleSidebar,
-}: LessonHeaderProps) {
-  return (
-    <header className={S.LESSON_HEADER.CONTAINER}>
-      <div className={S.LESSON_HEADER.LEFT}>
-        <button className={S.LESSON_HEADER.BACK_BTN} onClick={onToggleSidebar}>
-          <MenuIcon className={S.LESSON_HEADER.NAV_ICON} />
-        </button>
-        <div className={S.LESSON_HEADER.INFO}>
-          <span className={S.LESSON_HEADER.CHAPTER}>{chapterTitle}</span>
-          <span className={S.LESSON_HEADER.TITLE}>{lessonTitle}</span>
-        </div>
-      </div>
-      <div className={S.LESSON_HEADER.RIGHT}>
-        <button className={S.LESSON_HEADER.NAV_BTN} onClick={onPrev} disabled={!hasPrev}>
-          <ChevronLeftIcon className={S.LESSON_HEADER.NAV_ICON} />
-        </button>
-        <button className={S.LESSON_HEADER.NAV_BTN} onClick={onNext} disabled={!hasNext}>
-          <ChevronRightIcon className={S.LESSON_HEADER.NAV_ICON} />
-        </button>
-      </div>
-    </header>
-  );
-});
 
 const VideoLessonContent = memo(function VideoLessonContent({ 
   lesson, 
@@ -125,7 +92,6 @@ const flattenChaptersToLessons = (chapters: LearningPageProps['chapters']): Less
 
 function LearningPageComponent({ chapters, progress: initialProgress }: LearningPageProps) {
   const [progress, setProgress] = useState(initialProgress);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const allLessons = useMemo(() => flattenChaptersToLessons(chapters), [chapters]);
 
@@ -142,7 +108,6 @@ function LearningPageComponent({ chapters, progress: initialProgress }: Learning
 
   const handleSelectLesson = useCallback((lessonId: string) => {
     setProgress(prev => ({ ...prev, currentLessonId: lessonId }));
-    setSidebarOpen(false);
   }, []);
 
   const handleCompleteLesson = useCallback(() => {
@@ -201,78 +166,59 @@ function LearningPageComponent({ chapters, progress: initialProgress }: Learning
     }
   }, [currentLessonIndex, allLessons, progress.lessonProgress, handleSelectLesson]);
 
-  const toggleSidebar = useCallback(() => setSidebarOpen(p => !p), []);
-
   const hasPrev = currentLessonIndex > 0;
   const hasNext = currentLessonIndex < allLessons.length - 1 && 
     progress.lessonProgress[allLessons[currentLessonIndex + 1]?.lesson.id]?.status !== 'locked';
 
-  return (
-    <div className={S.LEARNING_PAGE.CONTAINER}>
-      <aside className={S.LEARNING_PAGE.SIDEBAR}>
-        <LearningSidebar
-          chapters={chapters}
-          currentLessonId={progress.currentLessonId}
-          progress={progress.lessonProgress}
-          onSelectLesson={handleSelectLesson}
-        />
-      </aside>
+  const sidebar = (
+    <LearningSidebar
+      chapters={chapters}
+      currentLessonId={progress.currentLessonId}
+      progress={progress.lessonProgress}
+      onSelectLesson={handleSelectLesson}
+    />
+  );
 
-      {sidebarOpen && (
-        <div className={S.LEARNING_PAGE.SIDEBAR_MOBILE} onClick={toggleSidebar}>
-          <div className={S.LEARNING_PAGE.SIDEBAR_MOBILE_CONTENT} onClick={e => e.stopPropagation()}>
-            <LearningSidebar
-              chapters={chapters}
-              currentLessonId={progress.currentLessonId}
-              progress={progress.lessonProgress}
-              onSelectLesson={handleSelectLesson}
-            />
-          </div>
-        </div>
+  return (
+    <SidebarLayout
+      sidebar={sidebar}
+      header={{
+        title: currentLesson?.title || '',
+        subtitle: currentChapterTitle,
+        onPrev: handlePrev,
+        onNext: handleNext,
+        hasPrev,
+        hasNext,
+      }}
+    >
+      {currentLesson?.type === 'video' && (
+        <VideoLessonContent
+          lesson={currentLesson}
+          isCompleted={isCompleted}
+          onComplete={handleCompleteLesson}
+          onNext={handleNext}
+          hasNext={hasNext}
+        />
       )}
 
-      <main className={S.LEARNING_PAGE.MAIN}>
-        <LessonHeader
-          chapterTitle={currentChapterTitle}
-          lessonTitle={currentLesson?.title || ''}
-          onPrev={handlePrev}
+      {currentLesson?.type === 'reading' && (
+        <ReadingLessonContent
+          lesson={currentLesson}
+          isCompleted={isCompleted}
+          onComplete={handleCompleteLesson}
           onNext={handleNext}
-          hasPrev={hasPrev}
           hasNext={hasNext}
-          onToggleSidebar={toggleSidebar}
         />
+      )}
 
-        <div className={S.LEARNING_PAGE.CONTENT}>
-          {currentLesson?.type === 'video' && (
-            <VideoLessonContent
-              lesson={currentLesson}
-              isCompleted={isCompleted}
-              onComplete={handleCompleteLesson}
-              onNext={handleNext}
-              hasNext={hasNext}
-            />
-          )}
-
-          {currentLesson?.type === 'reading' && (
-            <ReadingLessonContent
-              lesson={currentLesson}
-              isCompleted={isCompleted}
-              onComplete={handleCompleteLesson}
-              onNext={handleNext}
-              hasNext={hasNext}
-            />
-          )}
-
-          {currentLesson?.type === 'quiz' && currentLesson.quiz && (
-            <QuizSection
-              quiz={currentLesson.quiz}
-              onSubmit={handleQuizSubmit}
-              onComplete={handleQuizComplete}
-            />
-          )}
-        </div>
-      </main>
-    </div>
+      {currentLesson?.type === 'quiz' && currentLesson.quiz && (
+        <QuizSection
+          quiz={currentLesson.quiz}
+          onSubmit={handleQuizSubmit}
+          onComplete={handleQuizComplete}
+        />
+      )}
+    </SidebarLayout>
   );
 }
 

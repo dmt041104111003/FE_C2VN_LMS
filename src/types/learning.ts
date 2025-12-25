@@ -115,16 +115,6 @@ export interface LearningPageProps {
   progress: CourseProgress;
 }
 
-export interface LessonHeaderProps {
-  chapterTitle: string;
-  lessonTitle: string;
-  onPrev: () => void;
-  onNext: () => void;
-  hasPrev: boolean;
-  hasNext: boolean;
-  onToggleSidebar: () => void;
-}
-
 export interface VideoLessonContentProps {
   lesson: LearningLesson;
   isCompleted: boolean;

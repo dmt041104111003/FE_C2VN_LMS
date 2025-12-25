@@ -12,51 +12,6 @@ const QUESTION_ITEM_STYLES = {
   INCORRECT: createQuestionItemStyle('bg-[var(--incorrect)]', 'border-2 border-[var(--incorrect)]', 'text-white font-medium'),
 } as const;
 
-export const LEARNING_PAGE = {
-  CONTAINER: 'h-screen bg-[var(--bg)] flex overflow-hidden',
-  SIDEBAR: 'w-72 border-r border-[var(--border)] flex-shrink-0 overflow-y-auto hidden lg:block',
-  SIDEBAR_MOBILE: 'fixed inset-0 z-50 bg-black/30 lg:hidden',
-  SIDEBAR_MOBILE_CONTENT: 'w-72 h-full bg-[var(--bg)] overflow-y-auto',
-  MAIN: 'flex-1 flex flex-col min-w-0 h-full',
-  CONTENT: 'flex-1 overflow-y-auto min-h-0',
-} as const;
-
-export const SIDEBAR = {
-  BACK_LINK: 'px-5 py-4 text-sm text-[var(--text)]/40 hover:text-[var(--accent)] transition-colors border-b border-[var(--border)]',
-  HEADER: 'px-5 py-6 border-b border-[var(--border)]',
-  TITLE: 'text-xs uppercase tracking-[0.2em] text-[var(--text)]/40 mb-4',
-  PROGRESS_BAR: 'h-0.5 bg-[var(--text)]/5 rounded-full overflow-hidden',
-  PROGRESS_FILL: 'h-full bg-[var(--accent)] transition-all duration-500',
-  PROGRESS_TEXT: 'text-xs text-[var(--text)]/30 mt-2',
-  CHAPTER_LIST: '',
-  CHAPTER: 'border-b border-[var(--border)]',
-  CHAPTER_HEADER: 'flex items-center justify-between px-5 py-4 cursor-pointer group',
-  CHAPTER_TITLE: 'text-sm text-[var(--text)]/50 group-hover:text-[var(--text)]/70 transition-colors',
-  CHAPTER_ICON: 'w-4 h-4 text-[var(--text)]/30 transition-transform duration-200',
-  CHAPTER_ICON_OPEN: 'rotate-180',
-  LESSON_LIST: 'pb-2',
-  LESSON: 'flex items-center gap-3 mx-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200',
-  LESSON_CURRENT: 'bg-[var(--accent)]/5 text-[var(--accent)]',
-  LESSON_COMPLETED: 'text-[var(--text)]/40 hover:text-[var(--text)]/60',
-  LESSON_AVAILABLE: 'text-[var(--text)]/60 hover:bg-[var(--text)]/5',
-  LESSON_LOCKED: 'text-[var(--text)]/20 cursor-not-allowed',
-  LESSON_ICON: 'w-4 h-4 flex-shrink-0',
-  LESSON_CONTENT: 'flex-1 min-w-0',
-  LESSON_TITLE: 'text-sm truncate',
-  LESSON_META: 'text-xs opacity-50 mt-0.5',
-} as const;
-
-export const LESSON_HEADER = {
-  CONTAINER: 'h-14 border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6',
-  LEFT: 'flex items-center gap-3',
-  BACK_BTN: 'p-1.5 -ml-1.5 text-[var(--text)]/30 hover:text-[var(--text)]/60 transition-colors lg:hidden',
-  INFO: 'flex flex-col gap-0.5',
-  CHAPTER: 'text-xs text-[var(--text)]/30 uppercase tracking-[0.15em]',
-  TITLE: 'text-sm text-[var(--text)]/80',
-  RIGHT: 'flex items-center gap-1',
-  NAV_BTN: 'p-2 text-[var(--text)]/30 hover:text-[var(--text)]/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors',
-  NAV_ICON: 'w-5 h-5',
-} as const;
 
 export const VIDEO_LESSON = {
   CONTAINER: 'flex flex-col h-full',
