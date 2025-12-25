@@ -66,6 +66,7 @@ export const READING_LESSON = {
 export const QUIZ = {
   CONTAINER: 'max-w-4xl mx-auto px-4 sm:px-6 py-6 h-full overflow-y-auto',
   CONTAINER_FULL: 'h-full flex flex-col overflow-hidden',
+  FULLSCREEN: 'fixed inset-0 z-[100] flex flex-col overflow-hidden bg-[var(--bg)]',
   HEADER: 'flex-shrink-0 bg-[var(--bg-alt)] border-b border-[var(--border)]',
   HEADER_INNER: 'max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4',
   HEADER_LEFT: 'flex items-center gap-4 min-w-0',

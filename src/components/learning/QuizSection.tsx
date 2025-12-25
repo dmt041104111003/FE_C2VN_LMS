@@ -4,13 +4,73 @@ import { memo, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui';
 import { LEARNING_LABELS, createCorrectAnswersMap } from '@/constants/learning';
 import type { QuizSectionProps } from '@/types/learning';
-import { useQuizState } from './hooks';
+import { useQuizState, useFullscreen } from './hooks';
 import { QuizIntro, QuizProgress, QuizQuestion, QuestionList, QuizExplanation } from './components';
 import { QUIZ } from './learning.styles';
+
+const LABELS = LEARNING_LABELS.quiz;
+
+interface ActionButtonsProps {
+  onRetry?: () => void;
+  onContinue?: () => void;
+  onSubmit?: () => void;
+  showRetry?: boolean;
+  isResults?: boolean;
+}
+
+const ActionButtons = memo(function ActionButtons({ 
+  onRetry, 
+  onContinue, 
+  onSubmit,
+  showRetry,
+  isResults 
+}: ActionButtonsProps) {
+  if (isResults) {
+    return (
+      <>
+        {showRetry && (
+          <Button variant="secondary" className="w-full mb-2 lg:mb-2" onClick={onRetry}>
+            {LABELS.retry}
+          </Button>
+        )}
+        <Button className="w-full" onClick={onContinue}>
+          {LABELS.continue}
+        </Button>
+      </>
+    );
+  }
+  
+  return (
+    <Button className="w-full" onClick={onSubmit}>
+      {LABELS.submit}
+    </Button>
+  );
+});
 
 function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) {
   const { state, actions, computed } = useQuizState(quiz, onSubmit);
   const { currentQuestion, totalQuestions, isTimeWarning, correctAnswersMap } = computed;
+
+  const isQuizActive = state.started && !state.showResults;
+  const currentQuestionNumber = state.currentIndex + 1;
+
+  const { ref: quizRef } = useFullscreen<HTMLDivElement>({
+    isActive: isQuizActive,
+    onExit: actions.submit,
+  });
+
+  const correctAnswersForList = useMemo(
+    () => createCorrectAnswersMap(quiz.questions),
+    [quiz.questions]
+  );
+
+  const handleSubmit = useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else {
+      actions.submit();
+    }
+  }, [actions]);
 
   const handleContinue = useCallback(() => {
     const attempt = actions.getAttempt();
@@ -22,27 +82,24 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
     [actions]
   );
 
-  const correctAnswersForList = useMemo(
-    () => createCorrectAnswersMap(quiz.questions),
-    [quiz.questions]
+  const handleAnswer = useCallback(
+    (value: string | string[]) => actions.answer(currentQuestion.id, value),
+    [actions, currentQuestion.id]
   );
 
   if (!state.started) {
     return <QuizIntro quiz={quiz} onStart={actions.start} />;
   }
 
-  const labels = LEARNING_LABELS.quiz;
   const currentAnswer = state.answers.get(currentQuestion?.id || '');
+  const { attempt } = state;
 
-  if (state.showResults && state.attempt) {
+  if (state.showResults && attempt) {
+    const resultLabel = `${attempt.score}% · ${attempt.passed ? LABELS.passed : LABELS.failed}`;
+    
     return (
       <div className={QUIZ.CONTAINER_FULL}>
-        <QuizProgress
-          current={state.currentIndex + 1}
-          total={totalQuestions}
-          label={`${state.attempt.score}% · ${state.attempt.passed ? labels.passed : labels.failed}`}
-        />
-
+        <QuizProgress current={currentQuestionNumber} total={totalQuestions} label={resultLabel} />
         <div className={QUIZ.MAIN}>
           <div className={QUIZ.MAIN_INNER}>
             <div className={QUIZ.GRID}>
@@ -55,45 +112,27 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
                   showResults
                   correctAnswers={correctAnswersForList}
                 />
-
                 <div className="hidden lg:block mt-4">
-                  {!state.attempt.passed && (
-                    <Button variant="secondary" className="w-full mb-2" onClick={actions.retry}>
-                      {labels.retry}
-                    </Button>
-                  )}
-                  <Button className="w-full" onClick={handleContinue}>
-                    {labels.continue}
-                  </Button>
+                  <ActionButtons isResults showRetry={!attempt.passed} onRetry={actions.retry} onContinue={handleContinue} />
                 </div>
               </div>
-
               <div className={QUIZ.GRID_QUESTION}>
                 <QuizQuestion
                   question={currentQuestion}
-                  questionNumber={state.currentIndex + 1}
+                  questionNumber={currentQuestionNumber}
                   selectedAnswer={currentAnswer}
                   onAnswer={() => {}}
                   showResult
                   correctAnswerSet={correctAnswersMap.get(currentQuestion.id)}
                   hideExplanation
                 />
-                
                 {currentQuestion.explanation && (
                   <div className="mt-4">
                     <QuizExplanation explanation={currentQuestion.explanation} />
                   </div>
                 )}
-
                 <div className="lg:hidden mt-6 flex flex-col gap-2">
-                  {!state.attempt.passed && (
-                    <Button variant="secondary" className="w-full" onClick={actions.retry}>
-                      {labels.retry}
-                    </Button>
-                  )}
-                  <Button className="w-full" onClick={handleContinue}>
-                    {labels.continue}
-                  </Button>
+                  <ActionButtons isResults showRetry={!attempt.passed} onRetry={actions.retry} onContinue={handleContinue} />
                 </div>
               </div>
             </div>
@@ -103,16 +142,17 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
     );
   }
 
+  const progressLabel = `${LABELS.question} ${currentQuestionNumber} / ${totalQuestions}`;
+
   return (
-    <div className={QUIZ.CONTAINER_FULL}>
+    <div ref={quizRef} className={QUIZ.FULLSCREEN}>
       <QuizProgress
-        current={state.currentIndex + 1}
+        current={currentQuestionNumber}
         total={totalQuestions}
-        label={`${labels.question} ${state.currentIndex + 1} / ${totalQuestions}`}
+        label={progressLabel}
         timer={quiz.timeLimit ? state.timeLeft : undefined}
         isWarning={isTimeWarning}
       />
-
       <div className={QUIZ.MAIN}>
         <div className={QUIZ.MAIN_INNER}>
           <div className={QUIZ.GRID}>
@@ -123,26 +163,19 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
                 answers={state.answers}
                 onSelect={handleSelectQuestion}
               />
-
               <div className="hidden lg:block mt-4">
-                <Button className="w-full" onClick={actions.submit}>
-                  {labels.submit}
-                </Button>
+                <ActionButtons onSubmit={handleSubmit} />
               </div>
             </div>
-
             <div className={QUIZ.GRID_QUESTION}>
               <QuizQuestion
                 question={currentQuestion}
-                questionNumber={state.currentIndex + 1}
+                questionNumber={currentQuestionNumber}
                 selectedAnswer={currentAnswer}
-                onAnswer={(value) => actions.answer(currentQuestion.id, value)}
+                onAnswer={handleAnswer}
               />
-
               <div className="lg:hidden mt-6">
-                <Button className="w-full" onClick={actions.submit}>
-                  {labels.submit}
-                </Button>
+                <ActionButtons onSubmit={handleSubmit} />
               </div>
             </div>
           </div>
