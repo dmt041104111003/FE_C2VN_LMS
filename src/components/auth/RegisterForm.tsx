@@ -2,11 +2,13 @@
 
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { REGISTER } from '@/constants/register';
 import { ROUTES } from '@/constants/navigation';
 
 function RegisterFormComponent() {
+  const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +16,7 @@ function RegisterFormComponent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    router.push(`${ROUTES.VERIFY_EMAIL}?email=${encodeURIComponent(email)}`);
   };
 
   return (

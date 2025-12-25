@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { VerifyEmailForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
@@ -19,10 +20,11 @@ export default function VerifyEmailPage() {
           <div className="lg:hidden mb-8">
             <Logo layout="inline" size="md" href="/" />
           </div>
-          <VerifyEmailForm />
+          <Suspense fallback={<div className="text-center text-[var(--text)]/50">Đang tải...</div>}>
+            <VerifyEmailForm />
+          </Suspense>
         </div>
       </div>
     </div>
   );
 }
-

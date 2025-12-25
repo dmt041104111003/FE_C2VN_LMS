@@ -1,15 +1,20 @@
 'use client';
 
 import { memo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { VERIFY_EMAIL } from '@/constants/auth';
+import { ROUTES } from '@/constants/navigation';
 
 function VerifyEmailFormComponent() {
-  const [email, setEmail] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') || '';
   const [code, setCode] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    router.push(ROUTES.LOGIN);
   };
 
   const handleResend = () => {
@@ -25,16 +30,14 @@ function VerifyEmailFormComponent() {
         <p className="text-sm text-[var(--text)]/60">
           {VERIFY_EMAIL.subtitle}
         </p>
+        {email && (
+          <p className="text-sm text-[var(--accent)] mt-2">
+            {email}
+          </p>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input
-          type="email"
-          placeholder={VERIFY_EMAIL.emailPlaceholder}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
         <Input
           type="text"
           placeholder={VERIFY_EMAIL.codePlaceholder}
@@ -61,4 +64,3 @@ function VerifyEmailFormComponent() {
 }
 
 export const VerifyEmailForm = memo(VerifyEmailFormComponent);
-

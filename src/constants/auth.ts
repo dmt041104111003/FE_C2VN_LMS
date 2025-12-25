@@ -1,7 +1,6 @@
 export const VERIFY_EMAIL = {
   title: 'Xác thực email',
   subtitle: 'Nhập mã xác thực đã gửi đến email của bạn',
-  emailPlaceholder: 'Email',
   codePlaceholder: 'Mã xác thực',
   submitText: 'Xác thực',
   resendText: 'Gửi lại mã',
