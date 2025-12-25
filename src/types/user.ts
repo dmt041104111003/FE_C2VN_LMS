@@ -75,7 +75,7 @@ export interface CourseImageProps {
   title: string;
 }
 
-export interface ProgressBarProps {
+export interface UserProgressBarProps {
   progress: number;
 }
 

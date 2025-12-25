@@ -115,13 +115,6 @@ export interface LearningPageProps {
   progress: CourseProgress;
 }
 
-export interface ProgressBarProps {
-  value: number;
-  max?: number;
-  size?: 'sm' | 'md' | 'lg';
-  showLabel?: boolean;
-}
-
 export interface LessonHeaderProps {
   chapterTitle: string;
   lessonTitle: string;

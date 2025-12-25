@@ -8,7 +8,7 @@ import {
   UserCertificateItemProps,
   LoginMethodInfo,
   CourseImageProps,
-  ProgressBarProps,
+  UserProgressBarProps,
   StatsSectionProps,
   ListSectionProps,
   UserCourse,
@@ -41,7 +41,7 @@ const CourseImage = memo(function CourseImage({ thumbnail, title }: CourseImageP
   );
 });
 
-const ProgressBar = memo(function ProgressBar({ progress }: ProgressBarProps) {
+const ProgressBar = memo(function ProgressBar({ progress }: UserProgressBarProps) {
   return (
     <div className={S.USER_COURSE_ITEM.PROGRESS_WRAPPER}>
       <div className={S.USER_COURSE_ITEM.PROGRESS_BAR}>
