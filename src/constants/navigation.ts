@@ -20,12 +20,16 @@ export const ROUTES = {
 
 export const NAV_ITEMS = [
   {
+    label: 'Trang chủ',
+    href: ROUTES.HOME,
+  },
+  {
     label: 'Khóa học',
     href: ROUTES.COURSES,
     children: [
-      { label: 'Blockchain cơ bản', href: '/courses/blockchain' },
-      { label: 'Smart Contract', href: '/courses/smart-contract' },
-      { label: 'DApp Development', href: '/courses/dapp' },
+      { label: 'Tất cả khóa học', href: ROUTES.COURSES },
+      { label: 'Khóa học miễn phí', href: `${ROUTES.COURSES}?price=free` },
+      { label: 'Khóa học trả phí', href: `${ROUTES.COURSES}?price=paid` },
     ],
   },
   {

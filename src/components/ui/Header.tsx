@@ -2,6 +2,7 @@
 
 import { memo, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from './Logo';
 import { SearchModal } from './SearchModal';
 import {
@@ -24,6 +25,7 @@ import {
   HEADER_LEFT,
   HEADER_NAV,
   HEADER_NAV_LINK,
+  HEADER_NAV_LINK_ACTIVE,
   HEADER_RIGHT,
   HEADER_ICON_BTN,
   HEADER_MENU_BTN,
@@ -33,7 +35,9 @@ import {
   HEADER_MEGA_GRID,
   HEADER_MEGA_COL,
   HEADER_MEGA_TITLE,
+  HEADER_MEGA_TITLE_ACTIVE,
   HEADER_MEGA_LINK,
+  HEADER_MEGA_LINK_ACTIVE,
   HEADER_MEGA_FOOTER,
   HEADER_MEGA_APPS,
   HEADER_APP_BTN,
@@ -46,9 +50,30 @@ import {
 } from './ui.styles';
 
 function HeaderComponent() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
+  const isChildActive = (childHref: string) => {
+    const [childPath, childQuery] = childHref.split('?');
+    if (pathname !== childPath) return false;
+    
+    if (!childQuery) {
+      return searchParams.toString() === '';
+    }
+    
+    const childParams = new URLSearchParams(childQuery);
+    for (const [key, value] of childParams.entries()) {
+      if (searchParams.get(key) !== value) return false;
+    }
+    return true;
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -87,7 +112,7 @@ function HeaderComponent() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={HEADER_NAV_LINK}
+                  className={isActive(item.href) ? HEADER_NAV_LINK_ACTIVE : HEADER_NAV_LINK}
                 >
                   {item.label}
                 </Link>
@@ -124,31 +149,34 @@ function HeaderComponent() {
         <div className={HEADER_MEGA}>
           <div className={HEADER_MEGA_CONTAINER}>
             <div className={HEADER_MEGA_GRID}>
-              {NAV_ITEMS.map((item) => (
-                <div
-                  key={item.label}
-                  className={HEADER_MEGA_COL}
-                >
-                  <Link
-                    href={item.href}
-                    className={HEADER_MEGA_TITLE}
-                    onClick={closeMenu}
+              {NAV_ITEMS.map((item) => {
+                if (!('children' in item)) return null;
+                return (
+                  <div
+                    key={item.label}
+                    className={HEADER_MEGA_COL}
                   >
-                    {item.label}
-                    {item.children && <ChevronDownIcon className={ICON_SM} />}
-                  </Link>
-                  {item.children?.map((child) => (
                     <Link
-                      key={child.href}
-                      href={child.href}
-                      className={HEADER_MEGA_LINK}
+                      href={item.href}
+                      className={isActive(item.href) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
                       onClick={closeMenu}
                     >
-                      {child.label}
+                      {item.label}
+                      <ChevronDownIcon className={ICON_SM} />
                     </Link>
-                  ))}
-                </div>
-              ))}
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={isChildActive(child.href) ? HEADER_MEGA_LINK_ACTIVE : HEADER_MEGA_LINK}
+                        onClick={closeMenu}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                );
+              })}
             </div>
 
             <div className={HEADER_MEGA_FOOTER}>

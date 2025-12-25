@@ -1,12 +1,18 @@
 'use client';
 
-import { memo, useState, useMemo } from 'react';
+import { memo, useState, useMemo, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from '@/components/ui';
 import { CourseCard } from './CourseCard';
 import { COURSE_PAGE, COURSE_GRID, MOCK_COURSES } from '@/constants/course';
 import { SYSTEM_CONFIG } from '@/constants/config';
 
 function CoursesPageComponent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const priceParam = searchParams.get('price');
+
   const [search, setSearch] = useState('');
   const [tagFilter, setTagFilter] = useState<string>('all');
   const [ratingFilter, setRatingFilter] = useState<RatingFilterType>(0);
@@ -16,7 +22,38 @@ function CoursesPageComponent() {
     return Math.max(...MOCK_COURSES.map((c) => c.price));
   }, []);
 
-  const [priceRange, setPriceRange] = useState<PriceRange>({ min: 0, max: maxPrice });
+  const getInitialPriceRange = (): PriceRange => {
+    if (priceParam === 'free') return { min: 0, max: 0 };
+    if (priceParam === 'paid') return { min: 1, max: maxPrice };
+    return { min: 0, max: maxPrice };
+  };
+
+  const [priceRange, setPriceRange] = useState<PriceRange>(getInitialPriceRange);
+
+  const updateUrlWithPrice = useCallback((range: PriceRange) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (range.min === 0 && range.max === 0) {
+      params.set('price', 'free');
+    } else if (range.min > 0 && range.max >= maxPrice) {
+      params.set('price', 'paid');
+    } else {
+      params.delete('price');
+    }
+    
+    const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [searchParams, pathname, router, maxPrice]);
+
+  useEffect(() => {
+    if (priceParam === 'free') {
+      setPriceRange({ min: 0, max: 0 });
+    } else if (priceParam === 'paid') {
+      setPriceRange({ min: 1, max: maxPrice });
+    } else {
+      setPriceRange({ min: 0, max: maxPrice });
+    }
+  }, [priceParam, maxPrice]);
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
@@ -139,6 +176,7 @@ function CoursesPageComponent() {
             onPriceRangeChange={(range) => {
               setPriceRange(range);
               setCurrentPage(1);
+              updateUrlWithPrice(range);
             }}
             maxPrice={maxPrice}
             currency={SYSTEM_CONFIG.DEFAULT_CURRENCY}
