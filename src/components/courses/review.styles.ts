@@ -64,7 +64,7 @@ export const REVIEW_REPLY = {
   HEADER: 'flex items-center gap-3 mb-2',
   AVATAR: 'w-8 h-8 rounded-full object-cover bg-transparent',
   NAME: 'text-sm font-medium text-[var(--text)]',
-  BADGE: 'text-[10px] px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full',
+  BADGE: 'text-xs px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full',
   DATE: 'text-xs text-[var(--text)]/40',
   CONTENT: 'text-sm text-[var(--text)]/70',
 } as const;

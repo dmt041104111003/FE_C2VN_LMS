@@ -1,8 +1,14 @@
 :root {
   --bg: #FAFAF8;
-  --bg-alt: #F0F0EC;
-  --accent: #1E4A8C;
-  --accent-light: #4A7AB8;
-  --text: #3D3D3D;
+  --bg-alt: #F0F4F8;
+  --text: #2D2D2D;
+  --accent: #1E4D8C;
+  --accent-light: #3A6BA8;
   --link: #2D5A9E;
+  --correct: #4A7C59;
+  --incorrect: #B84C4C;
+  --current: #2D6A9F;
+  --warning: #D4813A;
+  --border: rgba(45, 45, 45, 0.08);
+  --border-light: rgba(45, 45, 45, 0.04);
 }

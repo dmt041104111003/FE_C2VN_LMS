@@ -51,7 +51,7 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
         <div className={config.contentClass}>
           <h3 className={`${config.titleClass} ${COURSE_CARD_TITLE_HOVER}`}>{course.title}</h3>
           <User name={course.instructorName} avatar={course.instructorAvatar} size="xs" className="mb-2" />
-          <div className="flex items-center justify-between text-[11px] text-[var(--text)]/50 mt-auto">
+          <div className="flex items-center justify-between text-xs text-[var(--text)]/50 mt-auto">
             <span>{course.totalLessons} {COURSE_PAGE.lessonsText}</span>
             <PriceDisplay
               price={course.price}

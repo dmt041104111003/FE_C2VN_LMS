@@ -2,6 +2,9 @@ export const SYSTEM_CONFIG = {
   DEFAULT_CURRENCY: '₳',
   DEFAULT_LOCALE: 'vi-VN',
   DEFAULT_TIMEZONE: 'Asia/Ho_Chi_Minh',
+  FONT_SANS: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
+  FONT_MONO: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  FONT_SIZE_BASE: '16px',
 } as const;
 
 export const DATE_FORMAT = {
@@ -73,6 +76,12 @@ export const formatDuration = (minutes: number): string => {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
 };
 
+export const formatCountdown = (seconds: number): string => {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+};
+
 export const getInitials = (name: string): string => {
   const parts = name.split(' ');
   const first = parts[0]?.[0] || '';
@@ -85,7 +94,8 @@ const YOUTUBE_PATTERNS = [
   /^([a-zA-Z0-9_-]{11})$/,
 ] as const;
 
-export const getYouTubeId = (url: string): string | null => {
+export const getYouTubeId = (url?: string): string | null => {
+  if (!url) return null;
   const decoded = isObfuscated(url) ? deobfuscateVideoUrl(url) : url;
   for (const pattern of YOUTUBE_PATTERNS) {
     const match = decoded.match(pattern);
@@ -113,8 +123,8 @@ export const deobfuscateVideoUrl = (encoded: string): string => {
   return atob(data);
 };
 
-export const isObfuscated = (url: string): boolean => {
-  return url.startsWith(OBFUSCATE_PREFIX);
+export const isObfuscated = (url?: string): boolean => {
+  return url?.startsWith(OBFUSCATE_PREFIX) ?? false;
 };
 
 export const YOUTUBE_PLAYER_VARS = {

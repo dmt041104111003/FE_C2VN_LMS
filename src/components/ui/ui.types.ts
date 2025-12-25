@@ -292,3 +292,37 @@ export interface VideoModalProps {
 export interface SearchModalProps {
   onClose: () => void;
 }
+
+export interface PrevNextProps {
+  onPrev?: () => void;
+  onNext?: () => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
+  prevLabel?: string;
+  nextLabel?: string;
+  className?: string;
+}
+
+export type ProgressBarSize = 'xs' | 'sm' | 'md';
+
+export interface ProgressBarProps {
+  value: number;
+  max?: number;
+  size?: ProgressBarSize;
+  showLabel?: boolean;
+  className?: string;
+}
+
+export interface RadioProps {
+  checked?: boolean;
+  onChange?: () => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+export interface CheckboxProps {
+  checked?: boolean;
+  onChange?: () => void;
+  disabled?: boolean;
+  className?: string;
+}

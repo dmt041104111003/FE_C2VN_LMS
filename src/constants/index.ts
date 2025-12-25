@@ -39,6 +39,7 @@ export {
   DATE_FORMAT,
   formatCurrency,
   formatDuration,
+  formatCountdown,
   formatDate,
   formatTime,
   formatDateTime,
@@ -93,3 +94,15 @@ export {
   EDITOR_DEMO_CONTENT,
   EDITOR_DEMO_STYLES,
 } from './editor';
+export {
+  LEARNING_LABELS,
+  LEARNING_CONFIG,
+  LESSON_TYPE_ICONS,
+  LESSON_STATUS_ICONS,
+  checkAnswer,
+  calculateQuizScore,
+  createCorrectAnswersMap,
+  MOCK_QUIZ,
+  MOCK_LEARNING_CHAPTERS,
+  MOCK_COURSE_PROGRESS,
+} from './learning';

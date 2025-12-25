@@ -7,7 +7,7 @@ export const EDITOR = {
 
 export const TOOLTIP = {
   BUTTON_WRAPPER: 'relative',
-  BADGE: 'absolute -top-1 -right-1 text-[var(--bg)] text-[10px] rounded-full w-4 h-4 flex items-center justify-center z-10 bg-[var(--accent)]',
+  BADGE: 'absolute -top-1 -right-1 text-[var(--bg)] text-xs rounded-full w-4 h-4 flex items-center justify-center z-10 bg-[var(--accent)]',
   BADGE_LOCKED: 'bg-[var(--accent-light)]',
   BADGE_COUNT: 'bg-[var(--accent)] -bottom-1 -left-1 -top-auto -right-auto',
 } as const;
@@ -67,7 +67,7 @@ export const PROSEMIRROR_STYLES = `
     background-color: var(--bg-alt);
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
-    font-family: 'Monaco', 'Menlo', monospace;
+    font-family: var(--font-mono);
     font-size: 0.875rem;
     color: var(--accent);
   }
@@ -79,7 +79,7 @@ export const PROSEMIRROR_STYLES = `
     border-radius: 0.5rem;
     margin: 1rem 0;
     overflow-x: auto;
-    font-family: 'Monaco', 'Menlo', monospace;
+    font-family: var(--font-mono);
     font-size: 0.875rem;
     border: 1px solid var(--text)/10;
   }

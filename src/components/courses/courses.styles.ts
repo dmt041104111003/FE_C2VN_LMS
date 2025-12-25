@@ -66,7 +66,7 @@ export const CARD_CONFIGS: Record<CardType, CardConfig> = {
     imageClass: 'sm:w-1/2 h-[120px] sm:h-full',
     contentClass: 'sm:w-1/2 p-3 flex flex-col',
     titleClass: 'text-sm font-bold mb-1',
-    descClass: 'text-[10px] mb-1 line-clamp-2',
+    descClass: 'text-xs mb-1 line-clamp-2',
     showDescription: true,
     showTags: true,
     maxTags: 2,
