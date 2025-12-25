@@ -141,6 +141,7 @@ export interface FormField {
   type: 'text' | 'email' | 'tel';
   placeholder: string;
   label?: string;
+  minLength?: number;
 }
 
 export interface FormProps {
@@ -148,8 +149,11 @@ export interface FormProps {
   textareaPlaceholder?: string;
   submitText: string;
   minContentLength?: number;
+  layout?: 'row' | 'column';
+  showSubmitAlways?: boolean;
   onSubmit?: (data: Record<string, string>) => void;
   className?: string;
+  footer?: React.ReactNode;
 }
 
 export interface WalletItem {
