@@ -148,7 +148,7 @@ export interface ReadingLessonContentProps {
   hasNext: boolean;
 }
 
-export interface ChapterItemProps {
+export interface LearningChapterItemProps {
   chapter: LearningChapter;
   currentLessonId: string;
   progress: Record<string, LessonProgress>;

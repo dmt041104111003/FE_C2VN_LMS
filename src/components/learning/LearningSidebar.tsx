@@ -7,7 +7,7 @@ import { ProgressBar } from '@/components/ui';
 import { LEARNING_LABELS, LESSON_TYPE_ICONS, LESSON_STATUS_ICONS } from '@/constants/learning';
 import type { 
   LearningSidebarProps, 
-  ChapterItemProps, 
+  LearningChapterItemProps, 
   LessonItemProps, 
   LessonStatus 
 } from '@/types/learning';
@@ -20,7 +20,7 @@ const STATUS_CLASSES: Record<LessonStatus, string> = {
   in_progress: S.SIDEBAR.LESSON_AVAILABLE,
 };
 
-const ChapterItem = memo(function ChapterItem({ chapter, currentLessonId, progress, onSelectLesson }: ChapterItemProps) {
+const ChapterItem = memo(function ChapterItem({ chapter, currentLessonId, progress, onSelectLesson }: LearningChapterItemProps) {
   const [isOpen, setIsOpen] = useState(() => chapter.lessons.some(l => l.id === currentLessonId));
   const toggle = useCallback(() => setIsOpen(p => !p), []);
 
