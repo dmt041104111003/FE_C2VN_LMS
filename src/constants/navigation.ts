@@ -1,8 +1,8 @@
 export const ROUTES = {
   HOME: '/',
   COURSES: '/courses',
-  LOGIN: '/login',
-  REGISTER: '/register',
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
   ABOUT: '/about',
   PROJECT: '/project',
   CATALYST: '/catalyst',

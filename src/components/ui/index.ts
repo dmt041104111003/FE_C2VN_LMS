@@ -10,6 +10,7 @@ export { SearchModal } from './SearchModal';
 export { Lightbox } from './Lightbox';
 export { Card } from './Card';
 export { CardModal } from './CardModal';
+export { WalletModal } from './WalletModal';
 export {
   GitHubIcon,
   YouTubeIcon,
@@ -22,5 +23,6 @@ export {
   UserIcon,
   AppleIcon,
   PlayStoreIcon,
+  GoogleIcon,
   SOCIAL_ICONS,
 } from './icons';

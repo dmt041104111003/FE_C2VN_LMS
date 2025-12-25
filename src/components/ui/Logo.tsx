@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import Link from 'next/link';
 import { LogoProps } from './ui.types';
 import {
   LOGO_COMPACT,
@@ -18,7 +19,7 @@ const LOGO_SRC = '/loading.png';
 
 const LOGO_ALT = 'C2VN Logo';
 
-const LOGO_TITLE = 'C2VN.IO';
+const LOGO_TITLE = 'CARDANO2VN.IO';
 
 const LOGO_SUBTITLE = 'BREAK THE BLOCKS';
 
@@ -28,9 +29,10 @@ function LogoComponent({
   showText = true,
   layout = 'stacked',
   size = 'md',
+  href,
 }: LogoProps) {
   if (compact) {
-    return (
+    const img = (
       <img
         src={LOGO_SRC}
         className={className || LOGO_COMPACT}
@@ -39,10 +41,11 @@ function LogoComponent({
         style={{ aspectRatio: '1/1' }}
       />
     );
+    return href ? <Link href={href}>{img}</Link> : img;
   }
 
   if (layout === 'inline') {
-    return (
+    const content = (
       <div className={[LOGO_INLINE_WRAPPER, className].join(' ')}>
         <img
           src={LOGO_SRC}
@@ -64,9 +67,10 @@ function LogoComponent({
         )}
       </div>
     );
+    return href ? <Link href={href}>{content}</Link> : content;
   }
 
-  return (
+  const content = (
     <div className={[LOGO_STACKED_WRAPPER, className].join(' ')}>
       <div className={LOGO_STACKED_BOX[size]}>
         <img
@@ -89,6 +93,7 @@ function LogoComponent({
       )}
     </div>
   );
+  return href ? <Link href={href}>{content}</Link> : content;
 }
 
 export const Logo = memo(LogoComponent);

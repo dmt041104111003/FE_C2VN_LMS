@@ -80,14 +80,14 @@ export const FOOTER_COPYRIGHT = 'text-sm text-[var(--text)]/50';
 export const FOOTER_LEGAL = 'flex gap-2 text-sm text-[var(--text)]/50';
 export const FOOTER_LEGAL_LINK = 'text-[var(--text)]/50';
 
-export const LOGO_COMPACT = 'h-6 sm:h-8 w-auto flex-shrink-0 object-contain';
+export const LOGO_COMPACT = 'w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 object-contain';
 export const LOGO_INLINE_WRAPPER = 'flex items-center gap-2';
 export const LOGO_INLINE_IMG: Record<LogoSize, string> = {
-  sm: 'h-6 sm:h-8 w-auto flex-shrink-0 object-contain',
-  md: 'h-8 sm:h-10 w-auto flex-shrink-0 object-contain',
-  lg: 'h-10 sm:h-12 w-auto flex-shrink-0 object-contain',
+  sm: 'w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 object-contain',
+  md: 'w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 object-contain',
+  lg: 'w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 object-contain',
 };
-export const LOGO_INLINE_TEXT = 'leading-tight min-w-0 flex-shrink hidden sm:block';
+export const LOGO_INLINE_TEXT = 'leading-tight min-w-0 flex-shrink';
 export const LOGO_INLINE_TITLE: Record<LogoSize, string> = {
   sm: 'text-sm sm:text-base font-semibold text-[var(--accent)]',
   md: 'text-base sm:text-lg font-semibold text-[var(--accent)]',
@@ -151,18 +151,21 @@ export const CARD_VARIANTS = {
   default: 'flex flex-col',
   horizontal: 'flex flex-row items-center gap-3',
   compact: 'flex flex-row items-center gap-2',
+  list: 'flex flex-row items-center gap-4 px-4 py-3',
 };
 
 export const CARD_IMAGE_VARIANTS = {
   default: 'w-full aspect-video object-cover pointer-events-none select-none',
   horizontal: 'w-12 h-12 rounded object-cover flex-shrink-0 pointer-events-none select-none',
   compact: 'w-10 h-10 rounded object-cover flex-shrink-0 pointer-events-none select-none',
+  list: 'w-10 h-10 rounded-xl object-contain flex-shrink-0 pointer-events-none select-none',
 };
 
 export const CARD_CONTENT_VARIANTS = {
   default: 'p-3',
   horizontal: 'flex-1 min-w-0',
   compact: 'flex-1 min-w-0',
+  list: 'flex-1 min-w-0 text-center',
 };
 
 export const CARD_TITLE_SIZES = {
@@ -201,3 +204,29 @@ export const FORM_ROW = 'flex flex-col sm:flex-row gap-3';
 export const ICON_SM = 'w-4 h-4';
 export const ICON_MD = 'w-5 h-5';
 export const ICON_LG = 'w-6 h-6';
+
+export const AUTH_PAGE = 'min-h-screen flex items-center justify-center bg-[var(--bg)] px-4 py-12';
+export const AUTH_CONTAINER = 'w-full max-w-md';
+export const AUTH_CARD = 'bg-[var(--bg-alt)] rounded-2xl p-6 sm:p-8';
+export const AUTH_HEADER = 'text-center mb-8';
+export const AUTH_TITLE = 'text-2xl sm:text-3xl font-bold text-[var(--text)] mb-2';
+export const AUTH_SUBTITLE = 'text-sm text-[var(--text)]/60';
+export const AUTH_FORM = 'flex flex-col gap-4';
+export const AUTH_FORGOT = 'text-right';
+export const AUTH_FORGOT_LINK = 'text-sm text-[var(--link)]';
+export const AUTH_DIVIDER = 'flex items-center gap-4 my-6';
+export const AUTH_DIVIDER_LINE = 'flex-1 h-px bg-[var(--text)]/10';
+export const AUTH_DIVIDER_TEXT = 'text-sm text-[var(--text)]/50';
+export const AUTH_SOCIAL = 'flex flex-col gap-3';
+export const AUTH_SOCIAL_BTN = 'flex items-center justify-center gap-3 w-full py-3 bg-[var(--bg)] border border-[var(--text)]/10 rounded-full text-sm font-medium text-[var(--text)]';
+export const AUTH_FOOTER = 'text-center mt-6';
+export const AUTH_FOOTER_TEXT = 'text-sm text-[var(--text)]/60';
+export const AUTH_FOOTER_LINK = 'text-[var(--link)] font-medium';
+
+export const MODAL_OVERLAY = 'fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4';
+export const MODAL_CONTAINER = 'bg-[var(--bg)] rounded-2xl w-full max-w-sm overflow-hidden';
+export const MODAL_HEADER = 'flex items-center justify-between px-6 py-4 border-b border-[var(--text)]/10';
+export const MODAL_TITLE = 'text-lg font-semibold text-[var(--text)]';
+export const MODAL_CLOSE = 'p-1 text-[var(--text)]/50';
+export const MODAL_BODY = 'py-6 max-h-[60vh] overflow-y-auto flex flex-col items-center';
+export const MODAL_EMPTY = 'px-6 py-8 text-center text-sm text-[var(--text)]/60';

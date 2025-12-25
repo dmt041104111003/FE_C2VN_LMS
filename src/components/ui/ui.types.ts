@@ -26,6 +26,7 @@ export interface LogoProps {
   showText?: boolean;
   layout?: LogoLayout;
   size?: LogoSize;
+  href?: string;
 }
 
 export interface LinkGroupProps {
@@ -42,7 +43,7 @@ export interface LightboxProps {
   onGoTo: (index: number) => void;
 }
 
-export type CardVariant = 'default' | 'horizontal' | 'compact';
+export type CardVariant = 'default' | 'horizontal' | 'compact' | 'list';
 export type CardSize = 'sm' | 'md' | 'lg';
 
 export interface CardProps {
@@ -114,4 +115,18 @@ export interface FormProps {
   minContentLength?: number;
   onSubmit?: (data: Record<string, string>) => void;
   className?: string;
+}
+
+export interface WalletItem {
+  key: string;
+  name: string;
+  icon?: string;
+}
+
+export interface WalletModalProps {
+  isOpen: boolean;
+  wallets: WalletItem[];
+  emptyText: string;
+  onClose: () => void;
+  onSelect: (wallet: WalletItem) => void;
 }
