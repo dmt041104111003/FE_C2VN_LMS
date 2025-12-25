@@ -2,81 +2,74 @@ import type { LearningChapter, CourseProgress, Quiz, LessonStatus, Question, Ans
 import type { IconProps } from '@/components/ui/icons';
 import { PlayIcon, BookIcon, CheckCircleIcon, LockIcon, QuizIcon } from '@/components/ui/icons';
 
+const areSetsEqual = <T>(a: Set<T>, b: Set<T>): boolean =>
+  a.size === b.size && [...a].every(item => b.has(item));
+
+const normalizeTextAnswer = (text?: string): string =>
+  (text ?? '').toLowerCase().trim();
+
+const getCorrectAnswerSet = (question: Question, cachedSet?: Set<string>): Set<string> => {
+  if (cachedSet) return cachedSet;
+  const { correctAnswer, type } = question;
+  return type === 'multiple'
+    ? new Set(correctAnswer as string[])
+    : new Set([correctAnswer as string]);
+};
+
+const checkMultipleAnswer = (answer: string[] | undefined, correctSet: Set<string>): boolean =>
+  areSetsEqual(new Set(answer ?? []), correctSet);
+
+const checkTextAnswer = (answer: string | undefined, correctSet: Set<string>): boolean =>
+  correctSet.has(normalizeTextAnswer(answer));
+
+const checkSingleAnswer = (answer: string | undefined, correctSet: Set<string>): boolean =>
+  correctSet.has(answer as string);
+
 export const checkAnswer = (
   question: Question, 
   answer?: string | string[],
   correctAnswersMap?: Map<string, Set<string>>
 ): AnswerCheckResult => {
-  const correctSet = correctAnswersMap?.get(question.id);
+  const correctAnswerSet = getCorrectAnswerSet(question, correctAnswersMap?.get(question.id));
   
-  if (correctSet) {
-    if (question.type === 'multiple') {
-      const answerSet = new Set((answer as string[]) || []);
-      const isCorrect = correctSet.size === answerSet.size && 
-        [...correctSet].every(a => answerSet.has(a));
-      return { isCorrect, correctAnswerSet: correctSet };
-    }
-    
-    if (question.type === 'text') {
-      const isCorrect = correctSet.has((answer as string)?.toLowerCase().trim() || '');
-      return { isCorrect, correctAnswerSet: correctSet };
-    }
-    
-    return { 
-      isCorrect: correctSet.has(answer as string), 
-      correctAnswerSet: correctSet 
-    };
+  let isCorrect: boolean;
+  switch (question.type) {
+    case 'multiple':
+      isCorrect = checkMultipleAnswer(answer as string[], correctAnswerSet);
+      break;
+    case 'text':
+      isCorrect = checkTextAnswer(answer as string, correctAnswerSet);
+      break;
+    default:
+      isCorrect = checkSingleAnswer(answer as string, correctAnswerSet);
   }
-  
-  const correctAnswer = question.correctAnswer;
-  
-  if (question.type === 'multiple') {
-    const newCorrectSet = new Set(correctAnswer as string[]);
-    const answerSet = new Set((answer as string[]) || []);
-    const isCorrect = newCorrectSet.size === answerSet.size && 
-      [...newCorrectSet].every(a => answerSet.has(a));
-    return { isCorrect, correctAnswerSet: newCorrectSet };
-  }
-  
-  if (question.type === 'text') {
-    const isCorrect = (answer as string)?.toLowerCase().trim() === 
-      (correctAnswer as string)?.toLowerCase().trim();
-    return { isCorrect, correctAnswerSet: new Set([correctAnswer as string]) };
-  }
-  
-  return { 
-    isCorrect: answer === correctAnswer, 
-    correctAnswerSet: new Set([correctAnswer as string]) 
-  };
+
+  return { isCorrect, correctAnswerSet };
 };
 
 export const calculateQuizScore = (
   questions: Question[], 
   answers: Map<string, string | string[]>
 ): number => {
-  let correct = 0;
-  let total = 0;
-  
-  questions.forEach(q => {
-    total += q.points;
-    const { isCorrect } = checkAnswer(q, answers.get(q.id));
-    if (isCorrect) correct += q.points;
-  });
+  const { correct, total } = questions.reduce(
+    (acc, q) => {
+      const { isCorrect } = checkAnswer(q, answers.get(q.id));
+      return {
+        correct: acc.correct + (isCorrect ? q.points : 0),
+        total: acc.total + q.points,
+      };
+    },
+    { correct: 0, total: 0 }
+  );
   
   return total > 0 ? Math.round((correct / total) * 100) : 0;
 };
 
-export const createCorrectAnswersMap = (questions: Question[]): Map<string, Set<string>> => {
-  const map = new Map<string, Set<string>>();
-  questions.forEach(q => {
-    if (q.type === 'multiple') {
-      map.set(q.id, new Set(q.correctAnswer as string[]));
-    } else {
-      map.set(q.id, new Set([q.correctAnswer as string]));
-    }
-  });
-  return map;
-};
+export const createCorrectAnswersMap = (questions: Question[]): Map<string, Set<string>> =>
+  new Map(questions.map(q => [q.id, getCorrectAnswerSet(q)]));
+
+const hasValidAnswer = (answer: string | string[] | undefined): boolean =>
+  answer !== undefined && (Array.isArray(answer) ? answer.length > 0 : answer !== '');
 
 export const getQuestionDisplayStatus = (
   question: Question,
@@ -88,9 +81,7 @@ export const getQuestionDisplayStatus = (
     const { isCorrect } = checkAnswer(question, answer, correctAnswers);
     return isCorrect ? 'correct' : 'incorrect';
   }
-  const hasAnswer = answer !== undefined && 
-    (Array.isArray(answer) ? answer.length > 0 : answer !== '');
-  return hasAnswer ? 'answered' : 'unanswered';
+  return hasValidAnswer(answer) ? 'answered' : 'unanswered';
 };
 
 export const computeQuestionItems = (
@@ -180,6 +171,13 @@ export const LEARNING_CONFIG = {
   showProgressBar: true,
   minVideoProgress: 90,
   defaultQuizTimeLimit: 30,
+} as const;
+
+export const QUIZ_CONSTANTS = {
+  SECONDS_PER_MINUTE: 60,
+  TIMER_INTERVAL_MS: 1000,
+  WARNING_THRESHOLD_SECONDS: 60,
+  DANGER_THRESHOLD_SECONDS: 30,
 } as const;
 
 export const MOCK_QUIZ: Quiz = {

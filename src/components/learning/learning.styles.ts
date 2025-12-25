@@ -1,5 +1,17 @@
 import type { QuestionDisplayStatus } from '@/types/learning';
 
+const QUESTION_ITEM_BASE = 'w-8 h-8 flex items-center justify-center text-xs rounded cursor-pointer transition-all';
+const createQuestionItemStyle = (bg: string, border: string, text: string, extra = '') =>
+  `${bg} ${border} ${text} ${extra}`.trim();
+
+const QUESTION_ITEM_STYLES = {
+  UNANSWERED: createQuestionItemStyle('bg-[var(--bg)]', 'border border-[var(--border)]', 'text-[var(--text)]/50', 'hover:border-[var(--text)]/20'),
+  ANSWERED: createQuestionItemStyle('bg-[var(--accent)]', 'border-2 border-[var(--accent)]', 'text-white font-medium'),
+  CURRENT: createQuestionItemStyle('bg-[var(--current)]', 'border-2 border-[var(--current)]', 'text-white font-medium', 'shadow-sm'),
+  CORRECT: createQuestionItemStyle('bg-[var(--correct)]', 'border-2 border-[var(--correct)]', 'text-white font-medium'),
+  INCORRECT: createQuestionItemStyle('bg-[var(--incorrect)]', 'border-2 border-[var(--incorrect)]', 'text-white font-medium'),
+} as const;
+
 export const LEARNING_PAGE = {
   CONTAINER: 'h-screen bg-[var(--bg)] flex overflow-hidden',
   SIDEBAR: 'w-72 border-r border-[var(--border)] flex-shrink-0 overflow-y-auto hidden lg:block',
@@ -85,12 +97,12 @@ export const QUIZ = {
   NAV: 'bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg p-4',
   NAV_TITLE: 'text-xs uppercase tracking-[0.15em] text-[var(--text)]/40 mb-3 px-1',
   NAV_GRID: 'grid grid-cols-8 lg:grid-cols-5 gap-2',
-  NAV_ITEM: 'w-8 h-8 flex items-center justify-center text-xs rounded cursor-pointer transition-all',
-  NAV_UNANSWERED: 'bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]/50 hover:border-[var(--text)]/20',
-  NAV_ANSWERED: 'bg-[var(--accent)] border-2 border-[var(--accent)] text-white font-medium',
-  NAV_CURRENT: 'bg-[var(--current)] border-2 border-[var(--current)] text-white font-medium shadow-sm',
-  NAV_CORRECT: 'bg-[var(--correct)] border-2 border-[var(--correct)] text-white font-medium',
-  NAV_INCORRECT: 'bg-[var(--incorrect)] border-2 border-[var(--incorrect)] text-white font-medium',
+  NAV_ITEM: QUESTION_ITEM_BASE,
+  NAV_UNANSWERED: QUESTION_ITEM_STYLES.UNANSWERED,
+  NAV_ANSWERED: QUESTION_ITEM_STYLES.ANSWERED,
+  NAV_CURRENT: QUESTION_ITEM_STYLES.CURRENT,
+  NAV_CORRECT: QUESTION_ITEM_STYLES.CORRECT,
+  NAV_INCORRECT: QUESTION_ITEM_STYLES.INCORRECT,
   NAV_PROGRESS: 'mt-3 pt-3 border-t border-[var(--border)]',
   NAV_PROGRESS_TEXT: 'text-xs text-[var(--text)]/40 text-center',
   NAV_PROGRESS_BAR: 'mt-2 h-1 bg-[var(--text)]/5 rounded-full overflow-hidden',
@@ -116,12 +128,12 @@ export const QUIZ = {
   QUESTION_LIST: 'bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg p-4',
   QUESTION_LIST_TITLE: 'text-xs uppercase tracking-[0.15em] text-[var(--text)]/40 mb-3 px-1',
   QUESTION_LIST_GRID: 'grid grid-cols-8 lg:grid-cols-5 gap-2',
-  QUESTION_LIST_ITEM: 'w-8 h-8 flex items-center justify-center text-xs rounded cursor-pointer transition-all',
-  QUESTION_LIST_UNANSWERED: 'bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]/50 hover:border-[var(--text)]/20',
-  QUESTION_LIST_ANSWERED: 'bg-[var(--accent)] border-2 border-[var(--accent)] text-white font-medium',
-  QUESTION_LIST_CURRENT: 'bg-[var(--current)] border-2 border-[var(--current)] text-white font-medium shadow-sm',
-  QUESTION_LIST_CORRECT: 'bg-[var(--correct)] border-2 border-[var(--correct)] text-white font-medium',
-  QUESTION_LIST_INCORRECT: 'bg-[var(--incorrect)] border-2 border-[var(--incorrect)] text-white font-medium',
+  QUESTION_LIST_ITEM: QUESTION_ITEM_BASE,
+  QUESTION_LIST_UNANSWERED: QUESTION_ITEM_STYLES.UNANSWERED,
+  QUESTION_LIST_ANSWERED: QUESTION_ITEM_STYLES.ANSWERED,
+  QUESTION_LIST_CURRENT: QUESTION_ITEM_STYLES.CURRENT,
+  QUESTION_LIST_CORRECT: QUESTION_ITEM_STYLES.CORRECT,
+  QUESTION_LIST_INCORRECT: QUESTION_ITEM_STYLES.INCORRECT,
   TITLE: 'text-xl font-light text-[var(--text)] mb-3',
   DESCRIPTION: 'text-sm text-[var(--text)]/50 mb-6',
   META: 'flex items-center justify-center gap-6 text-sm text-[var(--text)]/40',

@@ -1,8 +1,8 @@
 'use client';
 
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import { Button } from '@/components/ui';
-import { LEARNING_LABELS, createCorrectAnswersMap } from '@/constants/learning';
+import { LEARNING_LABELS } from '@/constants/learning';
 import type { QuizSectionProps } from '@/types/learning';
 import { useQuizState, useFullscreen } from './hooks';
 import { QuizIntro, QuizProgress, QuizQuestion, QuestionList, QuizExplanation } from './components';
@@ -59,11 +59,6 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
     onExit: actions.submit,
   });
 
-  const correctAnswersForList = useMemo(
-    () => createCorrectAnswersMap(quiz.questions),
-    [quiz.questions]
-  );
-
   const handleSubmit = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(() => {});
@@ -110,7 +105,7 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
                   answers={state.answers}
                   onSelect={handleSelectQuestion}
                   showResults
-                  correctAnswers={correctAnswersForList}
+                  correctAnswers={correctAnswersMap}
                 />
                 <div className="hidden lg:block mt-4">
                   <ActionButtons isResults showRetry={!attempt.passed} onRetry={actions.retry} onContinue={handleContinue} />

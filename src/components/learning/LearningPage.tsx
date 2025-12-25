@@ -113,17 +113,21 @@ const ReadingLessonContent = memo(function ReadingLessonContent({
   );
 });
 
+type LessonWithChapter = { lesson: LearningLesson; chapterTitle: string };
+
+const flattenChaptersToLessons = (chapters: LearningPageProps['chapters']): LessonWithChapter[] => {
+  const lessons: LessonWithChapter[] = [];
+  chapters.forEach(ch => {
+    ch.lessons.forEach(l => lessons.push({ lesson: l, chapterTitle: ch.title }));
+  });
+  return lessons;
+};
+
 function LearningPageComponent({ chapters, progress: initialProgress }: LearningPageProps) {
   const [progress, setProgress] = useState(initialProgress);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const allLessons = useMemo(() => {
-    const lessons: { lesson: LearningLesson; chapterTitle: string }[] = [];
-    chapters.forEach(ch => {
-      ch.lessons.forEach(l => lessons.push({ lesson: l, chapterTitle: ch.title }));
-    });
-    return lessons;
-  }, [chapters]);
+  const allLessons = useMemo(() => flattenChaptersToLessons(chapters), [chapters]);
 
   const currentLessonIndex = useMemo(
     () => allLessons.findIndex(l => l.lesson.id === progress.currentLessonId),
@@ -144,30 +148,33 @@ function LearningPageComponent({ chapters, progress: initialProgress }: Learning
   const handleCompleteLesson = useCallback(() => {
     if (!currentLesson) return;
     
+    const now = new Date().toISOString();
+    const nextLesson = allLessons[currentLessonIndex + 1];
+    const nextLessonId = nextLesson?.lesson.id;
+
     setProgress(prev => {
-      const updated = { ...prev };
-      updated.lessonProgress = {
+      const updatedLessonProgress = {
         ...prev.lessonProgress,
         [currentLesson.id]: {
           ...prev.lessonProgress[currentLesson.id],
-          status: 'completed',
+          status: 'completed' as const,
           progress: 100,
-          completedAt: new Date().toISOString(),
+          completedAt: now,
         },
       };
 
-      const nextLesson = allLessons[currentLessonIndex + 1];
-      if (nextLesson && prev.lessonProgress[nextLesson.lesson.id]?.status === 'locked') {
-        updated.lessonProgress[nextLesson.lesson.id] = {
-          ...prev.lessonProgress[nextLesson.lesson.id],
-          status: 'available',
+      const shouldUnlockNext = nextLessonId && prev.lessonProgress[nextLessonId]?.status === 'locked';
+      if (shouldUnlockNext) {
+        updatedLessonProgress[nextLessonId] = {
+          ...prev.lessonProgress[nextLessonId],
+          status: 'available' as const,
         };
       }
 
-      const completed = Object.values(updated.lessonProgress).filter(p => p.status === 'completed').length;
-      updated.completionRate = Math.round((completed / allLessons.length) * 100);
+      const completedCount = Object.values(updatedLessonProgress).filter(p => p.status === 'completed').length;
+      const completionRate = Math.round((completedCount / allLessons.length) * 100);
 
-      return updated;
+      return { ...prev, lessonProgress: updatedLessonProgress, completionRate };
     });
   }, [currentLesson, allLessons, currentLessonIndex]);
 

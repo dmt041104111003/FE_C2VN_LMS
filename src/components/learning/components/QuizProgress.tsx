@@ -3,10 +3,11 @@
 import { memo, useMemo } from 'react';
 import { formatCountdown } from '@/constants';
 import { TimerIcon } from '@/components/ui/icons';
+import { QUIZ_CONSTANTS } from '@/constants/learning';
 import type { QuizProgressProps } from '@/types/learning';
 import { QUIZ } from '../learning.styles';
 
-const DANGER_THRESHOLD_SECONDS = 30;
+const { DANGER_THRESHOLD_SECONDS } = QUIZ_CONSTANTS;
 
 type TimerState = 'normal' | 'warning' | 'danger';
 

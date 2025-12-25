@@ -13,12 +13,14 @@ import type {
 } from '@/types/learning';
 import * as S from './learning.styles';
 
-const STATUS_CLASSES: Record<LessonStatus, string> = {
+const LESSON_STATUS_CLASSES: Record<LessonStatus, string> = {
   completed: S.SIDEBAR.LESSON_COMPLETED,
   locked: S.SIDEBAR.LESSON_LOCKED,
   available: S.SIDEBAR.LESSON_AVAILABLE,
   in_progress: S.SIDEBAR.LESSON_AVAILABLE,
 };
+
+const DEFAULT_LESSON_ICON = PlayIcon;
 
 const ChapterItem = memo(function ChapterItem({ chapter, currentLessonId, progress, onSelectLesson }: LearningChapterItemProps) {
   const [isOpen, setIsOpen] = useState(() => chapter.lessons.some(l => l.id === currentLessonId));
@@ -48,18 +50,18 @@ const ChapterItem = memo(function ChapterItem({ chapter, currentLessonId, progre
 });
 
 const LessonItem = memo(function LessonItem({ lesson, isCurrent, status, onSelect }: LessonItemProps) {
-  const statusClass = isCurrent ? S.SIDEBAR.LESSON_CURRENT : STATUS_CLASSES[status];
+  const isLocked = status === 'locked';
+  const statusClass = isCurrent ? S.SIDEBAR.LESSON_CURRENT : LESSON_STATUS_CLASSES[status];
 
   const handleClick = useCallback(() => {
-    if (status !== 'locked') onSelect(lesson.id);
-  }, [status, lesson.id, onSelect]);
+    if (!isLocked) onSelect(lesson.id);
+  }, [isLocked, lesson.id, onSelect]);
 
-  const StatusIcon = LESSON_STATUS_ICONS[status];
-  const TypeIcon = StatusIcon || LESSON_TYPE_ICONS[lesson.type] || PlayIcon;
+  const Icon = LESSON_STATUS_ICONS[status] || LESSON_TYPE_ICONS[lesson.type] || DEFAULT_LESSON_ICON;
 
   return (
     <div className={`${S.SIDEBAR.LESSON} ${statusClass}`} onClick={handleClick}>
-      <TypeIcon className={S.SIDEBAR.LESSON_ICON} />
+      <Icon className={S.SIDEBAR.LESSON_ICON} />
       <div className={S.SIDEBAR.LESSON_CONTENT}>
         <div className={S.SIDEBAR.LESSON_TITLE}>{lesson.title}</div>
         <div className={S.SIDEBAR.LESSON_META}>{lesson.duration} phút</div>

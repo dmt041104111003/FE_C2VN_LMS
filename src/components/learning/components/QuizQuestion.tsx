@@ -27,19 +27,27 @@ const getOptionStyles = ({ isSelected, isCorrect, isShowingResult }: OptionState
   return `${base} ${disabled}`;
 };
 
-const getIndicatorStyles = (type: 'radio' | 'checkbox', { isSelected, isCorrect, isShowingResult }: OptionState) => {
-  const styles = type === 'radio' ? QUESTION : QUESTION;
-  const BASE = type === 'radio' ? QUESTION.RADIO : QUESTION.CHECKBOX;
-  const SELECTED = type === 'radio' ? QUESTION.RADIO_SELECTED : QUESTION.CHECKBOX_SELECTED;
-  const CORRECT = type === 'radio' ? QUESTION.RADIO_CORRECT : QUESTION.CHECKBOX_CORRECT;
-  const INCORRECT = type === 'radio' ? QUESTION.RADIO_INCORRECT : QUESTION.CHECKBOX_INCORRECT;
+const INDICATOR_STYLES = {
+  radio: {
+    base: QUESTION.RADIO,
+    selected: QUESTION.RADIO_SELECTED,
+    correct: QUESTION.RADIO_CORRECT,
+    incorrect: QUESTION.RADIO_INCORRECT,
+  },
+  checkbox: {
+    base: QUESTION.CHECKBOX,
+    selected: QUESTION.CHECKBOX_SELECTED,
+    correct: QUESTION.CHECKBOX_CORRECT,
+    incorrect: QUESTION.CHECKBOX_INCORRECT,
+  },
+} as const;
 
-  if (!isShowingResult) {
-    return isSelected ? `${BASE} ${SELECTED}` : BASE;
-  }
-  if (isCorrect) return `${BASE} ${CORRECT}`;
-  if (isSelected) return `${BASE} ${INCORRECT}`;
-  return BASE;
+const getIndicatorStyles = (type: 'radio' | 'checkbox', { isSelected, isCorrect, isShowingResult }: OptionState) => {
+  const { base, selected, correct, incorrect } = INDICATOR_STYLES[type];
+  if (!isShowingResult) return isSelected ? `${base} ${selected}` : base;
+  if (isCorrect) return `${base} ${correct}`;
+  if (isSelected) return `${base} ${incorrect}`;
+  return base;
 };
 
 const getRadioDotStyles = ({ isSelected, isCorrect, isShowingResult }: OptionState) => {

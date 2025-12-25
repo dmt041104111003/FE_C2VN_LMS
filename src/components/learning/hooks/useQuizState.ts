@@ -1,10 +1,8 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import type { Quiz, QuizAttempt, QuizState } from '@/types/learning';
-import { calculateQuizScore, createCorrectAnswersMap } from '@/constants/learning';
+import { calculateQuizScore, createCorrectAnswersMap, QUIZ_CONSTANTS } from '@/constants/learning';
 
-const SECONDS_PER_MINUTE = 60;
-const TIMER_INTERVAL_MS = 1000;
-const WARNING_THRESHOLD_SECONDS = 60;
+const { SECONDS_PER_MINUTE, TIMER_INTERVAL_MS, WARNING_THRESHOLD_SECONDS } = QUIZ_CONSTANTS;
 
 const createInitialState = (timeLimit?: number): QuizState => ({
   started: false,
