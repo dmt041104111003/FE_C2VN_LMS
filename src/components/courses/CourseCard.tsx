@@ -4,7 +4,7 @@ import { memo, useMemo } from 'react';
 import Link from 'next/link';
 import { COURSE_PAGE } from '@/constants/course';
 import { CourseCardProps, CardType, ImageSectionProps } from '@/types/course';
-import { Badge, Rating, Instructor, Tags, PriceDisplay, FeatureList } from '@/components/ui';
+import { Badge, Rating, User, Tags, PriceDisplay, FeatureList } from '@/components/ui';
 import {
   CARD_CONFIGS,
   COURSE_CARD_BASE,
@@ -50,7 +50,7 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
       return (
         <div className={config.contentClass}>
           <h3 className={`${config.titleClass} ${COURSE_CARD_TITLE_HOVER}`}>{course.title}</h3>
-          <Instructor name={course.instructorName} avatar={course.instructorAvatar} size="xs" className="mb-2" />
+          <User name={course.instructorName} avatar={course.instructorAvatar} size="xs" className="mb-2" />
           <div className="flex items-center justify-between text-[11px] text-[var(--text)]/50 mt-auto">
             <span>{course.totalLessons} {COURSE_PAGE.lessonsText}</span>
             <PriceDisplay
@@ -77,11 +77,11 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
           <p className={`${config.descClass} ${COURSE_CARD_DESC}`}>{course.description}</p>
         )}
 
-        <Instructor
+        <User
           name={course.instructorName}
           avatar={course.instructorAvatar}
           label={config.showInstructorLabel ? 'Giảng viên' : undefined}
-          size={config.instructorSize}
+          size={config.userSize}
           className={`mb-${config.showInstructorLabel ? '2 pb-2 border-b border-[var(--text)]/5' : '1'}`}
         />
 

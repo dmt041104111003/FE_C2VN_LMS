@@ -14,7 +14,8 @@ import {
 } from '@/types/course';
 import { COURSE_DETAIL, COURSE_PAGE } from '@/constants/course';
 import { ROUTES } from '@/constants/navigation';
-import { formatCurrency, formatDuration, getInitials } from '@/constants/config';
+import { formatCurrency, formatDuration } from '@/constants/config';
+import { getAvatarFromName } from '@/utils';
 import { Rating, PriceDisplay, Tags, VideoModal } from '@/components/ui';
 import {
   CheckCircleIcon,
@@ -117,17 +118,16 @@ const ChapterItem = memo(function ChapterItem({ chapter, isExpanded, onToggle, o
 });
 
 const ReviewItem = memo(function ReviewItem({ review }: ReviewItemProps) {
+  const avatarSrc = useMemo(
+    () => review.userAvatar || getAvatarFromName(review.userName),
+    [review.userAvatar, review.userName]
+  );
+
   return (
     <div className={S.COURSE_DETAIL_REVIEW}>
       <div className={S.COURSE_DETAIL_REVIEW_HEADER}>
         <div className={S.COURSE_DETAIL_REVIEW_USER}>
-          <div className={S.COURSE_DETAIL_REVIEW_AVATAR}>
-            {review.userAvatar ? (
-              <img src={review.userAvatar} alt={review.userName} className="w-full h-full rounded-full object-cover" />
-            ) : (
-              getInitials(review.userName)
-            )}
-          </div>
+          <img src={avatarSrc} alt={review.userName} className={`${S.COURSE_DETAIL_REVIEW_AVATAR} !bg-transparent`} />
           <div>
             <p className={S.COURSE_DETAIL_REVIEW_NAME}>{review.userName}</p>
             <p className={S.COURSE_DETAIL_REVIEW_DATE}>{review.createdAt}</p>
@@ -275,13 +275,11 @@ export const CourseDetail = ({ course, reviews = [], isEnrolled = false, progres
             <section className={S.COURSE_DETAIL_SECTION}>
               <h2 className={S.COURSE_DETAIL_SECTION_TITLE}>{COURSE_DETAIL.instructorTitle}</h2>
               <div className={S.COURSE_DETAIL_INSTRUCTOR}>
-                <div className={S.COURSE_DETAIL_INSTRUCTOR_AVATAR}>
-                  {course.instructorAvatar ? (
-                    <img src={course.instructorAvatar} alt={course.instructorName} className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    getInitials(course.instructorName)
-                  )}
-                </div>
+                <img 
+                  src={course.instructorAvatar || getAvatarFromName(course.instructorName)} 
+                  alt={course.instructorName} 
+                  className={`${S.COURSE_DETAIL_INSTRUCTOR_AVATAR} !bg-transparent`} 
+                />
                 <div className={S.COURSE_DETAIL_INSTRUCTOR_INFO}>
                   <h3 className={S.COURSE_DETAIL_INSTRUCTOR_NAME}>{course.instructorName}</h3>
                   {course.instructorBio && <p className={S.COURSE_DETAIL_INSTRUCTOR_BIO}>{course.instructorBio}</p>}

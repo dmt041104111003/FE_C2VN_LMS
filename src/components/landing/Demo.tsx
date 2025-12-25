@@ -47,7 +47,6 @@ function DemoComponent() {
           {!showFeedback ? (
             <form className={DEMO_FORM} onSubmit={handleRegisterClick}>
               <div className={DEMO_FORM_FIELD}>
-                <label className={AUTH_FORM_LABEL}>Email</label>
                 <Input
                   type="email"
                   placeholder={DEMO.placeholder}

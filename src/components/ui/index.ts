@@ -15,7 +15,7 @@ export { WalletModal } from './WalletModal';
 export { Pagination } from './Pagination';
 export { Filter } from './Filter';
 export { Rating } from './Rating';
-export { Instructor } from './Instructor';
+export { User } from './User';
 export { Tags } from './Tags';
 export { PriceDisplay } from './PriceDisplay';
 export { FeatureList } from './FeatureList';
@@ -31,8 +31,8 @@ export type {
   SearchModalProps,
   RatingProps,
   RatingSize,
-  InstructorProps,
-  InstructorSize,
+  UserProps,
+  UserAvatarSize,
   TagsProps,
   PriceDisplayProps,
   FeatureListProps,

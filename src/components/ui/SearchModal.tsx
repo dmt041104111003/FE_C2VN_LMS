@@ -89,8 +89,7 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
                     key={course.id}
                     title={course.title}
                     subtitle={course.instructorName}
-                    image={course.thumbnail || '/loading.png'}
-                    variant="horizontal"
+                    variant="compact"
                     size="sm"
                     href={`${ROUTES.COURSES}/${course.id}`}
                     onClick={onClose}

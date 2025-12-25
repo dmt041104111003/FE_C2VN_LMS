@@ -1,4 +1,4 @@
-import { ButtonVariant, ButtonSize, BadgeVariant, LogoSize, InputVariant, InputSize, RatingSize, InstructorSize } from './ui.types';
+import { ButtonVariant, ButtonSize, BadgeVariant, LogoSize, InputVariant, InputSize, RatingSize, UserAvatarSize } from './ui.types';
 
 export const BUTTON_BASE = 'inline-flex items-center justify-center font-medium rounded-full whitespace-nowrap';
 export const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
@@ -250,7 +250,7 @@ export const RATING_SIZES: Record<RatingSize, { star: string; text: string; gap:
   md: { star: 'w-4 h-4', text: 'text-sm', gap: 'gap-1.5' },
 };
 
-export const INSTRUCTOR_SIZES: Record<InstructorSize, { avatar: string; name: string; label: string; gap: string }> = {
+export const USER_AVATAR_SIZES: Record<UserAvatarSize, { avatar: string; name: string; label: string; gap: string }> = {
   xs: { avatar: 'w-4 h-4', name: 'text-[10px]', label: 'text-[9px]', gap: 'gap-1.5' },
   sm: { avatar: 'w-5 h-5', name: 'text-xs', label: 'text-[10px]', gap: 'gap-2' },
   md: { avatar: 'w-6 h-6', name: 'text-sm', label: 'text-xs', gap: 'gap-2' },

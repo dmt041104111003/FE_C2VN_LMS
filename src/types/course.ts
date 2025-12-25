@@ -88,7 +88,7 @@ export interface CardConfig {
   showFeatures: boolean;
   featureColumns: 1 | 2;
   featureSize: 'xs' | 'sm';
-  instructorSize: 'xs' | 'sm' | 'md';
+  userSize: 'xs' | 'sm' | 'md';
   ratingSize: 'xs' | 'sm' | 'md';
   priceSize: 'xs' | 'sm' | 'md' | 'lg';
   showInstructorLabel: boolean;
