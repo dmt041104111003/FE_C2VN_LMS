@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { VERIFY_EMAIL } from '@/constants/auth';
@@ -16,7 +16,7 @@ import {
   AUTH_RESEND_BTN,
 } from './auth.styles';
 
-function VerifyEmailFormComponent() {
+function VerifyEmailFormInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
@@ -66,4 +66,12 @@ function VerifyEmailFormComponent() {
   );
 }
 
-export const VerifyEmailForm = memo(VerifyEmailFormComponent);
+const VerifyEmailFormMemo = memo(VerifyEmailFormInner);
+
+export function VerifyEmailForm() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-64" />}>
+      <VerifyEmailFormMemo />
+    </Suspense>
+  );
+}

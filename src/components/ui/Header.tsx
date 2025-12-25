@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback, useMemo } from 'react';
+import { memo, useState, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from './Logo';
@@ -49,7 +49,7 @@ import {
   ICON_LG,
 } from './ui.styles';
 
-function HeaderComponent() {
+function HeaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -191,4 +191,12 @@ function HeaderComponent() {
   );
 }
 
-export const Header = memo(HeaderComponent);
+const HeaderMemo = memo(HeaderInner);
+
+export function Header() {
+  return (
+    <Suspense fallback={<header className={HEADER}><div className={HEADER_CONTAINER} /></header>}>
+      <HeaderMemo />
+    </Suspense>
+  );
+}

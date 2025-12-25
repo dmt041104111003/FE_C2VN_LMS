@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useMemo, useEffect, useCallback } from 'react';
+import { memo, useState, useMemo, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from '@/components/ui';
 import { CourseCard } from './CourseCard';
@@ -44,7 +44,7 @@ const getCardVariants = (index: number, count: number) => ({
   wide: (count === 5 && index === 4) || (count === 4 && (index === 1 || index === 3)),
 });
 
-function CoursesPageComponent() {
+function CoursesPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -259,4 +259,29 @@ function CoursesPageComponent() {
   );
 }
 
-export const CoursesPage = memo(CoursesPageComponent);
+const CoursesPageMemo = memo(CoursesPageInner);
+
+function CoursesPageFallback() {
+  return (
+    <div className={COURSES_PAGE}>
+      <Header />
+      <main className={COURSES_PAGE_MAIN}>
+        <div className={COURSES_PAGE_CONTAINER}>
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-[var(--text)]/10 rounded w-1/3" />
+            <div className="h-4 bg-[var(--text)]/10 rounded w-1/2" />
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export function CoursesPage() {
+  return (
+    <Suspense fallback={<CoursesPageFallback />}>
+      <CoursesPageMemo />
+    </Suspense>
+  );
+}

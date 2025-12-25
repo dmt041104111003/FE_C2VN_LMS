@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
@@ -17,7 +17,7 @@ import {
   AUTH_RESEND_BTN,
 } from './auth.styles';
 
-function ResetPasswordFormComponent() {
+function ResetPasswordFormInner() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
   const [code, setCode] = useState('');
@@ -94,4 +94,12 @@ function ResetPasswordFormComponent() {
   );
 }
 
-export const ResetPasswordForm = memo(ResetPasswordFormComponent);
+const ResetPasswordFormMemo = memo(ResetPasswordFormInner);
+
+export function ResetPasswordForm() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-64" />}>
+      <ResetPasswordFormMemo />
+    </Suspense>
+  );
+}
