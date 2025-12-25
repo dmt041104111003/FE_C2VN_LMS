@@ -16,6 +16,11 @@ const isEditableElement = (target: EventTarget | null): boolean => {
   return EDITABLE_TAGS.has(target.tagName) || target.isContentEditable;
 };
 
+const isImageElement = (target: EventTarget | null): boolean => {
+  if (!target || !(target instanceof HTMLElement)) return false;
+  return target.tagName === 'IMG';
+};
+
 const preventDefault = (e: Event): false => {
   e.preventDefault();
   return false;
@@ -27,12 +32,11 @@ export function ContentProtection() {
   const createHandlers = useCallback((): Map<ProtectionEventType, EventHandler> => {
     const handlers = new Map<ProtectionEventType, EventHandler>();
 
-      // handlers.set('contextmenu', preventDefault);
-    handlers.set('dragstart', preventDefault);
-
     handlers.set('keydown', (e: Event) => {
       const ke = e as KeyboardEvent;
       const key = ke.key.toLowerCase();
+
+      if (isEditableElement(e.target)) return true;
 
       if ((ke.ctrlKey || ke.metaKey) && BLOCKED_CTRL_KEYS.has(key)) {
         return preventDefault(e);
@@ -41,19 +45,13 @@ export function ContentProtection() {
       if (BLOCKED_KEYS.has(ke.key)) {
         return preventDefault(e);
       }
-      // if (ke.ctrlKey && ke.shiftKey && key === 'i') {
-      //   return preventDefault(e);
-      // }
     });
 
-    handlers.set('selectstart', (e: Event) => {
-      if (isEditableElement(e.target)) return true;
-      return preventDefault(e);
-    });
-
-    handlers.set('copy', (e: Event) => {
-      if (isEditableElement(e.target)) return true;
-      return preventDefault(e);
+    handlers.set('dragstart', (e: Event) => {
+      if (isImageElement(e.target)) {
+        return preventDefault(e);
+      }
+      return true;
     });
 
     return handlers;

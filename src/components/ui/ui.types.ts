@@ -4,6 +4,40 @@ export type BadgeVariant = 'default' | 'accent';
 export type LogoLayout = 'inline' | 'stacked';
 export type LogoSize = 'sm' | 'md' | 'lg';
 
+export type TabsVariant = 'default' | 'pills' | 'underline';
+export type TabsSize = 'sm' | 'md' | 'lg';
+
+export interface TabItem {
+  key: string;
+  label: string;
+  disabled?: boolean;
+  badge?: string | number;
+}
+
+export interface TabsProps {
+  items: TabItem[];
+  activeKey: string;
+  onChange: (key: string) => void;
+  variant?: TabsVariant;
+  size?: TabsSize;
+  fullWidth?: boolean;
+  className?: string;
+}
+
+export interface TabPanelProps {
+  children: React.ReactNode;
+  isActive: boolean;
+  className?: string;
+}
+
+export interface TabButtonProps {
+  item: TabItem;
+  isActive: boolean;
+  variant: TabsVariant;
+  size: TabsSize;
+  onClick: () => void;
+}
+
 export interface ButtonProps {
   children: React.ReactNode;
   variant?: ButtonVariant;

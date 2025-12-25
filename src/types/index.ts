@@ -3,3 +3,4 @@ export * from './auth';
 export * from './landing';
 export * from './review';
 export * from './user';
+export * from './editor';

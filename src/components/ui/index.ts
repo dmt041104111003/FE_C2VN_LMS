@@ -24,6 +24,7 @@ export { FeatureList } from './FeatureList';
 export { VideoPlayer } from './VideoPlayer';
 export { VideoModal } from './VideoModal';
 export { ShowMore } from './ShowMore';
+export { Tabs, TabPanel } from './Tabs';
 export type {
   PriceRange,
   RatingFilterType,
@@ -41,6 +42,12 @@ export type {
   FeatureListProps,
   VideoPlayerProps,
   VideoModalProps,
+  TabItem,
+  TabsProps,
+  TabPanelProps,
+  TabButtonProps,
+  TabsVariant,
+  TabsSize,
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
@@ -50,6 +57,8 @@ export {
   XIcon,
   TelegramIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   MenuIcon,
   CloseIcon,
   SearchIcon,
@@ -73,5 +82,27 @@ export {
   SendIcon,
   WalletIcon,
   MailIcon,
+  TextIcon,
+  ListIcon,
+  QuoteIcon,
+  CodeIcon,
+  TableIcon,
+  LinkIcon,
+  ImageIcon,
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
+  StrikethroughIcon,
+  HighlightIcon,
+  UndoIcon,
+  RedoIcon,
+  AlignLeftIcon,
+  AlignCenterIcon,
+  AlignRightIcon,
+  HeadingIcon,
+  OrderedListIcon,
+  HorizontalRuleIcon,
+  InfoIcon,
+  PlusIcon,
   SOCIAL_ICONS,
 } from './icons';

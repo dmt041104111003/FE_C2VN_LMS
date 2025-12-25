@@ -76,3 +76,16 @@ export {
   MOCK_USER_COURSES,
   MOCK_USER_CERTIFICATES,
 } from './user';
+export {
+  EDITOR_LABELS,
+  TOOLBAR_TITLES,
+  EDITOR_CONFIG,
+  MENU_STYLES,
+  TOOLBAR_ACTIONS,
+  TOOLBAR_CHECKS,
+  hasTooltipMark,
+  getSelectionInfo,
+  EDITOR_DEMO_TABS,
+  EDITOR_DEMO_CONTENT,
+  EDITOR_DEMO_STYLES,
+} from './editor';

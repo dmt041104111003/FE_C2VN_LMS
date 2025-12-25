@@ -317,3 +317,44 @@ export const WALLET_MODAL_NAME = 'text-sm font-semibold text-[var(--text)]';
 export const SEARCH_MODAL_INPUT_WRAPPER = 'px-4 pt-4 relative overflow-visible';
 export const SEARCH_MODAL_EMPTY = 'py-4 text-center text-sm text-[var(--text)]/50';
 export const DEMO_FORM_FIELD = 'flex-1 space-y-1';
+
+export const TABS = {
+  CONTAINER: 'inline-flex',
+  CONTAINER_FULL: 'flex w-full',
+  
+  LIST: {
+    default: 'flex gap-8 border-b border-[var(--text)]/10',
+    pills: 'flex gap-1',
+    underline: 'flex gap-8',
+  },
+  
+  ITEM_BASE: 'relative transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed',
+  
+  ITEM: {
+    default: {
+      base: 'pb-3 -mb-px',
+      active: 'text-[var(--text)] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-[var(--text)]',
+      inactive: 'text-[var(--text)]/30 hover:text-[var(--text)]/60',
+    },
+    pills: {
+      base: 'px-3 py-1.5 rounded',
+      active: 'bg-[var(--text)] text-[var(--bg)]',
+      inactive: 'text-[var(--text)]/30 hover:text-[var(--text)]/60 hover:bg-[var(--text)]/5',
+    },
+    underline: {
+      base: 'pb-2',
+      active: 'text-[var(--text)] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-[var(--text)]',
+      inactive: 'text-[var(--text)]/30 hover:text-[var(--text)]/50',
+    },
+  },
+  
+  SIZE: {
+    sm: 'text-xs tracking-wide',
+    md: 'text-sm tracking-wide',
+    lg: 'text-base tracking-wide',
+  },
+  
+  BADGE: 'ml-2 text-[10px] text-[var(--text)]/40',
+  
+  PANEL: 'pt-6',
+} as const;
