@@ -1,9 +1,26 @@
 'use client';
 
-import { memo, useState, useEffect, useRef, useCallback } from 'react';
+import { memo, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import * as S from './editor.styles';
 import { EDITOR_LABELS } from '@/constants';
 import type { TipTapPreviewProps } from '@/types/editor';
+
+const renderMath = (text: string): string => {
+  let result = text;
+  result = result.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
+    try {
+      return katex.renderToString(math.trim(), { displayMode: true, throwOnError: false });
+    } catch { return `$$${math}$$`; }
+  });
+  result = result.replace(/\$([^$]+)\$/g, (_, math) => {
+    try {
+      return katex.renderToString(math.trim(), { displayMode: false, throwOnError: false });
+    } catch { return `$${math}$`; }
+  });
+  return result;
+};
 
 const PreviewSkeleton = memo(function PreviewSkeleton({ className }: { className?: string }) {
   return (
@@ -20,6 +37,8 @@ function TipTapPreviewComponent({ content, className = '', compact = false }: Ti
   const [isClient, setIsClient] = useState(false);
   const proseRef = useRef<HTMLDivElement>(null);
   const copyTimeoutRef = useRef<Map<HTMLElement, NodeJS.Timeout>>(new Map());
+
+  const processedContent = useMemo(() => renderMath(content), [content]);
 
   useEffect(() => { setIsClient(true); }, []);
 
@@ -72,7 +91,7 @@ function TipTapPreviewComponent({ content, className = '', compact = false }: Ti
       pre.style.position = 'relative';
       pre.appendChild(btn);
     });
-  }, [content, isClient]);
+  }, [processedContent, isClient]);
 
   if (!isClient) return <PreviewSkeleton className={className} />;
 
@@ -82,7 +101,7 @@ function TipTapPreviewComponent({ content, className = '', compact = false }: Ti
         ref={proseRef}
         className={`ProseMirror ${compact ? '' : S.PREVIEW.CONTAINER} ${className}`}
         style={compact ? { minHeight: 'auto', padding: 0 } : undefined}
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: processedContent }}
       />
       <style jsx global>{`${S.PROSEMIRROR_STYLES}`}</style>
       <style jsx global>{`${S.TOOLTIP_STYLES}`}</style>

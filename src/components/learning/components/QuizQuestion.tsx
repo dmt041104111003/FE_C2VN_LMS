@@ -3,6 +3,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { LEARNING_LABELS } from '@/constants/learning';
 import { CheckIcon } from '@/components/ui/icons';
+import { TipTapPreview } from '@/components/editor';
 import type { QuizQuestionProps } from '@/types/learning';
 import { QUESTION } from '../learning.styles';
 
@@ -91,7 +92,9 @@ function QuizQuestionComponent({
         <div className={QUESTION.NUMBER}>
           {LEARNING_LABELS.quiz.question} {questionNumber}
         </div>
-        <div className={QUESTION.CONTENT}>{question.content}</div>
+        <div className={QUESTION.CONTENT}>
+          <TipTapPreview content={question.content} compact />
+        </div>
         <input
           type="text"
           className={QUESTION.TEXT_INPUT}
@@ -114,7 +117,9 @@ function QuizQuestionComponent({
           </span>
         )}
       </div>
-      <div className={QUESTION.CONTENT}>{question.content}</div>
+      <div className={QUESTION.CONTENT}>
+        <TipTapPreview content={question.content} compact />
+      </div>
 
       <div className={QUESTION.OPTIONS}>
         {question.options?.map((option, idx) => {
@@ -146,7 +151,9 @@ function QuizQuestionComponent({
                 </div>
               )}
 
-              <span className={QUESTION.OPTION_TEXT}>{option.content}</span>
+              <span className={QUESTION.OPTION_TEXT}>
+                <TipTapPreview content={option.content} compact />
+              </span>
             </div>
           );
         })}
