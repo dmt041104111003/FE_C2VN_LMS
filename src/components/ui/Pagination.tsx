@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { PaginationProps } from './ui.types';
 import {
   PAGINATION_CONTAINER,
@@ -9,6 +9,7 @@ import {
   PAGINATION_BTN_INACTIVE,
   PAGINATION_BTN_NAV,
   PAGINATION_BTN_DISABLED,
+  PAGINATION_DOTS,
 } from './ui.styles';
 
 function PaginationComponent({
@@ -17,19 +18,17 @@ function PaginationComponent({
   onPageChange,
   className = '',
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
-
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
     }
-  };
+  }, [currentPage, onPageChange]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentPage < totalPages) {
       onPageChange(currentPage + 1);
     }
-  };
+  }, [currentPage, totalPages, onPageChange]);
 
   const pageNumbers = useMemo(() => {
     const pages: (number | string)[] = [];
@@ -59,21 +58,20 @@ function PaginationComponent({
     return pages;
   }, [currentPage, totalPages]);
 
+  if (totalPages <= 1) return null;
+
+  const prevBtnClass = `${PAGINATION_BTN} ${PAGINATION_BTN_NAV} ${currentPage === 1 ? PAGINATION_BTN_DISABLED : ''}`;
+  const nextBtnClass = `${PAGINATION_BTN} ${PAGINATION_BTN_NAV} ${currentPage === totalPages ? PAGINATION_BTN_DISABLED : ''}`;
+
   return (
     <div className={`${PAGINATION_CONTAINER} ${className}`}>
-      <button
-        onClick={handlePrev}
-        disabled={currentPage === 1}
-        className={`${PAGINATION_BTN} ${PAGINATION_BTN_NAV} ${currentPage === 1 ? PAGINATION_BTN_DISABLED : ''}`}
-      >
+      <button onClick={handlePrev} disabled={currentPage === 1} className={prevBtnClass}>
         ←
       </button>
 
-      {pageNumbers.map((page, index) => (
+      {pageNumbers.map((page, index) =>
         page === '...' ? (
-          <span key={`dots-${index}`} className="px-2 text-[var(--text)]/50">
-            ...
-          </span>
+          <span key={`dots-${index}`} className={PAGINATION_DOTS}>...</span>
         ) : (
           <button
             key={page}
@@ -83,13 +81,9 @@ function PaginationComponent({
             {page}
           </button>
         )
-      ))}
+      )}
 
-      <button
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-        className={`${PAGINATION_BTN} ${PAGINATION_BTN_NAV} ${currentPage === totalPages ? PAGINATION_BTN_DISABLED : ''}`}
-      >
+      <button onClick={handleNext} disabled={currentPage === totalPages} className={nextBtnClass}>
         →
       </button>
     </div>
@@ -97,4 +91,3 @@ function PaginationComponent({
 }
 
 export const Pagination = memo(PaginationComponent);
-

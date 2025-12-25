@@ -185,3 +185,12 @@ export const COURSE_DETAIL_PROGRESS_LABEL = 'text-[var(--text)]/70';
 export const COURSE_DETAIL_PROGRESS_VALUE = 'font-medium text-[var(--text)]';
 export const COURSE_DETAIL_PROGRESS_BAR = 'h-2 bg-[var(--bg)] rounded-full overflow-hidden';
 export const COURSE_DETAIL_PROGRESS_FILL = 'h-full bg-[var(--accent)] rounded-full';
+
+export const COURSES_PAGE = 'min-h-screen bg-[var(--bg)]';
+export const COURSES_PAGE_MAIN = 'pt-20 pb-16';
+export const COURSES_PAGE_CONTAINER = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
+export const COURSES_PAGE_HEADER = 'mb-8';
+export const COURSES_PAGE_TITLE = 'text-3xl sm:text-4xl font-bold text-[var(--text)] mb-2';
+export const COURSES_PAGE_SUBTITLE = 'text-[var(--text)]/60';
+export const COURSES_PAGE_EMPTY = 'text-center py-16';
+export const COURSES_PAGE_EMPTY_TEXT = 'text-[var(--text)]/50';

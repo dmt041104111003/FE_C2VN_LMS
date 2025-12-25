@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import {
   FEATURES,
   FEATURES_SECTION_TITLE,
@@ -28,41 +28,39 @@ const CARD_BG_STYLES = [
   FEATURES_CARD_2,
   FEATURES_CARD_3,
   FEATURES_CARD_4,
-];
+] as const;
 
 function FeaturesComponent() {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-  const openLightbox = (index: number) => {
+  const openLightbox = useCallback((index: number) => {
     setCurrentIndex(index);
-  };
+  }, []);
 
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setCurrentIndex(null);
-  };
+  }, []);
 
-  const goToPrev = () => {
-    if (currentIndex !== null) {
-      setCurrentIndex((currentIndex - 1 + FEATURES_IMAGES.length) % FEATURES_IMAGES.length);
-    }
-  };
+  const goToPrev = useCallback(() => {
+    setCurrentIndex(prev =>
+      prev !== null ? (prev - 1 + FEATURES_IMAGES.length) % FEATURES_IMAGES.length : null
+    );
+  }, []);
 
-  const goToNext = () => {
-    if (currentIndex !== null) {
-      setCurrentIndex((currentIndex + 1) % FEATURES_IMAGES.length);
-    }
-  };
+  const goToNext = useCallback(() => {
+    setCurrentIndex(prev =>
+      prev !== null ? (prev + 1) % FEATURES_IMAGES.length : null
+    );
+  }, []);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
-  };
+  }, []);
 
   return (
     <section className={FEATURES_SECTION}>
       <div className={FEATURES_CONTAINER}>
-        <h2 className={FEATURES_TITLE}>
-          {FEATURES_SECTION_TITLE}
-        </h2>
+        <h2 className={FEATURES_TITLE}>{FEATURES_SECTION_TITLE}</h2>
         <div className={FEATURES_GRID}>
           {FEATURES.map((item, index) => (
             <div
@@ -72,12 +70,8 @@ function FeaturesComponent() {
             >
               <div className={FEATURES_CARD_OVERLAY} />
               <div className={FEATURES_CARD_CONTENT}>
-                <h3 className={FEATURES_CARD_TITLE}>
-                  {item.title}
-                </h3>
-                <p className={FEATURES_CARD_DESC}>
-                  {item.description}
-                </p>
+                <h3 className={FEATURES_CARD_TITLE}>{item.title}</h3>
+                <p className={FEATURES_CARD_DESC}>{item.description}</p>
               </div>
             </div>
           ))}

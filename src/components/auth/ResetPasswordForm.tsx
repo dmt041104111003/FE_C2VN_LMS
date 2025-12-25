@@ -1,11 +1,21 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { RESET_PASSWORD } from '@/constants/auth';
 import { ROUTES } from '@/constants/navigation';
+import {
+  AUTH_FORM_TITLE,
+  AUTH_FORM_SUBTITLE,
+  AUTH_FORM_HEADER_LG,
+  AUTH_FORM_FIELD,
+  AUTH_FORM_LABEL,
+  AUTH_EMAIL_HIGHLIGHT,
+  AUTH_BACK_LINK,
+  AUTH_RESEND_BTN,
+} from './auth.styles';
 
 function ResetPasswordFormComponent() {
   const searchParams = useSearchParams();
@@ -14,33 +24,25 @@ function ResetPasswordFormComponent() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleResend = () => {
+  const handleResend = useCallback(() => {
     console.log('Resend code to:', email);
-  };
+  }, [email]);
 
   return (
     <>
-      <div className="mb-12">
-        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-3 tracking-wide">
-          {RESET_PASSWORD.title}
-        </h1>
-        <p className="text-sm text-[var(--text)]/50">
-          {RESET_PASSWORD.subtitle}
-        </p>
-        {email && (
-          <p className="text-sm text-[var(--accent)] mt-3">
-            {email}
-          </p>
-        )}
+      <div className={AUTH_FORM_HEADER_LG}>
+        <h1 className={AUTH_FORM_TITLE}>{RESET_PASSWORD.title}</h1>
+        <p className={AUTH_FORM_SUBTITLE}>{RESET_PASSWORD.subtitle}</p>
+        {email && <p className={AUTH_EMAIL_HIGHLIGHT}>{email}</p>}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mã xác thực</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mã xác thực</label>
           <Input
             type="text"
             placeholder={RESET_PASSWORD.codePlaceholder}
@@ -51,8 +53,8 @@ function ResetPasswordFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu mới</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mật khẩu mới</label>
           <Input
             type="password"
             placeholder={RESET_PASSWORD.newPasswordPlaceholder}
@@ -63,8 +65,8 @@ function ResetPasswordFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Xác nhận mật khẩu</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
           <Input
             type="password"
             placeholder={RESET_PASSWORD.confirmPasswordPlaceholder}
@@ -81,14 +83,10 @@ function ResetPasswordFormComponent() {
       </form>
 
       <div className="flex items-center justify-between mt-10">
-        <button
-          type="button"
-          onClick={handleResend}
-          className="text-xs text-[var(--text)]/50 hover:text-[var(--accent)] uppercase tracking-wider transition-colors"
-        >
+        <button type="button" onClick={handleResend} className={AUTH_RESEND_BTN}>
           Gửi lại mã
         </button>
-        <Link href={ROUTES.LOGIN} className="text-xs text-[var(--text)]/40 hover:text-[var(--accent)] transition-colors">
+        <Link href={ROUTES.LOGIN} className={AUTH_BACK_LINK}>
           {RESET_PASSWORD.backToLogin}
         </Link>
       </div>

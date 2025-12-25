@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import Link from 'next/link';
 import { CardModalProps } from './ui.types';
 import { CloseIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
@@ -38,45 +38,37 @@ function CardModalComponent({
 }: CardModalProps) {
   const currentItem = items[currentIndex];
 
-  const handleOverlayClick = () => {
-    onClose();
-  };
-
-  const handleContentClick = (e: React.MouseEvent) => {
+  const handleContentClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-  };
+  }, []);
 
-  const handlePrev = (e: React.MouseEvent) => {
+  const handleCloseClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  }, [onClose]);
+
+  const handlePrev = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onPrev();
-  };
+  }, [onPrev]);
 
-  const handleNext = (e: React.MouseEvent) => {
+  const handleNext = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onNext();
-  };
+  }, [onNext]);
 
-  const handleGoTo = (e: React.MouseEvent, index: number) => {
+  const handleGoTo = useCallback((e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     onGoTo(index);
-  };
+  }, [onGoTo]);
 
   return (
-    <div
-      className={CARD_MODAL_OVERLAY}
-      onClick={handleOverlayClick}
-    >
-      <button
-        className={CARD_MODAL_CLOSE}
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
-      >
+    <div className={CARD_MODAL_OVERLAY} onClick={onClose}>
+      <button className={CARD_MODAL_CLOSE} onClick={handleCloseClick}>
         <CloseIcon className={CARD_MODAL_CLOSE_ICON} />
       </button>
 
-      <div
-        className={CARD_MODAL_CONTAINER}
-        onClick={handleContentClick}
-      >
+      <div className={CARD_MODAL_CONTAINER} onClick={handleContentClick}>
         {currentItem.image && (
           <div className={CARD_MODAL_IMAGE_WRAPPER}>
             <img
@@ -91,52 +83,33 @@ function CardModalComponent({
 
         <div className={CARD_MODAL_CONTENT}>
           {currentItem.tag && (
-            <Badge
-              variant="accent"
-              className={CARD_MODAL_TAG}
-            >
+            <Badge variant="accent" className={CARD_MODAL_TAG}>
               {currentItem.tag}
             </Badge>
           )}
 
-          <h3 className={CARD_MODAL_TITLE}>
-            {currentItem.title}
-          </h3>
+          <h3 className={CARD_MODAL_TITLE}>{currentItem.title}</h3>
 
           {currentItem.subtitle && (
-            <p className={CARD_MODAL_SUBTITLE}>
-              {currentItem.subtitle}
-            </p>
+            <p className={CARD_MODAL_SUBTITLE}>{currentItem.subtitle}</p>
           )}
 
           {currentItem.price && (
-            <p className={CARD_MODAL_PRICE}>
-              {currentItem.price}
-            </p>
+            <p className={CARD_MODAL_PRICE}>{currentItem.price}</p>
           )}
 
           {currentItem.buttonText && currentItem.buttonHref && (
-            <Link
-              href={currentItem.buttonHref}
-              className={CARD_MODAL_BUTTON}
-              onClick={onClose}
-            >
+            <Link href={currentItem.buttonHref} className={CARD_MODAL_BUTTON} onClick={onClose}>
               {currentItem.buttonText}
             </Link>
           )}
         </div>
 
-        <button
-          className={`${LIGHTBOX_NAV} ${LIGHTBOX_PREV}`}
-          onClick={handlePrev}
-        >
+        <button className={`${LIGHTBOX_NAV} ${LIGHTBOX_PREV}`} onClick={handlePrev}>
           <ChevronLeftIcon className={LIGHTBOX_NAV_ICON} />
         </button>
 
-        <button
-          className={`${LIGHTBOX_NAV} ${LIGHTBOX_NEXT}`}
-          onClick={handleNext}
-        >
+        <button className={`${LIGHTBOX_NAV} ${LIGHTBOX_NEXT}`} onClick={handleNext}>
           <ChevronRightIcon className={LIGHTBOX_NAV_ICON} />
         </button>
 

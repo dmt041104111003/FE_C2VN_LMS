@@ -6,6 +6,16 @@ import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from
 import { CourseCard } from './CourseCard';
 import { COURSE_PAGE, COURSE_GRID, MOCK_COURSES } from '@/constants/course';
 import { SYSTEM_CONFIG } from '@/constants/config';
+import {
+  COURSES_PAGE,
+  COURSES_PAGE_MAIN,
+  COURSES_PAGE_CONTAINER,
+  COURSES_PAGE_HEADER,
+  COURSES_PAGE_TITLE,
+  COURSES_PAGE_SUBTITLE,
+  COURSES_PAGE_EMPTY,
+  COURSES_PAGE_EMPTY_TEXT,
+} from './courses.styles';
 
 const GRID_CLASSES_MAP = [
   COURSE_GRID.CLASSES_1,
@@ -185,16 +195,14 @@ function CoursesPageComponent() {
   ], []);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className={COURSES_PAGE}>
       <Header />
 
-      <main className="pt-20 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <header className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-2">
-              {COURSE_PAGE.title}
-            </h1>
-            <p className="text-[var(--text)]/60">{COURSE_PAGE.subtitle}</p>
+      <main className={COURSES_PAGE_MAIN}>
+        <div className={COURSES_PAGE_CONTAINER}>
+          <header className={COURSES_PAGE_HEADER}>
+            <h1 className={COURSES_PAGE_TITLE}>{COURSE_PAGE.title}</h1>
+            <p className={COURSES_PAGE_SUBTITLE}>{COURSE_PAGE.subtitle}</p>
           </header>
 
           <Filter
@@ -216,8 +224,8 @@ function CoursesPageComponent() {
           />
 
           {paginatedCourses.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-[var(--text)]/50">{COURSE_PAGE.emptyText}</p>
+            <div className={COURSES_PAGE_EMPTY}>
+              <p className={COURSES_PAGE_EMPTY_TEXT}>{COURSE_PAGE.emptyText}</p>
             </div>
           ) : (
             <>

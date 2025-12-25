@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useCallback } from 'react';
 import { WalletModalProps } from './ui.types';
 import { CloseIcon } from './icons';
 import {
@@ -8,6 +8,13 @@ import {
   MODAL_CONTAINER,
   CARD_MODAL_CLOSE,
   CARD_MODAL_CLOSE_ICON,
+  WALLET_MODAL_LIST,
+  WALLET_MODAL_EMPTY,
+  WALLET_MODAL_ITEM,
+  WALLET_MODAL_ICON_WRAPPER,
+  WALLET_MODAL_ICON,
+  WALLET_MODAL_NAME_WRAPPER,
+  WALLET_MODAL_NAME,
 } from './ui.styles';
 
 function WalletModalComponent({
@@ -36,44 +43,43 @@ function WalletModalComponent({
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  const handleCloseClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  }, [onClose]);
+
+  const handleContainerClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
   if (!isOpen) return null;
 
   return (
     <div className={MODAL_OVERLAY} onClick={onClose}>
-      <button
-        className={CARD_MODAL_CLOSE}
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
-      >
+      <button className={CARD_MODAL_CLOSE} onClick={handleCloseClick}>
         <CloseIcon className={CARD_MODAL_CLOSE_ICON} />
       </button>
 
-      <div
-        className={MODAL_CONTAINER}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-4 flex flex-col gap-3">
+      <div className={MODAL_CONTAINER} onClick={handleContainerClick}>
+        <div className={WALLET_MODAL_LIST}>
           {wallets.length === 0 ? (
-            <div className="py-12 text-center text-sm text-[var(--text)]/50">
-              {emptyText}
-            </div>
+            <div className={WALLET_MODAL_EMPTY}>{emptyText}</div>
           ) : (
             wallets.map((wallet) => (
               <button
                 key={wallet.key}
                 onClick={() => onSelect(wallet)}
-                className="flex items-center gap-3"
+                className={WALLET_MODAL_ITEM}
               >
-                <div className="w-14 h-14 rounded-xl bg-[var(--bg-alt)] flex items-center justify-center flex-shrink-0">
+                <div className={WALLET_MODAL_ICON_WRAPPER}>
                   <img
                     src={wallet.icon || '/loading.png'}
                     alt={wallet.name}
-                    className="w-10 h-10 object-contain"
+                    className={WALLET_MODAL_ICON}
                   />
                 </div>
-                <div className="flex-1 h-14 rounded-xl border border-[var(--text)]/10 bg-[var(--bg-alt)] flex items-center justify-center px-4">
-                  <span className="text-sm font-semibold text-[var(--text)]">
-                    {wallet.name}
-                  </span>
+                <div className={WALLET_MODAL_NAME_WRAPPER}>
+                  <span className={WALLET_MODAL_NAME}>{wallet.name}</span>
                 </div>
               </button>
             ))

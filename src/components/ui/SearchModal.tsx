@@ -1,11 +1,12 @@
 'use client';
 
-import { memo, useState, useMemo } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SearchIcon } from './icons';
 import { Card } from './Card';
-import { SearchInput, SearchSuggestion } from './SearchInput';
+import { SearchInput } from './SearchInput';
+import { SearchModalProps, SearchSuggestionItem } from './ui.types';
 import {
   SEARCH_PLACEHOLDER,
   SEARCH_LABELS,
@@ -16,6 +17,8 @@ import { MOCK_COURSES } from '@/constants/course';
 import {
   SEARCH_OVERLAY,
   SEARCH_MODAL,
+  SEARCH_MODAL_INPUT_WRAPPER,
+  SEARCH_MODAL_EMPTY,
   SEARCH_CONTENT,
   SEARCH_SECTION,
   SEARCH_SECTION_TITLE,
@@ -25,10 +28,6 @@ import {
   SEARCH_FOOTER_LINK,
   ICON_SM,
 } from './ui.styles';
-
-interface SearchModalProps {
-  onClose: () => void;
-}
 
 function SearchModalComponent({ onClose }: SearchModalProps) {
   const router = useRouter();
@@ -47,31 +46,28 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
       .map((c) => c.title);
   }, []);
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
-  };
+  }, [onClose]);
 
-  const handleSelect = (suggestion: SearchSuggestion) => {
+  const handleSelect = useCallback((suggestion: SearchSuggestionItem) => {
     router.push(`${ROUTES.COURSES}?q=${encodeURIComponent(suggestion.text)}`);
     onClose();
-  };
+  }, [router, onClose]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && searchValue.trim()) {
       router.push(`${ROUTES.COURSES}?q=${encodeURIComponent(searchValue)}`);
       onClose();
     }
-  };
+  }, [router, searchValue, onClose]);
 
   return (
-    <div
-      className={SEARCH_OVERLAY}
-      onClick={handleOverlayClick}
-    >
+    <div className={SEARCH_OVERLAY} onClick={handleOverlayClick}>
       <div className={SEARCH_MODAL}>
-        <div className="px-4 pt-4 relative overflow-visible" onKeyDown={handleKeyDown}>
+        <div className={SEARCH_MODAL_INPUT_WRAPPER} onKeyDown={handleKeyDown}>
           <SearchInput
             value={searchValue}
             onChange={setSearchValue}
@@ -87,9 +83,7 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
           {!searchValue ? (
             <>
               <div className={SEARCH_SECTION}>
-                <h3 className={SEARCH_SECTION_TITLE}>
-                  {SEARCH_LABELS.newestTitle}
-                </h3>
+                <h3 className={SEARCH_SECTION_TITLE}>{SEARCH_LABELS.newestTitle}</h3>
                 {newestCourses.map((course) => (
                   <Card
                     key={course.id}
@@ -105,9 +99,7 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
               </div>
 
               <div className={SEARCH_SECTION}>
-                <h3 className={SEARCH_SECTION_TITLE}>
-                  {SEARCH_LABELS.trendingTitle}
-                </h3>
+                <h3 className={SEARCH_SECTION_TITLE}>{SEARCH_LABELS.trendingTitle}</h3>
                 {trendingSearches.map((term) => (
                   <Link
                     key={term}
@@ -122,21 +114,15 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
               </div>
             </>
           ) : (
-            <div className="py-4 text-center text-sm text-[var(--text)]/50">
+            <div className={SEARCH_MODAL_EMPTY}>
               Nhấn Enter để tìm kiếm "{searchValue}"
             </div>
           )}
         </div>
 
         <div className={SEARCH_FOOTER}>
-          <p className={SEARCH_FOOTER_TEXT}>
-            {SEARCH_LABELS.footerText}
-          </p>
-          <Link
-            href={ROUTES.COURSES}
-            className={SEARCH_FOOTER_LINK}
-            onClick={onClose}
-          >
+          <p className={SEARCH_FOOTER_TEXT}>{SEARCH_LABELS.footerText}</p>
+          <Link href={ROUTES.COURSES} className={SEARCH_FOOTER_LINK} onClick={onClose}>
             {SEARCH_LABELS.footerLink}
           </Link>
         </div>
@@ -146,4 +132,3 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
 }
 
 export const SearchModal = memo(SearchModalComponent);
-

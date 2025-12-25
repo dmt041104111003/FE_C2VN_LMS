@@ -1,11 +1,21 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { REGISTER } from '@/constants/register';
 import { ROUTES } from '@/constants/navigation';
+import {
+  AUTH_FORM_TITLE,
+  AUTH_FORM_SUBTITLE,
+  AUTH_FORM_HEADER_LG,
+  AUTH_FORM_FIELD,
+  AUTH_FORM_LABEL,
+  AUTH_FOOTER,
+  AUTH_FOOTER_TEXT,
+  AUTH_FOOTER_LINK,
+} from './auth.styles';
 
 function RegisterFormComponent() {
   const router = useRouter();
@@ -14,25 +24,21 @@ function RegisterFormComponent() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     router.push(`${ROUTES.VERIFY_EMAIL}?email=${encodeURIComponent(email)}`);
-  };
+  }, [router, email]);
 
   return (
     <>
-      <div className="mb-12">
-        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-3 tracking-wide">
-          {REGISTER.title}
-        </h1>
-        <p className="text-sm text-[var(--text)]/50">
-          {REGISTER.subtitle}
-        </p>
+      <div className={AUTH_FORM_HEADER_LG}>
+        <h1 className={AUTH_FORM_TITLE}>{REGISTER.title}</h1>
+        <p className={AUTH_FORM_SUBTITLE}>{REGISTER.subtitle}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Họ và tên</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Họ và tên</label>
           <Input
             type="text"
             placeholder={REGISTER.fullNamePlaceholder}
@@ -43,8 +49,8 @@ function RegisterFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Email</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Email</label>
           <Input
             type="email"
             placeholder={REGISTER.emailPlaceholder}
@@ -55,8 +61,8 @@ function RegisterFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mật khẩu</label>
           <Input
             type="password"
             placeholder={REGISTER.passwordPlaceholder}
@@ -67,8 +73,8 @@ function RegisterFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Xác nhận mật khẩu</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
           <Input
             type="password"
             placeholder={REGISTER.confirmPasswordPlaceholder}
@@ -84,10 +90,10 @@ function RegisterFormComponent() {
         </Button>
       </form>
 
-      <div className="text-center mt-10">
-        <p className="text-sm text-[var(--text)]/40">
+      <div className={AUTH_FOOTER}>
+        <p className={AUTH_FOOTER_TEXT}>
           {REGISTER.hasAccount}{' '}
-          <Link href={ROUTES.LOGIN} className="text-[var(--accent)] hover:underline">
+          <Link href={ROUTES.LOGIN} className={AUTH_FOOTER_LINK}>
             {REGISTER.loginLink}
           </Link>
         </p>

@@ -1,10 +1,20 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import { VERIFY_EMAIL } from '@/constants/auth';
 import { ROUTES } from '@/constants/navigation';
+import {
+  AUTH_FORM_TITLE,
+  AUTH_FORM_SUBTITLE,
+  AUTH_FORM_HEADER_LG,
+  AUTH_FORM_FIELD,
+  AUTH_FORM_LABEL,
+  AUTH_FOOTER,
+  AUTH_EMAIL_HIGHLIGHT,
+  AUTH_RESEND_BTN,
+} from './auth.styles';
 
 function VerifyEmailFormComponent() {
   const router = useRouter();
@@ -12,34 +22,26 @@ function VerifyEmailFormComponent() {
   const email = searchParams.get('email') || '';
   const [code, setCode] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     router.push(ROUTES.LOGIN);
-  };
+  }, [router]);
 
-  const handleResend = () => {
+  const handleResend = useCallback(() => {
     console.log('Resend code to:', email);
-  };
+  }, [email]);
 
   return (
     <>
-      <div className="mb-12">
-        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-3 tracking-wide">
-          {VERIFY_EMAIL.title}
-        </h1>
-        <p className="text-sm text-[var(--text)]/50">
-          {VERIFY_EMAIL.subtitle}
-        </p>
-        {email && (
-          <p className="text-sm text-[var(--accent)] mt-3">
-            {email}
-          </p>
-        )}
+      <div className={AUTH_FORM_HEADER_LG}>
+        <h1 className={AUTH_FORM_TITLE}>{VERIFY_EMAIL.title}</h1>
+        <p className={AUTH_FORM_SUBTITLE}>{VERIFY_EMAIL.subtitle}</p>
+        {email && <p className={AUTH_EMAIL_HIGHLIGHT}>{email}</p>}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mã xác thực</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mã xác thực</label>
           <Input
             type="text"
             placeholder={VERIFY_EMAIL.codePlaceholder}
@@ -55,12 +57,8 @@ function VerifyEmailFormComponent() {
         </Button>
       </form>
 
-      <div className="text-center mt-10">
-        <button
-          type="button"
-          onClick={handleResend}
-          className="text-xs text-[var(--text)]/50 hover:text-[var(--accent)] uppercase tracking-wider transition-colors"
-        >
+      <div className={AUTH_FOOTER}>
+        <button type="button" onClick={handleResend} className={AUTH_RESEND_BTN}>
           {VERIFY_EMAIL.resendText}
         </button>
       </div>

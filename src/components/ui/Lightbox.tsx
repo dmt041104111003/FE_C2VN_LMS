@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { LightboxProps } from './ui.types';
 import { CloseIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
 import {
@@ -27,34 +27,29 @@ function LightboxComponent({
   onNext,
   onGoTo,
 }: LightboxProps) {
-  const handleOverlayClick = () => {
-    onClose();
-  };
-
-  const handlePrev = (e: React.MouseEvent) => {
+  const handlePrev = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onPrev();
-  };
+  }, [onPrev]);
 
-  const handleNext = (e: React.MouseEvent) => {
+  const handleNext = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onNext();
-  };
+  }, [onNext]);
 
-  const handleGoTo = (e: React.MouseEvent, index: number) => {
+  const handleCloseClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  }, [onClose]);
+
+  const handleGoTo = useCallback((e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     onGoTo(index);
-  };
+  }, [onGoTo]);
 
   return (
-    <div
-      className={LIGHTBOX_OVERLAY}
-      onClick={handleOverlayClick}
-    >
-      <button
-        className={LIGHTBOX_CLOSE}
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
-      >
+    <div className={LIGHTBOX_OVERLAY} onClick={onClose}>
+      <button className={LIGHTBOX_CLOSE} onClick={handleCloseClick}>
         <CloseIcon className={LIGHTBOX_CLOSE_ICON} />
       </button>
       <div className={LIGHTBOX_WRAPPER}>
@@ -65,16 +60,10 @@ function LightboxComponent({
           draggable={false}
           onContextMenu={(e) => e.preventDefault()}
         />
-        <button
-          className={`${LIGHTBOX_NAV} ${LIGHTBOX_PREV}`}
-          onClick={handlePrev}
-        >
+        <button className={`${LIGHTBOX_NAV} ${LIGHTBOX_PREV}`} onClick={handlePrev}>
           <ChevronLeftIcon className={LIGHTBOX_NAV_ICON} />
         </button>
-        <button
-          className={`${LIGHTBOX_NAV} ${LIGHTBOX_NEXT}`}
-          onClick={handleNext}
-        >
+        <button className={`${LIGHTBOX_NAV} ${LIGHTBOX_NEXT}`} onClick={handleNext}>
           <ChevronRightIcon className={LIGHTBOX_NAV_ICON} />
         </button>
         <div className={LIGHTBOX_DOTS}>
@@ -92,4 +81,3 @@ function LightboxComponent({
 }
 
 export const Lightbox = memo(LightboxComponent);
-

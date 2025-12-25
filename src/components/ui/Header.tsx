@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from './Logo';
@@ -55,12 +55,12 @@ function HeaderComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const isActive = (href: string) => {
+  const isActive = useCallback((href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
-  };
+  }, [pathname]);
 
-  const isChildActive = (childHref: string) => {
+  const isChildActive = useCallback((childHref: string) => {
     const [childPath, childQuery] = childHref.split('?');
     if (pathname !== childPath) return false;
     
@@ -73,38 +73,35 @@ function HeaderComponent() {
       if (searchParams.get(key) !== value) return false;
     }
     return true;
-  };
+  }, [pathname, searchParams]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
 
-  const openSearch = () => {
+  const openSearch = useCallback(() => {
     setIsSearchOpen(true);
-  };
+  }, []);
 
-  const closeSearch = () => {
+  const closeSearch = useCallback(() => {
     setIsSearchOpen(false);
-  };
+  }, []);
+
+  const navItemsWithChildren = useMemo(() => 
+    NAV_ITEMS.filter(item => 'children' in item),
+  []);
 
   return (
     <>
       <header className={HEADER}>
         <div className={HEADER_CONTAINER}>
           <div className={HEADER_LEFT}>
-            <Link
-              href={ROUTES.HOME}
-              onClick={closeMenu}
-            >
-              <Logo
-                layout="inline"
-                size="sm"
-                showText={true}
-              />
+            <Link href={ROUTES.HOME} onClick={closeMenu}>
+              <Logo layout="inline" size="sm" showText={true} />
             </Link>
 
             <nav className={HEADER_NAV}>
@@ -121,24 +118,15 @@ function HeaderComponent() {
           </div>
 
           <div className={HEADER_RIGHT}>
-            <button
-              className={HEADER_MENU_BTN}
-              onClick={toggleMenu}
-            >
+            <button className={HEADER_MENU_BTN} onClick={toggleMenu}>
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
 
-            <button
-              className={HEADER_ICON_BTN}
-              onClick={openSearch}
-            >
+            <button className={HEADER_ICON_BTN} onClick={openSearch}>
               <SearchIcon />
             </button>
 
-            <Link
-              href={ROUTES.LOGIN}
-              className={HEADER_AUTH_LINK}
-            >
+            <Link href={ROUTES.LOGIN} className={HEADER_AUTH_LINK}>
               {AUTH_TEXT.login}
             </Link>
           </div>
@@ -149,13 +137,10 @@ function HeaderComponent() {
         <div className={HEADER_MEGA}>
           <div className={HEADER_MEGA_CONTAINER}>
             <div className={HEADER_MEGA_GRID}>
-              {NAV_ITEMS.map((item) => {
+              {navItemsWithChildren.map((item) => {
                 if (!('children' in item)) return null;
                 return (
-                  <div
-                    key={item.label}
-                    className={HEADER_MEGA_COL}
-                  >
+                  <div key={item.label} className={HEADER_MEGA_COL}>
                     <Link
                       href={item.href}
                       className={isActive(item.href) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
@@ -181,32 +166,18 @@ function HeaderComponent() {
 
             <div className={HEADER_MEGA_FOOTER}>
               <div className={HEADER_MEGA_APPS}>
-                <a
-                  href="#"
-                  className={HEADER_APP_BTN}
-                >
+                <a href="#" className={HEADER_APP_BTN}>
                   <AppleIcon className={ICON_LG} />
                   <div className={HEADER_APP_TEXT}>
-                    <div className={HEADER_APP_LABEL}>
-                      {APP_DOWNLOAD.label}
-                    </div>
-                    <div className={HEADER_APP_NAME}>
-                      {APP_DOWNLOAD.appStore}
-                    </div>
+                    <div className={HEADER_APP_LABEL}>{APP_DOWNLOAD.label}</div>
+                    <div className={HEADER_APP_NAME}>{APP_DOWNLOAD.appStore}</div>
                   </div>
                 </a>
-                <a
-                  href="#"
-                  className={HEADER_APP_BTN_ALT}
-                >
+                <a href="#" className={HEADER_APP_BTN_ALT}>
                   <PlayStoreIcon className={ICON_LG} />
                   <div className={HEADER_APP_TEXT}>
-                    <div className={HEADER_APP_LABEL}>
-                      {APP_DOWNLOAD.label}
-                    </div>
-                    <div className={HEADER_APP_NAME}>
-                      {APP_DOWNLOAD.android}
-                    </div>
+                    <div className={HEADER_APP_LABEL}>{APP_DOWNLOAD.label}</div>
+                    <div className={HEADER_APP_NAME}>{APP_DOWNLOAD.android}</div>
                   </div>
                 </a>
               </div>
@@ -215,9 +186,7 @@ function HeaderComponent() {
         </div>
       )}
 
-      {isSearchOpen && (
-        <SearchModal onClose={closeSearch} />
-      )}
+      {isSearchOpen && <SearchModal onClose={closeSearch} />}
     </>
   );
 }

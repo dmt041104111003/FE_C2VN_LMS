@@ -283,3 +283,35 @@ export const VIDEO_MODAL_HEADER = 'mb-4';
 export const VIDEO_MODAL_TITLE = 'text-xl font-semibold text-white';
 export const VIDEO_MODAL_SUBTITLE = 'text-sm text-white/60 mt-1';
 export const VIDEO_MODAL_VIDEO = 'rounded-xl overflow-hidden bg-black';
+
+export const SEARCH_AUTOCOMPLETE_WRAPPER = 'relative';
+export const SEARCH_AUTOCOMPLETE_ICON = 'absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text)]/30';
+export const SEARCH_AUTOCOMPLETE_FIELD = 'w-full pl-1 pr-4 py-3 bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/30 border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 focus:outline-none transition-colors';
+export const SEARCH_AUTOCOMPLETE_FIELD_ICON = 'w-full pl-8 pr-4 py-3 bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/30 border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 focus:outline-none transition-colors';
+export const SEARCH_SUGGESTION_LIST = 'absolute left-0 right-0 top-full mt-1 bg-[var(--bg)] border border-[var(--text)]/10 rounded-lg shadow-lg max-h-64 overflow-y-auto z-[200]';
+export const SEARCH_SUGGESTION_ITEM = 'px-4 py-2.5 cursor-pointer flex items-center justify-between text-sm transition-colors text-[var(--text)]/70 hover:bg-[var(--bg-alt)]';
+export const SEARCH_SUGGESTION_ITEM_ACTIVE = 'px-4 py-2.5 cursor-pointer flex items-center justify-between text-sm transition-colors bg-[var(--bg-alt)] text-[var(--text)]';
+export const SEARCH_SUGGESTION_ICON = 'w-3.5 h-3.5 text-[var(--text)]/30';
+export const SEARCH_SUGGESTION_HIGHLIGHT = 'text-[var(--accent)] font-medium';
+export const SEARCH_SUGGESTION_TYPE = 'text-[10px] text-[var(--text)]/40 uppercase tracking-wider';
+
+export const FILTER_WRAPPER = 'space-y-8';
+export const FILTER_ROW = 'flex flex-col sm:flex-row gap-8 sm:gap-12';
+export const FILTER_COL = 'flex-1 space-y-1';
+export const FILTER_LABEL = 'text-xs text-[var(--text)]/40 uppercase tracking-wider pl-1';
+export const FILTER_SELECT = 'w-full py-2 pl-1 bg-transparent text-sm text-[var(--text)] border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 focus:outline-none transition-colors cursor-pointer';
+export const FILTER_RANGE_WRAPPER = 'flex items-center gap-4 py-2';
+export const FILTER_RANGE_INPUT = 'flex-1 h-[1px] bg-[var(--text)]/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)]';
+export const FILTER_RANGE_SEPARATOR = 'text-[var(--text)]/15 text-xs';
+
+export const PAGINATION_DOTS = 'px-2 text-[var(--text)]/50';
+export const WALLET_MODAL_LIST = 'p-4 flex flex-col gap-3';
+export const WALLET_MODAL_EMPTY = 'py-12 text-center text-sm text-[var(--text)]/50';
+export const WALLET_MODAL_ITEM = 'flex items-center gap-3';
+export const WALLET_MODAL_ICON_WRAPPER = 'w-14 h-14 rounded-xl bg-[var(--bg-alt)] flex items-center justify-center flex-shrink-0';
+export const WALLET_MODAL_ICON = 'w-10 h-10 object-contain';
+export const WALLET_MODAL_NAME_WRAPPER = 'flex-1 h-14 rounded-xl border border-[var(--text)]/10 bg-[var(--bg-alt)] flex items-center justify-center px-4';
+export const WALLET_MODAL_NAME = 'text-sm font-semibold text-[var(--text)]';
+export const SEARCH_MODAL_INPUT_WRAPPER = 'px-4 pt-4 relative overflow-visible';
+export const SEARCH_MODAL_EMPTY = 'py-4 text-center text-sm text-[var(--text)]/50';
+export const DEMO_FORM_FIELD = 'flex-1 space-y-1';

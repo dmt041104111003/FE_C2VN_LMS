@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { Button, Badge, CardModal } from '@/components/ui';
 import {
@@ -27,60 +27,54 @@ import {
   COURSES_CARD_TITLE,
 } from './landing.styles';
 
-const CARD_GRID_STYLES = [
-  COURSES_CARD_1,
-  COURSES_CARD_2,
-  COURSES_CARD_3,
-];
-
-const MODAL_ITEMS = MOCK_COURSES.slice(0, 3).map((course, index) => ({
-  image: COURSES_IMAGES[index],
-  tag: course.tag,
-  title: course.title,
-  subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructor}`,
-  price: formatPrice(course.price),
-  buttonText: COURSES_LABELS.viewDetail,
-  buttonHref: `/courses/${course.id}`,
-}));
+const CARD_GRID_STYLES = [COURSES_CARD_1, COURSES_CARD_2, COURSES_CARD_3] as const;
 
 function CoursesComponent() {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-  const openModal = (index: number) => {
-    setCurrentIndex(index);
-  };
+  const modalItems = useMemo(() => 
+    MOCK_COURSES.slice(0, 3).map((course, index) => ({
+      image: COURSES_IMAGES[index],
+      tag: course.tag,
+      title: course.title,
+      subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructor}`,
+      price: formatPrice(course.price),
+      buttonText: COURSES_LABELS.viewDetail,
+      buttonHref: `/courses/${course.id}`,
+    })),
+  []);
 
-  const closeModal = () => {
+  const openModal = useCallback((index: number) => {
+    setCurrentIndex(index);
+  }, []);
+
+  const closeModal = useCallback(() => {
     setCurrentIndex(null);
-  };
+  }, []);
 
-  const goToPrev = () => {
-    if (currentIndex !== null) {
-      setCurrentIndex((currentIndex - 1 + MODAL_ITEMS.length) % MODAL_ITEMS.length);
-    }
-  };
+  const goToPrev = useCallback(() => {
+    setCurrentIndex(prev => 
+      prev !== null ? (prev - 1 + modalItems.length) % modalItems.length : null
+    );
+  }, [modalItems.length]);
 
-  const goToNext = () => {
-    if (currentIndex !== null) {
-      setCurrentIndex((currentIndex + 1) % MODAL_ITEMS.length);
-    }
-  };
+  const goToNext = useCallback(() => {
+    setCurrentIndex(prev => 
+      prev !== null ? (prev + 1) % modalItems.length : null
+    );
+  }, [modalItems.length]);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
-  };
+  }, []);
 
   return (
     <section className={COURSES_SECTION}>
       <div className={COURSES_CONTAINER}>
         <div className={COURSES_HEADER}>
-          <h2 className={COURSES_HEADER_TITLE}>
-            {COURSES_LABELS.sectionTitle}
-          </h2>
+          <h2 className={COURSES_HEADER_TITLE}>{COURSES_LABELS.sectionTitle}</h2>
           <Link href={ROUTES.COURSES}>
-            <Button variant="ghost">
-              {COURSES_LABELS.viewAll}
-            </Button>
+            <Button variant="ghost">{COURSES_LABELS.viewAll}</Button>
           </Link>
         </div>
         <div className={COURSES_GRID}>
@@ -99,15 +93,10 @@ function CoursesComponent() {
               />
               <div className={COURSES_CARD_GRADIENT} />
               <div className={COURSES_CARD_CONTENT}>
-                <Badge
-                  variant="accent"
-                  className={COURSES_CARD_BADGE}
-                >
+                <Badge variant="accent" className={COURSES_CARD_BADGE}>
                   {course.tag}
                 </Badge>
-                <h3 className={COURSES_CARD_TITLE}>
-                  {course.title}
-                </h3>
+                <h3 className={COURSES_CARD_TITLE}>{course.title}</h3>
               </div>
             </div>
           ))}
@@ -116,7 +105,7 @@ function CoursesComponent() {
 
       {currentIndex !== null && (
         <CardModal
-          items={MODAL_ITEMS}
+          items={modalItems}
           currentIndex={currentIndex}
           onClose={closeModal}
           onPrev={goToPrev}

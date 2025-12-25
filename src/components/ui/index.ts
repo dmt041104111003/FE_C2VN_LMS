@@ -8,7 +8,6 @@ export { Header } from './Header';
 export { Footer } from './Footer';
 export { SearchModal } from './SearchModal';
 export { SearchInput } from './SearchInput';
-export type { SearchSuggestion, SearchInputProps } from './SearchInput';
 export { Lightbox } from './Lightbox';
 export { Card } from './Card';
 export { CardModal } from './CardModal';
@@ -28,6 +27,8 @@ export type {
   FilterOption,
   FilterProps,
   SearchSuggestionItem,
+  SearchInputProps,
+  SearchModalProps,
   RatingProps,
   RatingSize,
   InstructorProps,

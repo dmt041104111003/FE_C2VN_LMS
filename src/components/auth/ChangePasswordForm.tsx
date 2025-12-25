@@ -1,32 +1,35 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Button, Input } from '@/components/ui';
 import { CHANGE_PASSWORD } from '@/constants/auth';
+import {
+  AUTH_FORM_TITLE,
+  AUTH_FORM_SUBTITLE,
+  AUTH_FORM_HEADER_LG,
+  AUTH_FORM_FIELD,
+  AUTH_FORM_LABEL,
+} from './auth.styles';
 
 function ChangePasswordFormComponent() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-  };
+  }, []);
 
   return (
     <>
-      <div className="mb-12">
-        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-3 tracking-wide">
-          {CHANGE_PASSWORD.title}
-        </h1>
-        <p className="text-sm text-[var(--text)]/50">
-          {CHANGE_PASSWORD.subtitle}
-        </p>
+      <div className={AUTH_FORM_HEADER_LG}>
+        <h1 className={AUTH_FORM_TITLE}>{CHANGE_PASSWORD.title}</h1>
+        <p className={AUTH_FORM_SUBTITLE}>{CHANGE_PASSWORD.subtitle}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu hiện tại</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mật khẩu hiện tại</label>
           <Input
             type="password"
             placeholder={CHANGE_PASSWORD.currentPasswordPlaceholder}
@@ -37,8 +40,8 @@ function ChangePasswordFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu mới</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mật khẩu mới</label>
           <Input
             type="password"
             placeholder={CHANGE_PASSWORD.newPasswordPlaceholder}
@@ -49,8 +52,8 @@ function ChangePasswordFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Xác nhận mật khẩu</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Xác nhận mật khẩu</label>
           <Input
             type="password"
             placeholder={CHANGE_PASSWORD.confirmPasswordPlaceholder}
@@ -70,4 +73,3 @@ function ChangePasswordFormComponent() {
 }
 
 export const ChangePasswordForm = memo(ChangePasswordFormComponent);
-

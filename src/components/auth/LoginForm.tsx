@@ -1,11 +1,30 @@
 'use client';
 
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Button, Input, GoogleIcon, GitHubIcon, WalletModal } from '@/components/ui';
 import { LOGIN } from '@/constants/login';
 import { ROUTES } from '@/constants/navigation';
 import { getAvailableWallets, CardanoWallet } from '@/constants/wallet';
+import {
+  AUTH_FORM_TITLE,
+  AUTH_FORM_SUBTITLE,
+  AUTH_FORM_HEADER,
+  AUTH_FORM_WRAPPER,
+  AUTH_FORM_FIELD,
+  AUTH_FORM_LABEL,
+  AUTH_FORM_FORGOT,
+  AUTH_FORM_FORGOT_LINK,
+  AUTH_DIVIDER,
+  AUTH_DIVIDER_LINE,
+  AUTH_DIVIDER_TEXT,
+  AUTH_SOCIAL_BTN,
+  AUTH_SOCIAL_LIST,
+  AUTH_SOCIAL_ICON,
+  AUTH_FOOTER,
+  AUTH_FOOTER_TEXT,
+  AUTH_FOOTER_LINK,
+} from './auth.styles';
 
 function LoginFormComponent() {
   const [email, setEmail] = useState('');
@@ -14,33 +33,31 @@ function LoginFormComponent() {
   const [showWalletModal, setShowWalletModal] = useState(false);
 
   useEffect(() => {
-    const detected = getAvailableWallets();
-    setWallets(detected);
+    setWallets(getAvailableWallets());
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleWalletSelect = (wallet: { key: string; name: string }) => {
+  const handleWalletSelect = useCallback((wallet: { key: string; name: string }) => {
     console.log('Connect wallet:', wallet.key);
     setShowWalletModal(false);
-  };
+  }, []);
+
+  const openWalletModal = useCallback(() => setShowWalletModal(true), []);
+  const closeWalletModal = useCallback(() => setShowWalletModal(false), []);
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-2 tracking-wide">
-          {LOGIN.title}
-        </h1>
-        <p className="text-sm text-[var(--text)]/50">
-          {LOGIN.subtitle}
-        </p>
+      <div className={AUTH_FORM_HEADER}>
+        <h1 className={AUTH_FORM_TITLE}>{LOGIN.title}</h1>
+        <p className={AUTH_FORM_SUBTITLE}>{LOGIN.subtitle}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Email</label>
+      <form onSubmit={handleSubmit} className={AUTH_FORM_WRAPPER}>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Email</label>
           <Input
             type="email"
             placeholder={LOGIN.emailPlaceholder}
@@ -51,8 +68,8 @@ function LoginFormComponent() {
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu</label>
+        <div className={AUTH_FORM_FIELD}>
+          <label className={AUTH_FORM_LABEL}>Mật khẩu</label>
           <Input
             type="password"
             placeholder={LOGIN.passwordPlaceholder}
@@ -63,8 +80,8 @@ function LoginFormComponent() {
             required
           />
         </div>
-        <div className="text-right">
-          <Link href="/auth/forgot-password" className="text-xs text-[var(--text)]/50 hover:text-[var(--accent)] transition-colors">
+        <div className={AUTH_FORM_FORGOT}>
+          <Link href="/auth/forgot-password" className={AUTH_FORM_FORGOT_LINK}>
             {LOGIN.forgotPassword}
           </Link>
         </div>
@@ -73,41 +90,31 @@ function LoginFormComponent() {
         </Button>
       </form>
 
-      <div className="flex items-center gap-4 my-6">
-        <div className="flex-1 h-px bg-[var(--text)]/5" />
-        <span className="text-xs text-[var(--text)]/30 uppercase tracking-wider">{LOGIN.orText}</span>
-        <div className="flex-1 h-px bg-[var(--text)]/5" />
+      <div className={AUTH_DIVIDER}>
+        <div className={AUTH_DIVIDER_LINE} />
+        <span className={AUTH_DIVIDER_TEXT}>{LOGIN.orText}</span>
+        <div className={AUTH_DIVIDER_LINE} />
       </div>
 
-      <div className="space-y-2">
-        <button
-          type="button"
-          className="flex items-center justify-center gap-3 w-full py-2.5 bg-[var(--bg-alt)] border border-[var(--text)]/10 rounded-full text-sm font-medium text-[var(--text)]"
-        >
+      <div className={AUTH_SOCIAL_LIST}>
+        <button type="button" className={AUTH_SOCIAL_BTN}>
           <GoogleIcon />
           {LOGIN.googleText}
         </button>
-        <button
-          type="button"
-          className="flex items-center justify-center gap-3 w-full py-2.5 bg-[var(--bg-alt)] border border-[var(--text)]/10 rounded-full text-sm font-medium text-[var(--text)]"
-        >
+        <button type="button" className={AUTH_SOCIAL_BTN}>
           <GitHubIcon />
           {LOGIN.githubText}
         </button>
-        <button
-          type="button"
-          onClick={() => setShowWalletModal(true)}
-          className="flex items-center justify-center gap-3 w-full py-2.5 bg-[var(--bg-alt)] border border-[var(--text)]/10 rounded-full text-sm font-medium text-[var(--text)]"
-        >
-          <img src="/loading.png" alt="" className="w-5 h-5" />
+        <button type="button" onClick={openWalletModal} className={AUTH_SOCIAL_BTN}>
+          <img src="/loading.png" alt="" className={AUTH_SOCIAL_ICON} />
           {LOGIN.walletText}
         </button>
       </div>
 
-      <div className="text-center mt-6">
-        <p className="text-sm text-[var(--text)]/40">
+      <div className={AUTH_FOOTER}>
+        <p className={AUTH_FOOTER_TEXT}>
           {LOGIN.noAccount}{' '}
-          <Link href={ROUTES.REGISTER} className="text-[var(--accent)] hover:underline">
+          <Link href={ROUTES.REGISTER} className={AUTH_FOOTER_LINK}>
             {LOGIN.registerLink}
           </Link>
         </p>
@@ -117,7 +124,7 @@ function LoginFormComponent() {
         isOpen={showWalletModal}
         wallets={wallets}
         emptyText={LOGIN.noWalletText}
-        onClose={() => setShowWalletModal(false)}
+        onClose={closeWalletModal}
         onSelect={handleWalletSelect}
       />
     </>

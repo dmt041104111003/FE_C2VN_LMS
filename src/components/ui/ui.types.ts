@@ -156,6 +156,17 @@ export interface SearchSuggestionItem {
   type?: 'course' | 'instructor' | 'tag' | 'history';
 }
 
+export interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSelect?: (suggestion: SearchSuggestionItem) => void;
+  suggestions?: SearchSuggestionItem[];
+  placeholder?: string;
+  className?: string;
+  autoFocus?: boolean;
+  showIcon?: boolean;
+}
+
 export type RatingSize = 'xs' | 'sm' | 'md';
 
 export interface RatingProps {
@@ -236,4 +247,8 @@ export interface VideoModalProps {
   subtitle?: string;
   onClose: () => void;
   onDurationChange?: (minutes: number) => void;
+}
+
+export interface SearchModalProps {
+  onClose: () => void;
 }

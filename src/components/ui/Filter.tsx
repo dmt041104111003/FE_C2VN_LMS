@@ -1,8 +1,18 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { SearchInput } from './SearchInput';
-import { FilterProps } from './ui.types';
+import { FilterProps, RatingFilterType } from './ui.types';
+import {
+  FILTER_WRAPPER,
+  FILTER_ROW,
+  FILTER_COL,
+  FILTER_LABEL,
+  FILTER_SELECT,
+  FILTER_RANGE_WRAPPER,
+  FILTER_RANGE_INPUT,
+  FILTER_RANGE_SEPARATOR,
+} from './ui.styles';
 
 function FilterComponent({
   search,
@@ -21,8 +31,28 @@ function FilterComponent({
   ratingOptions,
   className = '',
 }: FilterProps) {
+  const handleMinPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMin = Number(e.target.value);
+    if (newMin <= priceRange.max) {
+      onPriceRangeChange({ ...priceRange, min: newMin });
+    }
+  }, [priceRange, onPriceRangeChange]);
+
+  const handleMaxPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMax = Number(e.target.value);
+    if (newMax >= priceRange.min) {
+      onPriceRangeChange({ ...priceRange, max: newMax });
+    }
+  }, [priceRange, onPriceRangeChange]);
+
+  const handleRatingChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    onRatingFilterChange(Number(e.target.value) as RatingFilterType);
+  }, [onRatingFilterChange]);
+
+  const priceLabel = `Giá: ${priceRange.min}${currency} — ${priceRange.max >= maxPrice ? `${maxPrice}+` : priceRange.max}${currency}`;
+
   return (
-    <div className={`space-y-8 ${className}`}>
+    <div className={`${FILTER_WRAPPER} ${className}`}>
       <SearchInput
         value={search}
         onChange={onSearchChange}
@@ -31,68 +61,56 @@ function FilterComponent({
         showIcon
       />
 
-      <div className="flex flex-col sm:flex-row gap-8 sm:gap-12">
-        <div className="flex-1 space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider pl-1">Chủ đề</label>
+      <div className={FILTER_ROW}>
+        <div className={FILTER_COL}>
+          <label className={FILTER_LABEL}>Chủ đề</label>
           <select
             value={tagFilter}
             onChange={(e) => onTagFilterChange(e.target.value)}
-            className="w-full py-2 pl-1 bg-transparent text-sm text-[var(--text)] border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 focus:outline-none transition-colors cursor-pointer"
+            className={FILTER_SELECT}
           >
             {tagOptions.map((option) => (
-              <option key={option.value} value={option.value} className="py-2">
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="flex-1 space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider pl-1">Đánh giá</label>
+        <div className={FILTER_COL}>
+          <label className={FILTER_LABEL}>Đánh giá</label>
           <select
             value={ratingFilter}
-            onChange={(e) => onRatingFilterChange(Number(e.target.value) as 0 | 4 | 4.5)}
-            className="w-full py-2 pl-1 bg-transparent text-sm text-[var(--text)] border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 focus:outline-none transition-colors cursor-pointer"
+            onChange={handleRatingChange}
+            className={FILTER_SELECT}
           >
             {ratingOptions.map((option) => (
-              <option key={option.value} value={option.value} className="py-2">
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="flex-1 space-y-1">
-          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider pl-1">
-            Giá: {priceRange.min}{currency} — {priceRange.max >= maxPrice ? `${maxPrice}+` : priceRange.max}{currency}
-          </label>
-          <div className="flex items-center gap-4 py-2">
+        <div className={FILTER_COL}>
+          <label className={FILTER_LABEL}>{priceLabel}</label>
+          <div className={FILTER_RANGE_WRAPPER}>
             <input
               type="range"
               min={0}
               max={maxPrice}
               value={priceRange.min}
-              onChange={(e) => {
-                const newMin = Number(e.target.value);
-                if (newMin <= priceRange.max) {
-                  onPriceRangeChange({ ...priceRange, min: newMin });
-                }
-              }}
-              className="flex-1 h-[1px] bg-[var(--text)]/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)]"
+              onChange={handleMinPriceChange}
+              className={FILTER_RANGE_INPUT}
             />
-            <span className="text-[var(--text)]/15 text-xs">—</span>
+            <span className={FILTER_RANGE_SEPARATOR}>—</span>
             <input
               type="range"
               min={0}
               max={maxPrice}
               value={priceRange.max}
-              onChange={(e) => {
-                const newMax = Number(e.target.value);
-                if (newMax >= priceRange.min) {
-                  onPriceRangeChange({ ...priceRange, max: newMax });
-                }
-              }}
-              className="flex-1 h-[1px] bg-[var(--text)]/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent)]"
+              onChange={handleMaxPriceChange}
+              className={FILTER_RANGE_INPUT}
             />
           </div>
         </div>
@@ -102,4 +120,3 @@ function FilterComponent({
 }
 
 export const Filter = memo(FilterComponent);
-
