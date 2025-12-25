@@ -518,3 +518,39 @@ export const SIDEBAR_LAYOUT = {
   HEADER_NAV_ICON: 'w-5 h-5',
   CONTENT: 'flex-1 overflow-y-auto min-h-0',
 } as const;
+
+export const TOAST = {
+  CONTAINER: 'fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none',
+  ITEM: 'relative overflow-hidden w-80 max-w-[calc(100vw-2rem)] bg-white border border-[var(--border)] border-l-4 rounded-lg shadow-lg transition-all duration-300 ease-out',
+  ITEM_VISIBLE: 'translate-x-0 opacity-100',
+  ITEM_HIDDEN: 'translate-x-full opacity-0',
+  CONTENT: 'flex items-start gap-3 p-4',
+  ICON: 'w-5 h-5 flex-shrink-0 mt-0.5',
+  MESSAGE: 'flex-1 text-sm text-[var(--text)] leading-relaxed',
+  CLOSE_BTN: 'p-1 -m-1 text-[var(--text)]/40 hover:text-[var(--text)] transition-colors',
+  CLOSE_ICON: 'w-4 h-4',
+  PROGRESS: 'absolute bottom-0 left-0 h-0.5',
+  WRAPPER: 'pointer-events-auto',
+  DURATION: 4000,
+} as const;
+
+export const TOAST_VARIANT = {
+  success: 'border-l-[var(--correct)] bg-[var(--correct)]/10',
+  error: 'border-l-[var(--incorrect)] bg-[var(--incorrect)]/10',
+  warning: 'border-l-[var(--warning)] bg-[var(--warning)]/10',
+  info: 'border-l-[var(--accent)] bg-[var(--accent)]/10',
+} as const;
+
+export const TOAST_ICON_COLOR = {
+  success: 'text-[var(--correct)]',
+  error: 'text-[var(--incorrect)]',
+  warning: 'text-[var(--warning)]',
+  info: 'text-[var(--accent)]',
+} as const;
+
+export const TOAST_PROGRESS_COLOR = {
+  success: 'bg-[var(--correct)]',
+  error: 'bg-[var(--incorrect)]',
+  warning: 'bg-[var(--warning)]',
+  info: 'bg-[var(--accent)]',
+} as const;

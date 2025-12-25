@@ -462,3 +462,23 @@ export interface SidebarLayoutProps {
   header?: SidebarLayoutHeaderProps;
   sidebarWidth?: string;
 }
+
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+export interface ToastItem {
+  id: string;
+  type: ToastType;
+  message: string;
+  duration?: number;
+}
+
+export interface ToastContextValue {
+  toasts: ToastItem[];
+  addToast: (type: ToastType, message: string, duration?: number) => void;
+  removeToast: (id: string) => void;
+}
+
+export interface ToastItemProps {
+  toast: ToastItem;
+  onClose: () => void;
+}

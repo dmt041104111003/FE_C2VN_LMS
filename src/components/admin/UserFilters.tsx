@@ -5,6 +5,8 @@ import { SearchInput } from '@/components/ui';
 import { ROLE_OPTIONS, STATUS_OPTIONS, ADMIN_LABELS } from '@/constants/admin';
 import type { UserFiltersProps, UserRole, UserStatus } from '@/types/admin';
 import {
+  FILTER_WRAPPER,
+  FILTER_ROW,
   FILTER_COL,
   FILTER_LABEL,
   FILTER_SELECT,
@@ -22,7 +24,7 @@ export const UserFilters = memo(function UserFilters({
   onStatusChange,
 }: UserFiltersProps) {
   return (
-    <div className="space-y-6 mb-6">
+    <div className={`${FILTER_WRAPPER} mb-8`}>
       <SearchInput
         value={keyword}
         onChange={onKeywordChange}
@@ -30,7 +32,8 @@ export const UserFilters = memo(function UserFilters({
         placeholder={LABELS.searchPlaceholder}
         showIcon
       />
-      <div className="flex flex-col sm:flex-row gap-6 sm:gap-12">
+
+      <div className={FILTER_ROW}>
         <div className={FILTER_COL}>
           <label className={FILTER_LABEL}>{LABELS.filterRole}</label>
           <select
@@ -43,6 +46,7 @@ export const UserFilters = memo(function UserFilters({
             ))}
           </select>
         </div>
+
         <div className={FILTER_COL}>
           <label className={FILTER_LABEL}>{LABELS.filterStatus}</label>
           <select
