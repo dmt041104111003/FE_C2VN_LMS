@@ -16,7 +16,7 @@ const PreviewSkeleton = memo(function PreviewSkeleton({ className }: { className
   );
 });
 
-function TipTapPreviewComponent({ content, className = '' }: TipTapPreviewProps) {
+function TipTapPreviewComponent({ content, className = '', compact = false }: TipTapPreviewProps) {
   const [isClient, setIsClient] = useState(false);
   const proseRef = useRef<HTMLDivElement>(null);
   const copyTimeoutRef = useRef<Map<HTMLElement, NodeJS.Timeout>>(new Map());
@@ -80,7 +80,8 @@ function TipTapPreviewComponent({ content, className = '' }: TipTapPreviewProps)
     <>
       <div
         ref={proseRef}
-        className={`ProseMirror ${S.PREVIEW.CONTAINER} ${className}`}
+        className={`ProseMirror ${compact ? '' : S.PREVIEW.CONTAINER} ${className}`}
+        style={compact ? { minHeight: 'auto', padding: 0 } : undefined}
         dangerouslySetInnerHTML={{ __html: content }}
       />
       <style jsx global>{`${S.PROSEMIRROR_STYLES}`}</style>

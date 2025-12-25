@@ -54,6 +54,7 @@ export interface TipTapEditorProps {
 export interface TipTapPreviewProps {
   content: string;
   className?: string;
+  compact?: boolean;
 }
 
 export interface MenuBarProps {

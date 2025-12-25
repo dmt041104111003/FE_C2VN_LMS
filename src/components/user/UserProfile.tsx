@@ -25,6 +25,7 @@ import {
 import { ROUTES } from '@/constants/navigation';
 import { formatDate } from '@/constants/config';
 import { ShowMore } from '@/components/ui';
+import { TipTapPreview } from '@/components/editor';
 import { getAvatarFromName } from '@/utils';
 import { CheckCircleIcon, CalendarIcon } from '@/components/ui/icons';
 import * as S from './user.styles';
@@ -158,7 +159,11 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
         <div className={S.USER_PROFILE.INFO}>
           <h1 className={S.USER_PROFILE.NAME}>{user.fullName}</h1>
           <span className={S.USER_PROFILE.ROLE}>{roleLabel}</span>
-          {user.bio && <p className={S.USER_PROFILE.BIO}>{user.bio}</p>}
+          {user.bio && (
+            <div className={S.USER_PROFILE.BIO}>
+              <TipTapPreview content={user.bio} compact />
+            </div>
+          )}
           <div className={S.USER_PROFILE.META}>
             <span className={S.USER_PROFILE.META_ITEM}>
               <CalendarIcon className={S.ICON_SIZES.XS} />

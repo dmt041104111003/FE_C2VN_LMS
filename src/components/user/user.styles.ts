@@ -55,3 +55,16 @@ export const ICON_SIZES = {
   MD: 'w-6 h-6',
   LG: 'w-10 h-10',
 } as const;
+
+export const USER_EDIT = {
+  CONTAINER: 'max-w-4xl mx-auto px-4 py-8 sm:py-12',
+  HEADER: 'mb-8 sm:mb-12',
+  TITLE: 'text-lg sm:text-xl font-light tracking-wide text-[var(--text)]',
+  SUBTITLE: 'text-sm text-[var(--text)]/40 mt-1',
+  FORM: 'space-y-8',
+  SECTION: 'space-y-3',
+  LABEL: 'text-[10px] uppercase tracking-widest text-[var(--text)]/40',
+  AVATAR_SECTION: 'flex items-center gap-4',
+  AVATAR: 'w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover',
+  ACTIONS: 'flex gap-3 pt-8 border-t border-[var(--text)]/10',
+} as const;

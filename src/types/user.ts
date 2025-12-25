@@ -92,3 +92,25 @@ export interface ListSectionProps<T> {
   renderItem: (item: T) => React.ReactNode;
   getKey: (item: T) => string;
 }
+
+export interface UserProfileEditProps {
+  user: UserProfile;
+  onSave?: (data: UserProfileEditData) => void;
+  onCancel?: () => void;
+}
+
+export interface UserProfileEditData {
+  fullName: string;
+  bio: string;
+  avatar?: string;
+}
+
+export interface FormSectionProps {
+  label: string;
+  children: React.ReactNode;
+}
+
+export interface ActionButtonsProps {
+  onCancel: () => void;
+  onSave: () => void;
+}
