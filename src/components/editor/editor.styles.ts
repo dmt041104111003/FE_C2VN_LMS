@@ -1,6 +1,6 @@
 export const EDITOR = {
   CONTAINER: 'border border-[var(--text)]/20 rounded-xl overflow-hidden bg-[var(--bg)]',
-  CONTENT: 'p-4 focus:outline-none prose prose-sm max-w-none',
+  CONTENT: 'p-4',
   LOADING: 'animate-pulse',
   LOADING_BAR: 'h-4 bg-[var(--text)]/10 rounded mb-2',
 } as const;
@@ -13,7 +13,7 @@ export const TOOLTIP = {
 } as const;
 
 export const PREVIEW = {
-  CONTAINER: 'prose prose-sm sm:prose lg:prose-lg max-w-none',
+  CONTAINER: 'p-4',
   CODE_COPY_BTN: 'absolute top-2 right-2 px-2 py-1 text-xs bg-[var(--bg-alt)] text-[var(--text)]/60 rounded hover:bg-[var(--accent)] hover:text-white transition-colors',
 } as const;
 

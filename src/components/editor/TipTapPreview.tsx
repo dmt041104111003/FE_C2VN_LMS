@@ -1,11 +1,11 @@
 'use client';
 
-import { memo, useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect, useRef, useCallback } from 'react';
 import * as S from './editor.styles';
 import { EDITOR_LABELS } from '@/constants';
 import type { TipTapPreviewProps } from '@/types/editor';
 
-function PreviewSkeleton({ className }: { className?: string }) {
+const PreviewSkeleton = memo(function PreviewSkeleton({ className }: { className?: string }) {
   return (
     <div className={`animate-pulse ${className}`}>
       <div className={S.EDITOR.LOADING_BAR} />
@@ -14,57 +14,67 @@ function PreviewSkeleton({ className }: { className?: string }) {
       <div className={`${S.EDITOR.LOADING_BAR} w-3/4`} />
     </div>
   );
-}
+});
 
 function TipTapPreviewComponent({ content, className = '' }: TipTapPreviewProps) {
   const [isClient, setIsClient] = useState(false);
   const proseRef = useRef<HTMLDivElement>(null);
+  const copyTimeoutRef = useRef<Map<HTMLElement, NodeJS.Timeout>>(new Map());
+
+  useEffect(() => { setIsClient(true); }, []);
+
+  const handleClick = useCallback(async (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (!target.classList.contains('code-copy-btn')) return;
+
+    const pre = target.closest('pre');
+    const code = pre?.querySelector('code') || pre;
+    if (!code) return;
+
+    try {
+      await navigator.clipboard.writeText(code.textContent || '');
+      target.textContent = EDITOR_LABELS.copied;
+      
+      const existing = copyTimeoutRef.current.get(target);
+      if (existing) clearTimeout(existing);
+      
+      const timeout = setTimeout(() => {
+        target.textContent = EDITOR_LABELS.copy;
+        copyTimeoutRef.current.delete(target);
+      }, 1500);
+      
+      copyTimeoutRef.current.set(target, timeout);
+    } catch {}
+  }, []);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    const el = proseRef.current;
+    if (!el || !isClient) return;
+
+    el.addEventListener('click', handleClick);
+    return () => {
+      el.removeEventListener('click', handleClick);
+      copyTimeoutRef.current.forEach(clearTimeout);
+      copyTimeoutRef.current.clear();
+    };
+  }, [isClient, handleClick]);
 
   useEffect(() => {
     if (!isClient || !proseRef.current) return;
 
-    const addCopyButtons = () => {
-      const prose = proseRef.current;
-      if (!prose) return;
-
-      prose.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
-
-      prose.querySelectorAll('pre').forEach((pre) => {
-        if (pre.querySelector('.code-copy-btn')) return;
-
-        const codeBlock = pre.querySelector('code') || pre;
-
-        const btn = document.createElement('button');
-        btn.innerHTML = EDITOR_LABELS.copy;
-        btn.className = `code-copy-btn ${S.PREVIEW.CODE_COPY_BTN}`;
-
-        btn.onclick = async (e) => {
-          e.stopPropagation();
-          try {
-            await navigator.clipboard.writeText(codeBlock.textContent || '');
-            btn.innerHTML = EDITOR_LABELS.copied;
-            setTimeout(() => {
-              btn.innerHTML = EDITOR_LABELS.copy;
-            }, 1500);
-          } catch {}
-        };
-
-        pre.style.position = 'relative';
-        pre.appendChild(btn);
-      });
-    };
-
-    const timer = setTimeout(addCopyButtons, 50);
-    return () => clearTimeout(timer);
+    const prose = proseRef.current;
+    prose.querySelectorAll('pre').forEach((pre) => {
+      if (pre.querySelector('.code-copy-btn')) return;
+      
+      const btn = document.createElement('button');
+      btn.textContent = EDITOR_LABELS.copy;
+      btn.className = `code-copy-btn ${S.PREVIEW.CODE_COPY_BTN}`;
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
+    });
   }, [content, isClient]);
 
-  if (!isClient) {
-    return <PreviewSkeleton className={className} />;
-  }
+  if (!isClient) return <PreviewSkeleton className={className} />;
 
   return (
     <>

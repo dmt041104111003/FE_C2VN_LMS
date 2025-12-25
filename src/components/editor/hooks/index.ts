@@ -1,8 +1,1 @@
-export {
-  useModalState,
-  useTooltipSelection,
-  useTooltipEvents,
-  useTooltipActions,
-  useLockedTexts,
-} from './useTooltip';
-
+export { useModalState, useSelection, useTooltipState } from './useTooltip';

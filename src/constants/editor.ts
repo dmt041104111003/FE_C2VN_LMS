@@ -120,23 +120,102 @@ export const TOOLBAR_CHECKS = {
 
 import type { SelectionInfo } from '@/types/editor';
 
-export const hasTooltipMark = (editor: any, from: number, to: number): boolean => {
-  for (let pos = from; pos < to; pos++) {
-    const marks = editor.state.doc.resolve(pos).marks();
-    if (marks.some((m: any) => m.type.name === 'tooltip')) return true;
-  }
-  return false;
-};
+export const hasTooltipMark = (editor: any): boolean => editor.isActive('tooltip');
 
 export const getSelectionInfo = (editor: any): SelectionInfo => {
   const { from, to } = editor.state.selection;
+  const hasSelection = from !== to;
   return {
     from,
     to,
-    hasSelection: from !== to,
-    text: from !== to ? editor.state.doc.textBetween(from, to) : '',
+    hasSelection,
+    text: hasSelection ? editor.state.doc.textBetween(from, to) : '',
   };
 };
+
+export const rangesOverlap = (a: [number, number], b: [number, number]): boolean =>
+  a[0] < b[1] && b[0] < a[1];
+
+export const TOOLBAR_BUTTONS = {
+  history: [
+    { key: 'undo', action: 'undo', check: 'canUndo', isDisabled: true },
+    { key: 'redo', action: 'redo', check: 'canRedo', isDisabled: true },
+  ],
+  format: [
+    { key: 'bold', action: 'bold', check: 'isBold' },
+    { key: 'italic', action: 'italic', check: 'isItalic' },
+    { key: 'underline', action: 'underline', check: 'isUnderline' },
+    { key: 'strike', action: 'strike', check: 'isStrike' },
+    { key: 'highlight', action: 'highlight', check: 'isHighlight' },
+  ],
+  heading: [
+    { key: 'h1', action: 'h1', check: 'isH1', label: 'H1' },
+    { key: 'h2', action: 'h2', check: 'isH2', label: 'H2' },
+    { key: 'h3', action: 'h3', check: 'isH3', label: 'H3' },
+  ],
+  align: [
+    { key: 'alignLeft', action: 'alignLeft', check: 'isAlignLeft' },
+    { key: 'alignCenter', action: 'alignCenter', check: 'isAlignCenter' },
+    { key: 'alignRight', action: 'alignRight', check: 'isAlignRight' },
+  ],
+  blocks: [
+    { key: 'bulletList', action: 'bulletList', check: 'isBulletList' },
+    { key: 'orderedList', action: 'orderedList', check: 'isOrderedList' },
+    { key: 'blockquote', action: 'blockquote', check: 'isBlockquote' },
+    { key: 'codeBlock', action: 'codeBlock', check: 'isCodeBlock' },
+  ],
+  insert: [
+    { key: 'link', check: 'isLink', modal: 'link' },
+    { key: 'image', modal: 'image' },
+    { key: 'table', action: 'table' },
+    { key: 'horizontalRule', action: 'horizontalRule' },
+  ],
+} as const;
+
+export const TOOLBAR_TITLES_MAP: Record<string, string> = {
+  undo: 'Hoàn tác',
+  redo: 'Làm lại',
+  bold: 'Đậm',
+  italic: 'Nghiêng',
+  underline: 'Gạch chân',
+  strike: 'Gạch ngang',
+  highlight: 'Highlight',
+  h1: 'Heading 1',
+  h2: 'Heading 2',
+  h3: 'Heading 3',
+  alignLeft: 'Căn trái',
+  alignCenter: 'Căn giữa',
+  alignRight: 'Căn phải',
+  bulletList: 'Danh sách',
+  orderedList: 'Danh sách số',
+  blockquote: 'Trích dẫn',
+  codeBlock: 'Code',
+  link: 'Link',
+  image: 'Ảnh',
+  table: 'Bảng',
+  horizontalRule: 'Đường kẻ',
+} as const;
+
+export const TOOLBAR_ICON_NAMES: Record<string, string> = {
+  undo: 'UndoIcon',
+  redo: 'RedoIcon',
+  bold: 'BoldIcon',
+  italic: 'ItalicIcon',
+  underline: 'UnderlineIcon',
+  strike: 'StrikethroughIcon',
+  highlight: 'HighlightIcon',
+  alignLeft: 'AlignLeftIcon',
+  alignCenter: 'AlignCenterIcon',
+  alignRight: 'AlignRightIcon',
+  bulletList: 'ListIcon',
+  orderedList: 'OrderedListIcon',
+  blockquote: 'QuoteIcon',
+  codeBlock: 'CodeIcon',
+  link: 'LinkIcon',
+  image: 'ImageIcon',
+  table: 'TableIcon',
+  horizontalRule: 'HorizontalRuleIcon',
+} as const;
 
 export const EDITOR_DEMO_TABS = [
   { key: 'split', label: 'Split View' },

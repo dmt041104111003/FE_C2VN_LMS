@@ -121,3 +121,12 @@ export interface ImageModalProps {
   onClose: () => void;
 }
 
+export interface ToolbarButtonDef {
+  key: string;
+  action?: string;
+  check?: string;
+  label?: string;
+  modal?: string;
+  isDisabled?: boolean;
+}
+

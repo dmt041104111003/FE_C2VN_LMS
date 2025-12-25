@@ -1,7 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { Editor } from '@tiptap/react';
+import { getSelectionInfo, hasTooltipMark, rangesOverlap } from '@/constants';
+import type { SelectionInfo } from '@/types/editor';
+
+interface LockedRange {
+  text: string;
+  from: number;
+  to: number;
+}
 
 export function useModalState(editor: Editor | null, onSubmit: (url: string) => void) {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,167 +26,134 @@ export function useModalState(editor: Editor | null, onSubmit: (url: string) => 
   return { isOpen, url, setUrl, open, close, submit };
 }
 
-export function useTooltipSelection(editor: Editor | null) {
-  const [selectedText, setSelectedText] = useState('');
+export function useSelection(editor: Editor): SelectionInfo {
+  const [selection, setSelection] = useState<SelectionInfo>(() => getSelectionInfo(editor));
 
   useEffect(() => {
-    if (!editor) return;
-
-    const updateSelectedText = () => {
-      const { from, to } = editor.state.selection;
-      if (from !== to) {
-        const text = editor.state.doc.textBetween(from, to);
-        setSelectedText(text);
-      } else {
-        setSelectedText('');
-      }
-    };
-
-    editor.on('selectionUpdate', updateSelectedText);
-    editor.on('transaction', updateSelectedText);
-
-    return () => {
-      editor.off('selectionUpdate', updateSelectedText);
-      editor.off('transaction', updateSelectedText);
-    };
+    const update = () => setSelection(getSelectionInfo(editor));
+    editor.on('selectionUpdate', update);
+    return () => { editor.off('selectionUpdate', update); };
   }, [editor]);
 
-  return selectedText;
+  return selection;
 }
 
-export function useTooltipEvents(
-  editor: Editor | null,
-  setTooltipText: (text: string) => void,
-  setIsOpen: (open: boolean) => void
-) {
+export function useTooltipState(editor: Editor) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [tooltipText, setTooltipText] = useState('');
+  const [count, setCount] = useState(0);
+  const lockedRangesRef = useRef<Map<string, LockedRange>>(new Map());
+
+  const selection = useSelection(editor);
+  const hasTooltip = useMemo(() => hasTooltipMark(editor), [editor.state.selection]);
+
+  const isLocked = useCallback((text: string) => 
+    lockedRangesRef.current.has(text), []);
+
+  const hasOverlap = useCallback((from: number, to: number) => {
+    for (const range of lockedRangesRef.current.values()) {
+      if (rangesOverlap([from, to], [range.from, range.to])) return true;
+    }
+    return false;
+  }, []);
+
+  const lock = useCallback((text: string, from: number, to: number) => {
+    if (hasOverlap(from, to)) {
+      const newMap = new Map<string, LockedRange>();
+      for (const [key, range] of lockedRangesRef.current) {
+        if (!rangesOverlap([from, to], [range.from, range.to])) {
+          newMap.set(key, range);
+        }
+      }
+      newMap.set(text, { text, from, to });
+      lockedRangesRef.current = newMap;
+    } else {
+      lockedRangesRef.current.set(text, { text, from, to });
+    }
+    editor.chain().focus().setMark('lockMark').run();
+  }, [editor, hasOverlap]);
+
+  const unlock = useCallback((text: string, from: number, to: number) => {
+    lockedRangesRef.current.delete(text);
+    editor.chain().focus().setTextSelection({ from, to }).unsetMark('lockMark').run();
+  }, [editor]);
+
+  const addTooltip = useCallback((content: string) => {
+    if (!content.trim() || !selection.hasSelection) return;
+    editor.chain().focus().setTooltip({ tooltip: content.trim() }).run();
+    unlock(selection.text, selection.from, selection.to);
+    setTooltipText('');
+    setIsOpen(false);
+    setCount(c => c + 1);
+  }, [editor, selection, unlock]);
+
+  const removeTooltip = useCallback(() => {
+    editor.chain().focus().unsetTooltip().run();
+    unlock(selection.text, selection.from, selection.to);
+    setIsOpen(false);
+  }, [editor, selection, unlock]);
+
+  const toggle = useCallback(() => {
+    if (!selection.hasSelection || hasTooltip) return;
+    
+    if (isLocked(selection.text)) {
+      unlock(selection.text, selection.from, selection.to);
+    } else {
+      lock(selection.text, selection.from, selection.to);
+      setIsOpen(true);
+    }
+  }, [selection, hasTooltip, isLocked, lock, unlock]);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+    setTooltipText('');
+  }, []);
+
   useEffect(() => {
-    if (!editor) return;
-
-    const handleDoubleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      const tooltipElement = target.closest('[data-tooltip]');
-
-      if (tooltipElement) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const tooltipText = tooltipElement.getAttribute('data-tooltip');
-        if (tooltipText) {
-          setTooltipText(tooltipText);
+    const editorDom = editor.view.dom;
+    
+    const handleDblClick = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement).closest('[data-tooltip]');
+      if (el) {
+        e.preventDefault();
+        const text = el.getAttribute('data-tooltip');
+        if (text) {
+          setTooltipText(text);
           setIsOpen(true);
         }
       }
     };
 
-    const editorDom = editor.view.dom;
-    editorDom.addEventListener('dblclick', handleDoubleClick);
+    editorDom.addEventListener('dblclick', handleDblClick);
+    return () => editorDom.removeEventListener('dblclick', handleDblClick);
+  }, [editor]);
 
-    return () => {
-      editorDom.removeEventListener('dblclick', handleDoubleClick);
+  useEffect(() => {
+    if (lockedRangesRef.current.size === 0) return;
+    
+    const onUpdate = () => {
+      const sel = getSelectionInfo(editor);
+      if (sel.hasSelection && lockedRangesRef.current.has(sel.text)) {
+        editor.commands.setTextSelection({ from: sel.from, to: sel.to });
+      }
     };
-  }, [editor, setTooltipText, setIsOpen]);
-}
 
-export function useTooltipActions(editor: Editor | null) {
-  const addTooltip = useCallback(
-    (tooltipText: string) => {
-      if (!editor || !tooltipText.trim()) return;
-
-      editor.chain().focus().setTooltip({ tooltip: tooltipText.trim() }).run();
-    },
-    [editor]
-  );
-
-  const removeTooltip = useCallback(() => {
-    if (!editor) return;
-
-    editor.chain().focus().unsetTooltip().run();
+    editor.on('selectionUpdate', onUpdate);
+    return () => { editor.off('selectionUpdate', onUpdate); };
   }, [editor]);
 
-  const unlockText = useCallback(
-    (from: number, to: number) => {
-      if (!editor) return;
-
-      editor.chain().focus().setTextSelection({ from, to }).unsetMark('lockMark').run();
-    },
-    [editor]
-  );
-
-  const lockText = useCallback(() => {
-    if (!editor) return;
-
-    editor.chain().focus().setMark('lockMark').run();
-  }, [editor]);
-
-  return { addTooltip, removeTooltip, unlockText, lockText };
-}
-
-export function useLockedTexts(editor: Editor | null) {
-  const [lockedTexts, setLockedTexts] = useState<Set<string>>(new Set());
-
-  const addLockedText = useCallback(
-    (text: string, from: number, to: number) => {
-      if (!editor) return;
-
-      setLockedTexts((prev) => {
-        const newSet = new Set(prev);
-        const docText = editor.state.doc.textContent;
-
-        let hasOverlap = false;
-        for (const lockedText of prev) {
-          const lockedTextIndex = docText.indexOf(lockedText);
-          if (lockedTextIndex !== -1) {
-            const lockedFrom = lockedTextIndex;
-            const lockedTo = lockedTextIndex + lockedText.length;
-
-            if (
-              (from >= lockedFrom && from < lockedTo) ||
-              (to > lockedFrom && to <= lockedTo) ||
-              (from <= lockedFrom && to >= lockedTo)
-            ) {
-              hasOverlap = true;
-              break;
-            }
-          }
-        }
-
-        if (hasOverlap) {
-          const nonOverlapping = new Set<string>();
-          for (const lockedText of prev) {
-            const lockedTextIndex = docText.indexOf(lockedText);
-            if (lockedTextIndex !== -1) {
-              const lockedFrom = lockedTextIndex;
-              const lockedTo = lockedTextIndex + lockedText.length;
-
-              if (
-                !(
-                  (from >= lockedFrom && from < lockedTo) ||
-                  (to > lockedFrom && to <= lockedTo) ||
-                  (from <= lockedFrom && to >= lockedTo)
-                )
-              ) {
-                nonOverlapping.add(lockedText);
-              }
-            }
-          }
-          nonOverlapping.add(text);
-          return nonOverlapping;
-        } else {
-          newSet.add(text);
-          return newSet;
-        }
-      });
-    },
-    [editor]
-  );
-
-  const removeLockedText = useCallback((text: string) => {
-    setLockedTexts((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(text);
-      return newSet;
-    });
-  }, []);
-
-  return { lockedTexts, addLockedText, removeLockedText };
+  return {
+    isOpen,
+    tooltipText,
+    setTooltipText,
+    count,
+    lockedCount: lockedRangesRef.current.size,
+    selection,
+    hasTooltip,
+    isDisabled: !selection.hasSelection || hasTooltip,
+    addTooltip,
+    removeTooltip,
+    toggle,
+    close,
+  };
 }
