@@ -58,7 +58,7 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
 
                 <div className="hidden lg:block mt-4">
                   {!state.attempt.passed && (
-                    <Button variant="outline" className="w-full mb-2" onClick={actions.retry}>
+                    <Button variant="secondary" className="w-full mb-2" onClick={actions.retry}>
                       {labels.retry}
                     </Button>
                   )}
@@ -87,7 +87,7 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
 
                 <div className="lg:hidden mt-6 flex flex-col gap-2">
                   {!state.attempt.passed && (
-                    <Button variant="outline" className="w-full" onClick={actions.retry}>
+                    <Button variant="secondary" className="w-full" onClick={actions.retry}>
                       {labels.retry}
                     </Button>
                   )}
