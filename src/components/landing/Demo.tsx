@@ -51,15 +51,17 @@ function DemoComponent() {
               className={DEMO_FORM}
               onSubmit={handleRegisterClick}
             >
-              <Input
-                type="email"
-                placeholder={DEMO.placeholder}
-                variant="rounded"
-                size="lg"
-                className="flex-1"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className="flex-1 space-y-1">
+                <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Email</label>
+                <Input
+                  type="email"
+                  placeholder={DEMO.placeholder}
+                  variant="minimal"
+                  size="lg"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
               {isEmailValid && (
                 <Button
                   type="submit"

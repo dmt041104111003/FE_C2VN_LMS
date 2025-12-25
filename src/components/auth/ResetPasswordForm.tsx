@@ -24,56 +24,71 @@ function ResetPasswordFormComponent() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text)] mb-2">
+      <div className="mb-12">
+        <h1 className="text-2xl sm:text-3xl font-light text-[var(--text)] mb-3 tracking-wide">
           {RESET_PASSWORD.title}
         </h1>
-        <p className="text-sm text-[var(--text)]/60">
+        <p className="text-sm text-[var(--text)]/50">
           {RESET_PASSWORD.subtitle}
         </p>
         {email && (
-          <p className="text-sm text-[var(--accent)] mt-2">
+          <p className="text-sm text-[var(--accent)] mt-3">
             {email}
           </p>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input
-          type="text"
-          placeholder={RESET_PASSWORD.codePlaceholder}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder={RESET_PASSWORD.newPasswordPlaceholder}
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder={RESET_PASSWORD.confirmPasswordPlaceholder}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <Button type="submit" variant="primary" size="lg" className="w-full mt-2">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mã xác thực</label>
+          <Input
+            type="text"
+            placeholder={RESET_PASSWORD.codePlaceholder}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            variant="minimal"
+            size="md"
+            required
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Mật khẩu mới</label>
+          <Input
+            type="password"
+            placeholder={RESET_PASSWORD.newPasswordPlaceholder}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            variant="minimal"
+            size="md"
+            required
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">Xác nhận mật khẩu</label>
+          <Input
+            type="password"
+            placeholder={RESET_PASSWORD.confirmPasswordPlaceholder}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            variant="minimal"
+            size="md"
+            required
+          />
+        </div>
+        <Button type="submit" variant="primary" size="lg" className="w-full mt-8">
           {RESET_PASSWORD.submitText}
         </Button>
       </form>
 
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex items-center justify-between mt-10">
         <button
           type="button"
           onClick={handleResend}
-          className="text-sm text-[var(--link)] font-medium"
+          className="text-xs text-[var(--text)]/50 hover:text-[var(--accent)] uppercase tracking-wider transition-colors"
         >
           Gửi lại mã
         </button>
-        <Link href={ROUTES.LOGIN} className="text-sm text-[var(--link)] font-medium">
+        <Link href={ROUTES.LOGIN} className="text-xs text-[var(--text)]/40 hover:text-[var(--accent)] transition-colors">
           {RESET_PASSWORD.backToLogin}
         </Link>
       </div>

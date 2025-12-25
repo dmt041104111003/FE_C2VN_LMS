@@ -25,8 +25,7 @@ export {
 export {
   SEARCH_PLACEHOLDER,
   SEARCH_LABELS,
-  POPULAR_COURSES,
-  TRENDING_SEARCHES,
+  SEARCH_SUGGESTIONS,
 } from './search';
 export {
   validateByType,
@@ -35,3 +34,4 @@ export {
 } from './validation';
 export { FEEDBACK_FIELDS } from './feedback';
 export { LOGIN, LOGIN_FIELDS } from './login';
+export { SYSTEM_CONFIG, formatCurrency } from './config';

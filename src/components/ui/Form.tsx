@@ -75,23 +75,28 @@ function FormComponent({
     >
       <div className={fieldsClass}>
         {fields.map((field) => (
-          <Input
-            key={field.name}
-            type={field.type}
-            placeholder={field.placeholder}
-            variant="rounded"
-            size="lg"
-            className="flex-1"
-            value={values[field.name] || ''}
-            onChange={(e) => handleFieldChange(field.name, field.type, e.target.value)}
-          />
+          <div key={field.name} className="flex-1 space-y-1">
+            {field.label && (
+              <label className="text-xs text-[var(--text)]/40 uppercase tracking-wider">
+                {field.label}
+              </label>
+            )}
+            <Input
+              type={field.type}
+              placeholder={field.placeholder}
+              variant="minimal"
+              size="lg"
+              value={values[field.name] || ''}
+              onChange={(e) => handleFieldChange(field.name, field.type, e.target.value)}
+            />
+          </div>
         ))}
       </div>
 
       {textareaPlaceholder && (
         <Textarea
           placeholder={textareaPlaceholder}
-          variant="rounded"
+          variant="minimal"
           size="lg"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -105,7 +110,7 @@ function FormComponent({
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full mt-4"
           disabled={!isValid}
         >
           {submitText}

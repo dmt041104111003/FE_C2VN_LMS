@@ -202,6 +202,31 @@ function GoogleIconComponent({ className = 'w-5 h-5' }: IconProps) {
   );
 }
 
+function StarIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+
+function StarOutlineIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+
+function CheckCircleIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
 export const GitHubIcon = memo(GitHubIconComponent);
 export const YouTubeIcon = memo(YouTubeIconComponent);
 export const XIcon = memo(XIconComponent);
@@ -216,6 +241,9 @@ export const UserIcon = memo(UserIconComponent);
 export const AppleIcon = memo(AppleIconComponent);
 export const PlayStoreIcon = memo(PlayStoreIconComponent);
 export const GoogleIcon = memo(GoogleIconComponent);
+export const StarIcon = memo(StarIconComponent);
+export const StarOutlineIcon = memo(StarOutlineIconComponent);
+export const CheckCircleIcon = memo(CheckCircleIconComponent);
 
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,

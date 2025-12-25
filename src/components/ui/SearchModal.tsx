@@ -1,22 +1,21 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { SearchIcon } from './icons';
 import { Card } from './Card';
-import { Input } from './Input';
+import { SearchInput, SearchSuggestion } from './SearchInput';
 import {
   SEARCH_PLACEHOLDER,
   SEARCH_LABELS,
-  POPULAR_COURSES,
-  TRENDING_SEARCHES,
+  SEARCH_SUGGESTIONS,
   ROUTES,
 } from '@/constants';
+import { MOCK_COURSES } from '@/constants/course';
 import {
   SEARCH_OVERLAY,
   SEARCH_MODAL,
-  SEARCH_INPUT_WRAPPER,
-  SEARCH_INPUT_BTN,
   SEARCH_CONTENT,
   SEARCH_SECTION,
   SEARCH_SECTION_TITLE,
@@ -25,7 +24,6 @@ import {
   SEARCH_FOOTER_TEXT,
   SEARCH_FOOTER_LINK,
   ICON_SM,
-  ICON_MD,
 } from './ui.styles';
 
 interface SearchModalProps {
@@ -33,8 +31,36 @@ interface SearchModalProps {
 }
 
 function SearchModalComponent({ onClose }: SearchModalProps) {
+  const router = useRouter();
+  const [searchValue, setSearchValue] = useState('');
+
+  const newestCourses = useMemo(() => {
+    return [...MOCK_COURSES]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 3);
+  }, []);
+
+  const trendingSearches = useMemo(() => {
+    return [...MOCK_COURSES]
+      .sort((a, b) => b.totalStudents - a.totalStudents)
+      .slice(0, 4)
+      .map((c) => c.title);
+  }, []);
+
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleSelect = (suggestion: SearchSuggestion) => {
+    router.push(`${ROUTES.COURSES}?q=${encodeURIComponent(suggestion.text)}`);
+    onClose();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      router.push(`${ROUTES.COURSES}?q=${encodeURIComponent(searchValue)}`);
       onClose();
     }
   };
@@ -45,55 +71,61 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
       onClick={handleOverlayClick}
     >
       <div className={SEARCH_MODAL}>
-        <div className={SEARCH_INPUT_WRAPPER}>
-          <Input
-            type="text"
+        <div className="px-4 pt-4 relative overflow-visible" onKeyDown={handleKeyDown}>
+          <SearchInput
+            value={searchValue}
+            onChange={setSearchValue}
+            onSelect={handleSelect}
+            suggestions={SEARCH_SUGGESTIONS}
             placeholder={SEARCH_PLACEHOLDER}
-            variant="search"
-            size="lg"
-            className="flex-1 py-4"
             autoFocus
+            showIcon
           />
-          <button className={SEARCH_INPUT_BTN}>
-            <SearchIcon className={ICON_MD} />
-          </button>
         </div>
 
         <div className={SEARCH_CONTENT}>
-          <div className={SEARCH_SECTION}>
-            <h3 className={SEARCH_SECTION_TITLE}>
-              {SEARCH_LABELS.popularTitle}
-            </h3>
-            {POPULAR_COURSES.map((course) => (
-              <Card
-                key={course.title}
-                title={course.title}
-                subtitle={course.provider}
-                image={course.image}
-                variant="horizontal"
-                size="sm"
-                href={ROUTES.COURSES}
-                onClick={onClose}
-              />
-            ))}
-          </div>
+          {!searchValue ? (
+            <>
+              <div className={SEARCH_SECTION}>
+                <h3 className={SEARCH_SECTION_TITLE}>
+                  {SEARCH_LABELS.newestTitle}
+                </h3>
+                {newestCourses.map((course) => (
+                  <Card
+                    key={course.id}
+                    title={course.title}
+                    subtitle={course.instructorName}
+                    image={course.thumbnail || '/loading.png'}
+                    variant="horizontal"
+                    size="sm"
+                    href={`${ROUTES.COURSES}/${course.id}`}
+                    onClick={onClose}
+                  />
+                ))}
+              </div>
 
-          <div className={SEARCH_SECTION}>
-            <h3 className={SEARCH_SECTION_TITLE}>
-              {SEARCH_LABELS.trendingTitle}
-            </h3>
-            {TRENDING_SEARCHES.map((term) => (
-              <Link
-                key={term}
-                href={`${ROUTES.COURSES}?q=${term}`}
-                className={SEARCH_TREND_ITEM}
-                onClick={onClose}
-              >
-                <SearchIcon className={ICON_SM} />
-                {term}
-              </Link>
-            ))}
-          </div>
+              <div className={SEARCH_SECTION}>
+                <h3 className={SEARCH_SECTION_TITLE}>
+                  {SEARCH_LABELS.trendingTitle}
+                </h3>
+                {trendingSearches.map((term) => (
+                  <Link
+                    key={term}
+                    href={`${ROUTES.COURSES}?q=${encodeURIComponent(term)}`}
+                    className={SEARCH_TREND_ITEM}
+                    onClick={onClose}
+                  >
+                    <SearchIcon className={ICON_SM} />
+                    {term}
+                  </Link>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="py-4 text-center text-sm text-[var(--text)]/50">
+              Nhấn Enter để tìm kiếm "{searchValue}"
+            </div>
+          )}
         </div>
 
         <div className={SEARCH_FOOTER}>

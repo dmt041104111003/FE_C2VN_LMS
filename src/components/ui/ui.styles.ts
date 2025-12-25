@@ -1,4 +1,4 @@
-import { ButtonVariant, ButtonSize, BadgeVariant, LogoSize, InputVariant, InputSize } from './ui.types';
+import { ButtonVariant, ButtonSize, BadgeVariant, LogoSize, InputVariant, InputSize, RatingSize, InstructorSize } from './ui.types';
 
 export const BUTTON_BASE = 'inline-flex items-center justify-center font-medium rounded-full whitespace-nowrap';
 export const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
@@ -45,8 +45,8 @@ export const HEADER_APP_TEXT = 'leading-tight';
 export const HEADER_APP_LABEL = 'text-[10px] opacity-70';
 export const HEADER_APP_NAME = 'font-semibold';
 
-export const SEARCH_OVERLAY = 'fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20';
-export const SEARCH_MODAL = 'bg-[var(--bg)] w-full max-w-xl mx-4 rounded-xl shadow-2xl overflow-hidden';
+export const SEARCH_OVERLAY = 'fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-16 sm:pt-20';
+export const SEARCH_MODAL = 'bg-[var(--bg)] w-full max-w-2xl mx-4 rounded-xl shadow-2xl overflow-visible';
 export const SEARCH_INPUT_WRAPPER = 'flex items-center border-b border-[var(--bg-alt)] px-4';
 export const SEARCH_INPUT = 'flex-1 py-4 text-base outline-none bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/50';
 export const SEARCH_INPUT_BTN = 'p-2 text-[var(--accent)]';
@@ -174,11 +174,12 @@ export const CARD_TITLE_SIZES = {
   lg: 'text-lg font-semibold text-[var(--text)] truncate',
 };
 
-export const INPUT_BASE = 'w-full bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/50 outline-none';
+export const INPUT_BASE = 'w-full bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/30 outline-none transition-colors';
 export const INPUT_VARIANTS: Record<InputVariant, string> = {
   default: 'bg-[var(--bg)] border-2 border-[var(--text)]/20 focus:border-[var(--accent)] rounded-full',
   search: 'bg-transparent border-none',
   rounded: 'bg-[var(--bg)] border-2 border-[var(--text)]/20 focus:border-[var(--accent)] rounded-full',
+  minimal: 'border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 rounded-none',
 };
 export const INPUT_SIZES: Record<InputSize, string> = {
   sm: 'px-3 py-2 text-sm',
@@ -186,11 +187,12 @@ export const INPUT_SIZES: Record<InputSize, string> = {
   lg: 'px-5 py-3 text-sm md:text-base',
 };
 
-export const TEXTAREA_BASE = 'w-full bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/50 outline-none resize-none';
+export const TEXTAREA_BASE = 'w-full bg-transparent text-[var(--text)] placeholder:text-[var(--text)]/30 outline-none resize-none transition-colors';
 export const TEXTAREA_VARIANTS: Record<InputVariant, string> = {
   default: 'bg-[var(--bg)] border-2 border-[var(--text)]/20 focus:border-[var(--accent)] rounded-2xl',
   search: 'bg-transparent border-none',
   rounded: 'bg-[var(--bg)] border-2 border-[var(--text)]/20 focus:border-[var(--accent)] rounded-2xl',
+  minimal: 'border-b border-[var(--text)]/10 focus:border-[var(--accent)]/50 rounded-none',
 };
 export const TEXTAREA_SIZES: Record<InputSize, string> = {
   sm: 'px-3 py-2 text-sm',
@@ -198,8 +200,9 @@ export const TEXTAREA_SIZES: Record<InputSize, string> = {
   lg: 'px-5 py-3 text-sm md:text-base',
 };
 
-export const FORM_BASE = 'flex flex-col gap-3 w-full';
-export const FORM_ROW = 'flex flex-col sm:flex-row gap-3';
+export const FORM_BASE = 'flex flex-col gap-6 w-full';
+export const FORM_ROW = 'flex flex-col sm:flex-row gap-6';
+export const FORM_COLUMN = 'flex flex-col gap-6';
 
 export const ICON_SM = 'w-4 h-4';
 export const ICON_MD = 'w-5 h-5';
@@ -230,3 +233,36 @@ export const MODAL_TITLE = 'text-lg font-semibold text-[var(--text)]';
 export const MODAL_CLOSE = 'p-1 text-[var(--text)]/50';
 export const MODAL_BODY = 'py-6 max-h-[60vh] overflow-y-auto flex flex-col items-center';
 export const MODAL_EMPTY = 'px-6 py-8 text-center text-sm text-[var(--text)]/60';
+
+export const PAGINATION_CONTAINER = 'flex items-center justify-center gap-2';
+export const PAGINATION_BTN = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors';
+export const PAGINATION_BTN_ACTIVE = 'bg-[var(--accent)] text-white';
+export const PAGINATION_BTN_INACTIVE = 'bg-[var(--bg-alt)] text-[var(--text)] hover:bg-[var(--accent)]/20';
+export const PAGINATION_BTN_NAV = 'bg-[var(--bg-alt)] text-[var(--text)] hover:bg-[var(--accent)] hover:text-white';
+export const PAGINATION_BTN_DISABLED = 'opacity-30 cursor-not-allowed hover:bg-[var(--bg-alt)] hover:text-[var(--text)]';
+
+export const RATING_SIZES: Record<RatingSize, { star: string; text: string; gap: string }> = {
+  xs: { star: 'w-2.5 h-2.5', text: 'text-[10px]', gap: 'gap-0.5' },
+  sm: { star: 'w-3 h-3', text: 'text-xs', gap: 'gap-1' },
+  md: { star: 'w-4 h-4', text: 'text-sm', gap: 'gap-1.5' },
+};
+
+export const INSTRUCTOR_SIZES: Record<InstructorSize, { avatar: string; name: string; label: string; gap: string }> = {
+  xs: { avatar: 'w-4 h-4', name: 'text-[10px]', label: 'text-[9px]', gap: 'gap-1.5' },
+  sm: { avatar: 'w-5 h-5', name: 'text-xs', label: 'text-[10px]', gap: 'gap-2' },
+  md: { avatar: 'w-6 h-6', name: 'text-sm', label: 'text-xs', gap: 'gap-2' },
+};
+
+export const PRICE_SIZES: Record<'xs' | 'sm' | 'md' | 'lg', { price: string; original: string }> = {
+  xs: { price: 'text-xs', original: 'text-[10px]' },
+  sm: { price: 'text-sm', original: 'text-[10px]' },
+  md: { price: 'text-base', original: 'text-xs' },
+  lg: { price: 'text-lg', original: 'text-sm' },
+};
+
+export const FEATURE_SIZES: Record<'xs' | 'sm', { icon: string; text: string; gap: string }> = {
+  xs: { icon: 'w-2.5 h-2.5', text: 'text-[10px]', gap: 'gap-0.5' },
+  sm: { icon: 'w-3 h-3', text: 'text-xs', gap: 'gap-2' },
+};
+
+export const TAG_BASE = 'text-[10px] px-2 py-0.5 bg-[var(--bg-alt)] text-[var(--text)]/60 rounded';

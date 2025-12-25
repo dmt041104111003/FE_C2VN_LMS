@@ -76,7 +76,7 @@ export interface CardModalProps {
   onGoTo: (index: number) => void;
 }
 
-export type InputVariant = 'default' | 'search' | 'rounded';
+export type InputVariant = 'default' | 'search' | 'rounded' | 'minimal';
 export type InputSize = 'sm' | 'md' | 'lg';
 
 export interface InputProps {
@@ -106,6 +106,7 @@ export interface FormField {
   name: string;
   type: 'text' | 'email' | 'tel';
   placeholder: string;
+  label?: string;
 }
 
 export interface FormProps {
@@ -129,4 +130,94 @@ export interface WalletModalProps {
   emptyText: string;
   onClose: () => void;
   onSelect: (wallet: WalletItem) => void;
+}
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  className?: string;
+}
+
+export type RatingFilterType = 0 | 4 | 4.5;
+
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
+export interface FilterOption<T = string> {
+  value: T;
+  label: string;
+}
+
+export interface SearchSuggestionItem {
+  text: string;
+  type?: 'course' | 'instructor' | 'tag' | 'history';
+}
+
+export type RatingSize = 'xs' | 'sm' | 'md';
+
+export interface RatingProps {
+  value: number;
+  count?: number;
+  showValue?: boolean;
+  showCount?: boolean;
+  size?: RatingSize;
+  className?: string;
+}
+
+export type InstructorSize = 'xs' | 'sm' | 'md';
+
+export interface InstructorProps {
+  name: string;
+  avatar?: string;
+  label?: string;
+  size?: InstructorSize;
+  className?: string;
+}
+
+export interface TagsProps {
+  tags: string[];
+  max?: number;
+  className?: string;
+}
+
+export interface PriceDisplayProps {
+  price: number;
+  currency: string;
+  discount?: number;
+  freeText?: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+export interface FeatureItemProps {
+  text: string;
+  size?: 'xs' | 'sm';
+}
+
+export interface FeatureListProps {
+  features: string[];
+  size?: 'xs' | 'sm';
+  columns?: 1 | 2;
+  className?: string;
+}
+
+export interface FilterProps {
+  search: string;
+  onSearchChange: (value: string) => void;
+  searchPlaceholder?: string;
+  searchSuggestions?: SearchSuggestionItem[];
+  priceRange: PriceRange;
+  onPriceRangeChange: (range: PriceRange) => void;
+  maxPrice: number;
+  currency?: string;
+  tagFilter: string;
+  onTagFilterChange: (value: string) => void;
+  tagOptions: FilterOption<string>[];
+  ratingFilter: RatingFilterType;
+  onRatingFilterChange: (value: RatingFilterType) => void;
+  ratingOptions: FilterOption<RatingFilterType>[];
+  className?: string;
 }
