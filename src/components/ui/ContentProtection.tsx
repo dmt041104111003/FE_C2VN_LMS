@@ -2,7 +2,9 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import {
+  IS_PROTECTION_ENABLED,
   BLOCKED_CTRL_KEYS,
+  BLOCKED_CTRL_SHIFT_KEYS,
   BLOCKED_KEYS,
   EDITABLE_TAGS,
   PROTECTION_EVENTS,
@@ -19,6 +21,12 @@ const isEditableElement = (target: EventTarget | null): boolean => {
 const isImageElement = (target: EventTarget | null): boolean => {
   if (!target || !(target instanceof HTMLElement)) return false;
   return target.tagName === 'IMG';
+};
+
+const isMediaElement = (target: EventTarget | null): boolean => {
+  if (!target || !(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  return tag === 'IMG' || tag === 'VIDEO' || tag === 'CANVAS';
 };
 
 const preventDefault = (e: Event): false => {
@@ -38,6 +46,10 @@ export function ContentProtection() {
 
       if (isEditableElement(e.target)) return true;
 
+      if ((ke.ctrlKey || ke.metaKey) && ke.shiftKey && BLOCKED_CTRL_SHIFT_KEYS.has(key)) {
+        return preventDefault(e);
+      }
+
       if ((ke.ctrlKey || ke.metaKey) && BLOCKED_CTRL_KEYS.has(key)) {
         return preventDefault(e);
       }
@@ -54,10 +66,26 @@ export function ContentProtection() {
       return true;
     });
 
+    handlers.set('contextmenu', (e: Event) => {
+      if (isMediaElement(e.target)) {
+        return preventDefault(e);
+      }
+      return true;
+    });
+
+    handlers.set('copy', (e: Event) => {
+      if (isMediaElement(e.target)) {
+        return preventDefault(e);
+      }
+      return true;
+    });
+
     return handlers;
   }, []);
 
   useEffect(() => {
+    if (!IS_PROTECTION_ENABLED) return;
+
     handlersRef.current = createHandlers();
 
     PROTECTION_EVENTS.forEach((event) => {

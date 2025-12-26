@@ -105,6 +105,13 @@ export const PROSEMIRROR_STYLES = `
     height: auto;
     border-radius: 0.5rem;
     margin: 1rem 0;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
 
   .ProseMirror table {
