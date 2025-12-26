@@ -24,6 +24,7 @@ import {
   CERTIFICATE_STATUS_VARIANT,
 } from '@/constants/course-students';
 import type { StudentRowProps } from '@/types/course-students';
+import type { DropdownItem } from '@/components/ui/ui.types';
 
 const ACTIONS = STUDENT_ACTIONS;
 const HEADERS = STUDENT_TABLE_HEADERS;
@@ -43,8 +44,8 @@ export const StudentRow = memo(function StudentRow({
   const hasCertificate = student.certificateStatus === 'issued';
   const canIssueCertificate = isCompleted && !hasCertificate;
 
-  const dropdownItems = useMemo(() => {
-    const items = [
+  const dropdownItems = useMemo((): DropdownItem[] => {
+    const items: DropdownItem[] = [
       {
         label: ACTIONS.edit,
         icon: <EditIcon className={ICON_SM} />,
