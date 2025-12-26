@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { Dialog, Button, PlusIcon, useToast } from '@/components/ui';
-import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
+import { Dialog, useToast } from '@/components/ui';
+import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import { ADMIN_LABELS, MOCK_USERS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
@@ -86,19 +86,6 @@ export function AdminPage() {
     openModal('changeRole', userId, role);
   }, [openModal]);
 
-  const handleCreate = useCallback(() => {
-    const newUser: AdminUser = {
-      id: String(Date.now()),
-      fullName: 'Người dùng mới',
-      email: `user${Date.now()}@gmail.com`,
-      role: 'USER',
-      status: 'ACTIVE',
-      createdAt: new Date().toISOString(),
-    };
-    setUsers(prev => [newUser, ...prev]);
-    toast.success(TOAST.createSuccess);
-  }, [toast]);
-
   const handleConfirm = useCallback(() => {
     if (!modal.userId || !modal.type) return;
     const actions: Record<NonNullable<AdminModalType>, () => void> = {
@@ -139,12 +126,6 @@ export function AdminPage() {
           roleFilter={roleFilter}
           statusFilter={statusFilter}
           searchSuggestions={searchSuggestions}
-          action={
-            <Button variant="primary" size="sm" onClick={handleCreate} className="gap-1.5">
-              <PlusIcon className={ICON_SM} />
-              {LABELS.create}
-            </Button>
-          }
           onKeywordChange={setKeyword}
           onRoleChange={setRoleFilter}
           onStatusChange={setStatusFilter}

@@ -24,6 +24,8 @@ export interface CourseRowProps {
   onEdit: (courseId: string) => void;
   onDelete: (courseId: string) => void;
   onToggleStatus: (courseId: string, isPublished: boolean) => void;
+  onAddStudent: (courseId: string, courseTitle: string) => void;
+  onViewStudents: (courseId: string) => void;
 }
 
 export type InstructorModalType = 'delete' | 'publish' | 'unpublish' | 'edit' | null;
@@ -48,4 +50,20 @@ export interface CourseFiltersProps {
   searchSuggestions?: SearchSuggestion[];
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: CourseStatus | '') => void;
+}
+
+export interface CourseEditPageProps {
+  params: { id: string };
+}
+
+export interface AddStudentModalState {
+  isOpen: boolean;
+  courseId: string | null;
+  courseTitle: string;
+}
+
+export interface AddStudentFormData {
+  fullName: string;
+  contactType: string;
+  contactValue: string;
 }

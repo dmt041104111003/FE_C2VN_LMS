@@ -57,3 +57,22 @@ export interface UseTooltipStateReturn {
   close: () => void;
 }
 
+export interface UseFormDraftOptions<T> {
+  storageKey: string;
+  initialData: T;
+  isEmpty: (data: T) => boolean;
+  enabled?: boolean;
+}
+
+export interface UseFormDraftReturn<T> {
+  formData: T;
+  setFormData: React.Dispatch<React.SetStateAction<T>>;
+  hasFormData: boolean;
+  clearForm: () => void;
+  showResumeDialog: boolean;
+  handleContinueEditing: () => void;
+  handleCreateNew: () => void;
+  resetWithData: (data: T) => void;
+  clearDraftStorage: () => void;
+}
+

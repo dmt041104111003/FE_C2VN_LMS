@@ -1,4 +1,4 @@
-import type { InstructorCourse, CourseStatus, InstructorModalType } from '@/types/instructor';
+import type { InstructorCourse, CourseStatus, InstructorModalType, AddStudentModalState } from '@/types/instructor';
 import type { StatusBadgeVariant } from '@/components/ui';
 import type { ModalConfig } from '@/types/common';
 
@@ -22,6 +22,7 @@ export const INSTRUCTOR_LABELS = {
       publishSuccess: 'Đã xuất bản khóa học',
       unpublishSuccess: 'Đã ẩn khóa học',
       editSuccess: 'Đã cập nhật khóa học',
+      addStudentSuccess: 'Đã thêm học viên vào khóa học',
     },
   },
   common: {
@@ -51,6 +52,8 @@ export const COURSE_TABLE = {
     publish: 'Xuất bản',
     unpublish: 'Ẩn khóa học',
     archive: 'Lưu trữ',
+    addStudent: 'Thêm học viên',
+    viewStudents: 'Xem học viên',
   },
 } as const;
 
@@ -82,6 +85,78 @@ export const COURSE_STATUS_VARIANT: Record<CourseStatus, StatusBadgeVariant> = {
   draft: 'warning',
   published: 'success',
   archived: 'default',
+};
+
+export const INITIAL_ADD_STUDENT_MODAL: AddStudentModalState = {
+  isOpen: false,
+  courseId: null,
+  courseTitle: '',
+};
+
+export const ADD_STUDENT_DRAFT_KEY = 'add_student_draft';
+
+export const ADD_STUDENT_INITIAL_DATA = {
+  fullName: '',
+  contactType: 'email',
+  contactValue: '',
+};
+
+export const ADD_STUDENT_FIELDS = [
+  {
+    name: 'fullName',
+    label: 'Họ và tên',
+    type: 'text' as const,
+    placeholder: 'Nhập họ và tên học viên',
+    required: true,
+    autoFocus: true,
+  },
+  {
+    name: 'contactType',
+    label: 'Loại liên hệ',
+    type: 'select' as const,
+    options: [
+      { value: 'email', label: 'Email' },
+      { value: 'wallet', label: 'Địa chỉ ví' },
+    ],
+    required: true,
+  },
+  {
+    name: 'contactValue',
+    label: 'Thông tin liên hệ',
+    type: 'text' as const,
+    placeholder: 'Nhập email hoặc địa chỉ ví',
+    required: true,
+  },
+];
+
+export const ADD_STUDENT_LABELS = {
+  title: 'Thêm học viên',
+  tag: 'Khóa học',
+  submit: 'Thêm học viên',
+  cancel: 'Hủy',
+  clearForm: 'Xóa form',
+  resumeDialog: {
+    title: 'Tiếp tục nhập?',
+    message: 'Bạn có thông tin học viên chưa lưu. Bạn muốn tiếp tục nhập hay bắt đầu mới?',
+    continueText: 'Tiếp tục nhập',
+    newText: 'Nhập mới',
+  },
+};
+
+export const EDIT_STUDENT_DRAFT_KEY = 'edit_student_draft';
+
+export const EDIT_STUDENT_LABELS = {
+  title: 'Chỉnh sửa học viên',
+  tag: 'Học viên',
+  submit: 'Lưu thay đổi',
+  cancel: 'Hủy',
+  clearForm: 'Khôi phục',
+  resumeDialog: {
+    title: 'Tiếp tục chỉnh sửa?',
+    message: 'Bạn có thông tin chưa lưu. Bạn muốn tiếp tục chỉnh sửa hay khôi phục dữ liệu gốc?',
+    continueText: 'Tiếp tục sửa',
+    newText: 'Khôi phục gốc',
+  },
 };
 
 export const MOCK_INSTRUCTOR_COURSES: InstructorCourse[] = [

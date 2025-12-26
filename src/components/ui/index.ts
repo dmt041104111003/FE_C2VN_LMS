@@ -13,6 +13,7 @@ export { SearchInput } from './SearchInput';
 export { Lightbox } from './Lightbox';
 export { Card } from './Card';
 export { CardModal } from './CardModal';
+export { FormModal } from './FormModal';
 export { WalletModal } from './WalletModal';
 export { Pagination } from './Pagination';
 export { Filter } from './Filter';
@@ -95,7 +96,7 @@ export type {
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
-export type { DialogProps } from './ui.types';
+export type { DialogProps, FormModalProps, FormModalLabels, FormFieldConfig, FormFieldOption, FormFieldType } from './ui.types';
 export {
   GitHubIcon,
   YouTubeIcon,

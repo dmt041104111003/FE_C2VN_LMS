@@ -576,3 +576,21 @@ export const DIALOG = {
   DEFAULT_PRIMARY_TEXT: 'Xác nhận',
   DEFAULT_SECONDARY_TEXT: 'Hủy',
 } as const;
+
+export const FORM_MODAL = {
+  OVERLAY: 'fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4',
+  CLOSE: 'absolute top-4 right-4 text-white z-10',
+  CLOSE_ICON: 'w-8 h-8',
+  CONTAINER: 'bg-[var(--bg)] rounded-2xl overflow-hidden max-w-lg w-full',
+  HEADER: 'p-6 border-b border-[var(--border)]',
+  TAG: 'mb-2',
+  TITLE: 'text-xl font-bold text-[var(--text)]',
+  SUBTITLE: 'text-sm text-[var(--text)]/60 mt-1',
+  BODY: 'p-6 space-y-4',
+  FIELD: 'space-y-2',
+  LABEL: 'text-sm font-medium text-[var(--text)]/70',
+  INPUT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors',
+  SELECT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer',
+  TEXTAREA: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors resize-none',
+  FOOTER: 'flex items-center justify-end gap-3 p-4 bg-[var(--bg-alt)]/30 border-t border-[var(--border)]',
+} as const;

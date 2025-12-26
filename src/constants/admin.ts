@@ -8,7 +8,6 @@ export const ADMIN_LABELS = {
   logout: 'Đăng xuất',
   users: {
     title: 'Quản lý người dùng',
-    create: 'Thêm người dùng',
     search: 'Tìm kiếm',
     searchPlaceholder: 'Tìm theo tên hoặc email...',
     filterRole: 'Vai trò',
@@ -41,7 +40,6 @@ export const ADMIN_LABELS = {
       changeRoleMessage: 'Bạn có chắc muốn thay đổi vai trò của người dùng này?',
     },
     toast: {
-      createSuccess: 'Thêm người dùng thành công',
       banSuccess: 'Đã khóa tài khoản',
       unbanSuccess: 'Đã mở khóa tài khoản',
       deleteSuccess: 'Đã xóa người dùng',

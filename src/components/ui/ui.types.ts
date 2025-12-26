@@ -112,6 +112,50 @@ export interface CardModalProps {
   onGoTo: (index: number) => void;
 }
 
+export type FormFieldType = 'text' | 'email' | 'select' | 'textarea';
+
+export interface FormFieldOption {
+  value: string;
+  label: string;
+}
+
+export interface FormFieldConfig {
+  name: string;
+  label: string;
+  type: FormFieldType;
+  placeholder?: string;
+  options?: FormFieldOption[];
+  required?: boolean;
+  autoFocus?: boolean;
+}
+
+export interface FormModalLabels {
+  title: string;
+  tag?: string;
+  subtitle?: string;
+  submit: string;
+  cancel: string;
+  clearForm: string;
+  resumeDialog: {
+    title: string;
+    message: string;
+    continueText: string;
+    newText: string;
+  };
+}
+
+export interface FormModalProps<T extends Record<string, unknown>> {
+  isOpen: boolean;
+  labels: FormModalLabels;
+  fields: FormFieldConfig[];
+  storageKey: string;
+  initialData: T;
+  isEmpty: (data: T) => boolean;
+  isValid: (data: T) => boolean;
+  onClose: () => void;
+  onSubmit: (data: T) => void;
+}
+
 export type InputVariant = 'default' | 'search' | 'rounded' | 'minimal';
 export type InputSize = 'sm' | 'md' | 'lg';
 

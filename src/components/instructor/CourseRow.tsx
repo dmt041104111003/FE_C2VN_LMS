@@ -12,6 +12,8 @@ import {
   TrashIcon,
   EyeIcon,
   EyeOffIcon,
+  UsersIcon,
+  ListIcon,
 } from '@/components/ui';
 import { ICON_SM } from '@/components/ui/ui.styles';
 import { formatCode, formatCurrency, formatDate } from '@/constants/config';
@@ -22,14 +24,32 @@ const ACTIONS = COURSE_TABLE.actions;
 const HEADERS = COURSE_TABLE.headers;
 const COURSE_CODE_PREFIX = 'KH';
 
-export const CourseRow = memo(function CourseRow({ index, course, onEdit, onDelete, onToggleStatus }: CourseRowProps) {
+export const CourseRow = memo(function CourseRow({ index, course, onEdit, onDelete, onToggleStatus, onAddStudent, onViewStudents }: CourseRowProps) {
   const isPublished = course.status === 'published';
 
   const handleToggleStatus = useCallback(() => {
     onToggleStatus(course.id, isPublished);
   }, [course.id, isPublished, onToggleStatus]);
 
+  const handleAddStudent = useCallback(() => {
+    onAddStudent(course.id, course.title);
+  }, [course.id, course.title, onAddStudent]);
+
+  const handleViewStudents = useCallback(() => {
+    onViewStudents(course.id);
+  }, [course.id, onViewStudents]);
+
   const dropdownItems = [
+    {
+      label: ACTIONS.viewStudents,
+      icon: <ListIcon className={ICON_SM} />,
+      onClick: handleViewStudents,
+    },
+    {
+      label: ACTIONS.addStudent,
+      icon: <UsersIcon className={ICON_SM} />,
+      onClick: handleAddStudent,
+    },
     {
       label: ACTIONS.edit,
       icon: <EditIcon className={ICON_SM} />,

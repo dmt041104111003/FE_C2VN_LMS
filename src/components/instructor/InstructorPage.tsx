@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { DataTable, Dialog, Pagination, Panel, Button, PlusIcon, useToast } from '@/components/ui';
+import { DataTable, Dialog, Pagination, Panel, Button, PlusIcon, useToast, FormModal } from '@/components/ui';
 import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
@@ -10,16 +10,21 @@ import {
   MOCK_INSTRUCTOR_COURSES,
   COURSE_TABLE,
   COURSE_MODAL_CONFIG,
+  INITIAL_ADD_STUDENT_MODAL,
+  ADD_STUDENT_FIELDS,
+  ADD_STUDENT_LABELS,
+  ADD_STUDENT_DRAFT_KEY,
+  ADD_STUDENT_INITIAL_DATA,
 } from '@/constants/instructor';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
-import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion, CourseEditData } from '@/types/instructor';
+import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion, AddStudentModalState, AddStudentFormData } from '@/types/instructor';
 import { InstructorLayout } from './InstructorLayout';
 import { CourseFilters } from './CourseFilters';
 import { CourseRow } from './CourseRow';
-import { CourseEditModal } from './CourseEditModal';
 
 const LABELS = INSTRUCTOR_LABELS.courses;
 const TOAST = LABELS.toast;
+const INITIAL_MODAL: InstructorModalState = { type: null, courseId: null };
 
 export function InstructorPage() {
   const router = useRouter();
@@ -28,8 +33,8 @@ export function InstructorPage() {
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);
-  const [modal, setModal] = useState<InstructorModalState>({ type: null, courseId: null });
-  const [editingCourse, setEditingCourse] = useState<InstructorCourse | null>(null);
+  const [modal, setModal] = useState<InstructorModalState>(INITIAL_MODAL);
+  const [addStudentModal, setAddStudentModal] = useState<AddStudentModalState>(INITIAL_ADD_STUDENT_MODAL);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -62,7 +67,7 @@ export function InstructorPage() {
   }, []);
 
   const closeModal = useCallback(() => {
-    setModal({ type: null, courseId: null });
+    setModal(INITIAL_MODAL);
   }, []);
 
   const handleDelete = useCallback((courseId: string) => {
@@ -84,21 +89,12 @@ export function InstructorPage() {
   }, [closeModal, toast]);
 
   const handleEdit = useCallback((courseId: string) => {
-    const course = courses.find(c => c.id === courseId);
-    if (course) setEditingCourse(course);
-  }, [courses]);
+    router.push(`/instructor/courses/edit/${courseId}`);
+  }, [router]);
 
-  const handleSaveEdit = useCallback((courseId: string, data: CourseEditData) => {
-    setCourses(prev => prev.map(c => 
-      c.id === courseId ? { ...c, ...data, updatedAt: new Date().toISOString() } : c
-    ));
-    setEditingCourse(null);
-    toast.success(TOAST.editSuccess);
-  }, [toast]);
-
-  const handleCloseEdit = useCallback(() => {
-    setEditingCourse(null);
-  }, []);
+  const handleViewStudents = useCallback((courseId: string) => {
+    router.push(`/instructor/courses/${courseId}/students`);
+  }, [router]);
 
   const handleCreate = useCallback(() => {
     router.push('/instructor/courses/create');
@@ -111,6 +107,36 @@ export function InstructorPage() {
   const handleToggleStatusClick = useCallback((courseId: string, isPublished: boolean) => {
     openModal(isPublished ? 'unpublish' : 'publish', courseId);
   }, [openModal]);
+
+  const handleAddStudentClick = useCallback((courseId: string, courseTitle: string) => {
+    setAddStudentModal({ isOpen: true, courseId, courseTitle });
+  }, []);
+
+  const handleCloseAddStudent = useCallback(() => {
+    setAddStudentModal(INITIAL_ADD_STUDENT_MODAL);
+  }, []);
+
+  const handleAddStudentSubmit = useCallback((data: Record<string, unknown>) => {
+    const formData = data as AddStudentFormData;
+    console.log('Add student:', addStudentModal.courseId, formData);
+    setCourses(prev => prev.map(c =>
+      c.id === addStudentModal.courseId
+        ? { ...c, students: c.students + 1 }
+        : c
+    ));
+    handleCloseAddStudent();
+    toast.success(TOAST.addStudentSuccess);
+  }, [addStudentModal.courseId, handleCloseAddStudent, toast]);
+
+  const isAddStudentFormEmpty = useCallback((data: Record<string, unknown>) => {
+    const form = data as AddStudentFormData;
+    return !form.fullName?.trim() && !form.contactValue?.trim();
+  }, []);
+
+  const isAddStudentFormValid = useCallback((data: Record<string, unknown>) => {
+    const form = data as AddStudentFormData;
+    return Boolean(form.fullName?.trim() && form.contactValue?.trim());
+  }, []);
 
   const handleConfirm = useCallback(() => {
     if (!modal.courseId) return;
@@ -165,6 +191,8 @@ export function InstructorPage() {
                 onEdit={handleEdit}
                 onDelete={handleDeleteClick}
                 onToggleStatus={handleToggleStatusClick}
+                onAddStudent={handleAddStudentClick}
+                onViewStudents={handleViewStudents}
               />
             ))}
           </DataTable>
@@ -177,12 +205,19 @@ export function InstructorPage() {
           onPrimary={handleConfirm}
           onSecondary={closeModal}
         />
-
-        <CourseEditModal
-          isOpen={!!editingCourse}
-          course={editingCourse}
-          onSave={handleSaveEdit}
-          onClose={handleCloseEdit}
+        <FormModal
+          isOpen={addStudentModal.isOpen}
+          labels={{
+            ...ADD_STUDENT_LABELS,
+            subtitle: addStudentModal.courseTitle,
+          }}
+          fields={ADD_STUDENT_FIELDS}
+          storageKey={ADD_STUDENT_DRAFT_KEY}
+          initialData={ADD_STUDENT_INITIAL_DATA}
+          isEmpty={isAddStudentFormEmpty}
+          isValid={isAddStudentFormValid}
+          onClose={handleCloseAddStudent}
+          onSubmit={handleAddStudentSubmit}
         />
       </div>
     </InstructorLayout>

@@ -3,6 +3,7 @@ import { SYSTEM_CONFIG } from './config';
 
 export const COURSE_CREATE_LABELS = {
   pageTitle: 'Tạo khóa học mới',
+  editPageTitle: 'Chỉnh sửa khóa học',
   basicInfo: {
     title: 'Thông tin cơ bản',
     courseTitle: 'Tên khóa học',
@@ -61,15 +62,26 @@ export const COURSE_CREATE_LABELS = {
   },
   actions: {
     create: 'Tạo khóa học',
+    save: 'Lưu thay đổi',
     cancel: 'Hủy',
     preview: 'Xem trước',
     clearForm: 'Xóa form',
     continueEditing: 'Tiếp tục tạo',
+    continueEditingEdit: 'Tiếp tục sửa',
     createNew: 'Tạo mới',
+    restoreOriginal: 'Khôi phục gốc',
+  },
+  toast: {
+    createSuccess: 'Tạo khóa học thành công',
+    updateSuccess: 'Cập nhật khóa học thành công',
   },
   resumeDialog: {
     title: 'Bạn có dữ liệu chưa hoàn thành',
     message: 'Bạn muốn tiếp tục chỉnh sửa hay tạo khóa học mới?',
+  },
+  editResumeDialog: {
+    title: 'Bạn có thay đổi chưa lưu',
+    message: 'Bạn muốn tiếp tục sửa hay khôi phục từ bản gốc?',
   },
   validation: {
     titleRequired: 'Vui lòng nhập tên khóa học',
@@ -197,4 +209,5 @@ export const isPriceKeyBlocked = (key: string): boolean => BLOCKED_PRICE_KEYS.ha
 export const sanitizePrice = (value: string): number => Math.max(0, Number(value) || 0);
 
 export const COURSE_DRAFT_KEY = 'course_create_draft';
+export const COURSE_EDIT_DRAFT_KEY_PREFIX = 'course_edit_draft_';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, PlusIcon, useToast, Dialog } from '@/components/ui';
 import { ICON_SM } from '@/components/ui/ui.styles';
@@ -10,17 +10,72 @@ import {
   createEmptyChapter,
   createEmptyQuiz,
   createEmptyLecture,
+  INITIAL_COURSE_FORM,
+  COURSE_DRAFT_KEY,
+  COURSE_EDIT_DRAFT_KEY_PREFIX,
 } from '@/constants/course-create';
+import { MOCK_INSTRUCTOR_COURSES } from '@/constants/instructor';
 import { updateAtIndex, removeAtIndex, appendItem } from '@/hooks/useListManager';
-import { useCourseDraft } from '@/hooks/useCourseDraft';
+import { useFormDraft } from '@/hooks';
 import { validateCourseForm } from '@/utils/course-validation';
 import type { CourseFormData, Chapter, Lecture, Quiz } from '@/types/course-create';
 import { InstructorLayout } from './InstructorLayout';
 import { CourseBasicInfo, ChapterEditor, QuizEditor } from './course-create';
 
-export function CourseCreatePage() {
+interface CourseCreatePageProps {
+  courseId?: string;
+}
+
+const convertCourseToFormData = (courseId: string): CourseFormData | null => {
+  const course = MOCK_INSTRUCTOR_COURSES.find(c => c.id === courseId);
+  if (!course) return null;
+
+  return {
+    title: course.title,
+    description: '',
+    price: course.revenue / Math.max(course.students, 1),
+    status: course.status === 'published' ? 'published' : 'draft',
+    chapters: [createEmptyChapter()],
+    quizzes: [],
+  };
+};
+
+const isFormEmpty = (form: CourseFormData): boolean => {
+  const hasTitle = form.title.trim() !== '';
+  const hasDescription = form.description.trim() !== '';
+  const hasPrice = form.price > 0;
+  
+  const hasChapterContent = form.chapters.some(chapter => 
+    chapter.title.trim() !== '' || 
+    chapter.lectures.some(lecture => 
+      lecture.title.trim() !== '' || 
+      lecture.content.trim() !== '' || 
+      lecture.videoUrl.trim() !== ''
+    )
+  );
+  
+  const hasQuizContent = form.quizzes.some(quiz => 
+    quiz.title.trim() !== '' ||
+    quiz.questions.some(q => q.question.trim() !== '')
+  );
+
+  return !hasTitle && !hasDescription && !hasPrice && !hasChapterContent && !hasQuizContent;
+};
+
+export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
   const router = useRouter();
   const toast = useToast();
+  const isEditMode = Boolean(courseId);
+
+  const originalData = useMemo(() => {
+    if (!courseId) return INITIAL_COURSE_FORM;
+    return convertCourseToFormData(courseId) || INITIAL_COURSE_FORM;
+  }, [courseId]);
+
+  const storageKey = isEditMode 
+    ? `${COURSE_EDIT_DRAFT_KEY_PREFIX}${courseId}` 
+    : COURSE_DRAFT_KEY;
+
   const {
     formData,
     setFormData,
@@ -29,35 +84,41 @@ export function CourseCreatePage() {
     showResumeDialog,
     handleContinueEditing,
     handleCreateNew,
-  } = useCourseDraft();
+    clearDraftStorage,
+  } = useFormDraft({
+    storageKey,
+    initialData: originalData,
+    isEmpty: isFormEmpty,
+    enabled: true,
+  });
 
   const updateField = useCallback(<K extends keyof CourseFormData>(
     field: K,
     value: CourseFormData[K]
   ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  }, []);
+  }, [setFormData]);
 
   const handleAddChapter = useCallback(() => {
     setFormData(prev => ({
       ...prev,
       chapters: appendItem(prev.chapters, createEmptyChapter()),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleUpdateChapter = useCallback((index: number, chapter: Chapter) => {
     setFormData(prev => ({
       ...prev,
       chapters: updateAtIndex(prev.chapters, index, chapter),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleRemoveChapter = useCallback((index: number) => {
     setFormData(prev => ({
       ...prev,
       chapters: removeAtIndex(prev.chapters, index),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleAddLecture = useCallback((chapterIndex: number) => {
     setFormData(prev => ({
@@ -71,7 +132,7 @@ export function CourseCreatePage() {
         }
       ),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleUpdateLecture = useCallback((chapterIndex: number, lectureIndex: number, lecture: Lecture) => {
     setFormData(prev => ({
@@ -85,7 +146,7 @@ export function CourseCreatePage() {
         }
       ),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleRemoveLecture = useCallback((chapterIndex: number, lectureIndex: number) => {
     setFormData(prev => ({
@@ -99,28 +160,28 @@ export function CourseCreatePage() {
         }
       ),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleAddQuiz = useCallback(() => {
     setFormData(prev => ({
       ...prev,
       quizzes: appendItem(prev.quizzes, createEmptyQuiz()),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleUpdateQuiz = useCallback((index: number, quiz: Quiz) => {
     setFormData(prev => ({
       ...prev,
       quizzes: updateAtIndex(prev.quizzes, index, quiz),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleRemoveQuiz = useCallback((index: number) => {
     setFormData(prev => ({
       ...prev,
       quizzes: removeAtIndex(prev.quizzes, index),
     }));
-  }, []);
+  }, [setFormData]);
 
   const handleSubmit = useCallback(() => {
     const error = validateCourseForm(formData);
@@ -128,23 +189,41 @@ export function CourseCreatePage() {
       toast.error(error);
       return;
     }
-    toast.success('Tạo khóa học thành công!');
-    clearForm();
+    toast.success(isEditMode ? LABELS.toast.updateSuccess : LABELS.toast.createSuccess);
+    clearDraftStorage();
+    if (!isEditMode) clearForm();
     router.push('/instructor');
-  }, [formData, router, clearForm, toast]);
+  }, [formData, router, clearForm, clearDraftStorage, toast, isEditMode]);
 
   const navigateBack = useCallback(() => {
     router.push('/instructor');
   }, [router]);
 
+  const pageTitle = isEditMode ? LABELS.editPageTitle : LABELS.pageTitle;
+  const submitLabel = isEditMode ? LABELS.actions.save : LABELS.actions.create;
+
+  const dialogConfig = isEditMode
+    ? {
+        title: LABELS.editResumeDialog.title,
+        message: LABELS.editResumeDialog.message,
+        primaryText: LABELS.actions.continueEditingEdit,
+        secondaryText: LABELS.actions.restoreOriginal,
+      }
+    : {
+        title: LABELS.resumeDialog.title,
+        message: LABELS.resumeDialog.message,
+        primaryText: LABELS.actions.continueEditing,
+        secondaryText: LABELS.actions.createNew,
+      };
+
   return (
-    <InstructorLayout activeId="courses" title={LABELS.pageTitle}>
+    <InstructorLayout activeId="courses" title={pageTitle}>
       <Dialog
         isOpen={showResumeDialog}
-        title={LABELS.resumeDialog.title}
-        message={LABELS.resumeDialog.message}
-        primaryText={LABELS.actions.continueEditing}
-        secondaryText={LABELS.actions.createNew}
+        title={dialogConfig.title}
+        message={dialogConfig.message}
+        primaryText={dialogConfig.primaryText}
+        secondaryText={dialogConfig.secondaryText}
         onPrimary={handleContinueEditing}
         onSecondary={handleCreateNew}
       />
@@ -223,11 +302,10 @@ export function CourseCreatePage() {
             {LABELS.actions.cancel}
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            {LABELS.actions.create}
+            {submitLabel}
           </Button>
         </div>
       </div>
     </InstructorLayout>
   );
 }
-
