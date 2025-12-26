@@ -164,6 +164,7 @@ export {
   ShieldIcon,
   BanIcon,
   UnlockIcon,
+  LogoutIcon,
   WarningIcon,
   ErrorCircleIcon,
   SOCIAL_ICONS,

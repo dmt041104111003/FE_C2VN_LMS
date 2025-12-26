@@ -2,6 +2,7 @@ import type { AdminUser, UserRole, UserStatus } from '@/types/admin';
 
 export const ADMIN_LABELS = {
   title: 'Quản trị hệ thống',
+  logout: 'Đăng xuất',
   users: {
     title: 'Quản lý người dùng',
     search: 'Tìm kiếm',
@@ -172,7 +173,5 @@ export const formatDate = (dateString: string) =>
 
 export const ADMIN_SIDEBAR_ITEMS = [
   { id: 'users', title: 'Quản lý người dùng', href: '/admin' },
-  { id: 'courses', title: 'Quản lý khóa học', href: '/admin/courses' },
-  { id: 'settings', title: 'Cài đặt hệ thống', href: '/admin/settings' },
 ];
 

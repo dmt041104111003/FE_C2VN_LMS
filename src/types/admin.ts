@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
 export type UserStatus = 'ACTIVE' | 'BANNED';
 
@@ -77,4 +79,10 @@ export interface UserTableProps {
   onToggleStatus: (userId: string, isBan: boolean) => void;
   onDelete: (userId: string) => void;
   onChangeRole: (userId: string, role: UserRole) => void;
+}
+
+export interface AdminLayoutProps {
+  children: ReactNode;
+  activeId: string;
+  title?: string;
 }

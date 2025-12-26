@@ -1,50 +1,37 @@
 'use client';
 
-import { memo, ReactNode, useMemo } from 'react';
-import { Sidebar, SidebarLayout, UsersIcon, BookIcon, ShieldIcon } from '@/components/ui';
+import { memo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { Sidebar, SidebarLayout, Button, LogoutIcon } from '@/components/ui';
+import { SIDEBAR } from '@/components/ui/ui.styles';
 import { ADMIN_LABELS, ADMIN_SIDEBAR_ITEMS } from '@/constants/admin';
-import type { SidebarItem } from '@/components/ui';
+import type { AdminLayoutProps } from '@/types/admin';
 
-const SIDEBAR_ICONS: Record<string, React.FC<{ className?: string }>> = {
-  users: UsersIcon,
-  courses: BookIcon,
-  settings: ShieldIcon,
-};
-
-interface AdminLayoutProps {
-  children: ReactNode;
-  activeId: string;
-  title?: string;
-}
+const LOGOUT_BTN_CLASS = 'w-full justify-start gap-3 hover:!text-[var(--incorrect)] hover:!bg-[var(--incorrect)]/5';
 
 export const AdminLayout = memo(function AdminLayout({ children, activeId, title }: AdminLayoutProps) {
-  const sidebarItems: SidebarItem[] = useMemo(
-    () => ADMIN_SIDEBAR_ITEMS.map(item => ({
-      ...item,
-      icon: SIDEBAR_ICONS[item.id],
-    })),
-    []
-  );
+  const router = useRouter();
+
+  const handleLogout = useCallback(() => {
+    router.push('/');
+  }, [router]);
 
   const sidebar = (
     <Sidebar
-      items={sidebarItems}
+      items={ADMIN_SIDEBAR_ITEMS}
       activeId={activeId}
-      backLink={{ href: '/', label: 'Về trang chủ' }}
-      header={
-        <div className="text-xs uppercase tracking-[0.2em] text-[var(--text)]/40">
-          {ADMIN_LABELS.title}
-        </div>
+      header={<div className={SIDEBAR.TITLE}>{ADMIN_LABELS.title}</div>}
+      footer={
+        <Button variant="ghost" onClick={handleLogout} className={LOGOUT_BTN_CLASS}>
+          <LogoutIcon className="w-5 h-5" />
+          {ADMIN_LABELS.logout}
+        </Button>
       }
     />
   );
 
   return (
-    <SidebarLayout
-      sidebar={sidebar}
-      sidebarWidth="w-64"
-      header={{ title }}
-    >
+    <SidebarLayout sidebar={sidebar} sidebarWidth="w-64" header={{ title }}>
       {children}
     </SidebarLayout>
   );
