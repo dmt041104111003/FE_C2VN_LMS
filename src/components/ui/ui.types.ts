@@ -1,4 +1,4 @@
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type BadgeVariant = 'default' | 'accent';
 export type LogoLayout = 'inline' | 'stacked';
@@ -398,15 +398,9 @@ export interface ActionDropdownProps {
   label?: string;
 }
 
-export interface ConfirmModalProps {
-  isOpen: boolean;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  danger?: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
+export interface DropdownPosition {
+  top: number;
+  left: number;
 }
 
 export interface UserCellProps {
@@ -491,4 +485,15 @@ export interface ToastContextValue {
 export interface ToastItemProps {
   toast: ToastItem;
   onClose: () => void;
+}
+
+export interface DialogProps {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  primaryText?: string;
+  secondaryText?: string;
+  danger?: boolean;
+  onPrimary: () => void;
+  onSecondary: () => void;
 }

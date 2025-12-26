@@ -35,7 +35,7 @@ export { DataTable, TableRow, TableCell } from './Table';
 export { StatusBadge } from './StatusBadge';
 export { ActionButton, ActionDropdown, ActionsCell } from './ActionMenu';
 export { SearchFilter, SelectFilter, FiltersBar } from './DataFilters';
-export { ConfirmModal } from './ConfirmModal';
+export { Dialog } from './Dialog';
 export { UserCell } from './UserCell';
 export { Sidebar } from './Sidebar';
 export { SidebarLayout } from './SidebarLayout';
@@ -80,7 +80,6 @@ export type {
   ActionButtonProps,
   DropdownItem,
   ActionDropdownProps,
-  ConfirmModalProps,
   UserCellProps,
   SearchFilterProps,
   SelectFilterProps,
@@ -96,6 +95,7 @@ export type {
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
+export type { DialogProps } from './ui.types';
 export {
   GitHubIcon,
   YouTubeIcon,

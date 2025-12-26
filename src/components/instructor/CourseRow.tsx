@@ -31,6 +31,11 @@ export const CourseRow = memo(function CourseRow({ index, course, onEdit, onDele
 
   const dropdownItems = [
     {
+      label: ACTIONS.edit,
+      icon: <EditIcon className={ICON_SM} />,
+      onClick: () => onEdit(course.id),
+    },
+    {
       label: ACTIONS.delete,
       icon: <TrashIcon className={ICON_SM} />,
       onClick: () => onDelete(course.id),
@@ -57,11 +62,6 @@ export const CourseRow = memo(function CourseRow({ index, course, onEdit, onDele
       <TableCell label={HEADERS[6]}>{formatDate(course.updatedAt)}</TableCell>
       <TableCell isActions>
         <ActionsCell>
-          <ActionButton
-            icon={<EditIcon className={ICON_SM} />}
-            onClick={() => onEdit(course.id)}
-            title={ACTIONS.edit}
-          />
           <ActionButton
             icon={isPublished ? <EyeOffIcon className={ICON_SM} /> : <EyeIcon className={ICON_SM} />}
             onClick={handleToggleStatus}

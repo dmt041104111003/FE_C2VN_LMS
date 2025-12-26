@@ -1,11 +1,10 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import {
   TableRow,
   TableCell,
   StatusBadge,
-  ActionButton,
   ActionDropdown,
   ActionsCell,
   UserCell,
@@ -18,6 +17,7 @@ import { ICON_SM } from '@/components/ui/ui.styles';
 import { formatCode, formatDate } from '@/constants/config';
 import {
   ADMIN_LABELS,
+  USER_CODE_PREFIX,
   ROLE_OPTIONS,
   ROLE_LABELS,
   STATUS_LABELS,
@@ -27,14 +27,9 @@ import {
 import type { UserRowProps, UserRole } from '@/types/admin';
 
 const LABELS = ADMIN_LABELS.users;
-const USER_CODE_PREFIX = 'ND';
 
 export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDelete, onChangeRole }: UserRowProps) {
   const isActive = user.status === 'ACTIVE';
-
-  const handleToggleStatus = useCallback(() => {
-    onToggleStatus(user.id, isActive);
-  }, [user.id, isActive, onToggleStatus]);
 
   const dropdownItems = [
     ...ROLE_OPTIONS.filter(r => r.value && r.value !== user.role).map(role => ({
@@ -42,6 +37,12 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
       icon: <ShieldIcon className={ICON_SM} />,
       onClick: () => onChangeRole(user.id, role.value as UserRole),
     })),
+    {
+      label: isActive ? LABELS.actions.ban : LABELS.actions.unban,
+      icon: isActive ? <LockIcon className={ICON_SM} /> : <UnlockIcon className={ICON_SM} />,
+      onClick: () => onToggleStatus(user.id, isActive),
+      danger: isActive,
+    },
     {
       label: LABELS.actions.delete,
       icon: <TrashIcon className={ICON_SM} />,
@@ -72,11 +73,6 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
       <TableCell label={LABELS.table.createdAt}>{formatDate(user.createdAt)}</TableCell>
       <TableCell isActions>
         <ActionsCell>
-          <ActionButton
-            icon={isActive ? <LockIcon className={ICON_SM} /> : <UnlockIcon className={ICON_SM} />}
-            onClick={handleToggleStatus}
-            title={isActive ? LABELS.actions.ban : LABELS.actions.unban}
-          />
           <ActionDropdown items={dropdownItems} label={LABELS.actions.changeRole} />
         </ActionsCell>
       </TableCell>

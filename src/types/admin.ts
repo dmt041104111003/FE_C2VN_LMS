@@ -74,6 +74,7 @@ export interface UserTableProps {
   roleFilter: UserRole | '';
   statusFilter: UserStatus | '';
   searchSuggestions?: SearchSuggestion[];
+  action?: ReactNode;
   onKeywordChange: (value: string) => void;
   onRoleChange: (value: UserRole | '') => void;
   onStatusChange: (value: UserStatus | '') => void;

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { ConfirmModal } from '@/components/ui';
-import { PAGE } from '@/components/ui/ui.styles';
+import { Dialog, Button, PlusIcon, useToast } from '@/components/ui';
+import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import { ADMIN_LABELS, MOCK_USERS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
@@ -12,7 +12,10 @@ import { UserTable } from './UserTable';
 
 const LABELS = ADMIN_LABELS.users;
 
+const TOAST = ADMIN_LABELS.users.toast;
+
 export function AdminPage() {
+  const toast = useToast();
   const [users, setUsers] = useState<AdminUser[]>(MOCK_USERS);
   const [keyword, setKeyword] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
@@ -61,23 +64,13 @@ export function AdminPage() {
     setModal({ type: null, userId: null });
   }, []);
 
-  const handleBan = useCallback((userId: string) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'BANNED' as const } : u));
+  const updateUser = useCallback((userId: string, updates: Partial<AdminUser>) => {
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
     closeModal();
   }, [closeModal]);
 
-  const handleUnban = useCallback((userId: string) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'ACTIVE' as const } : u));
-    closeModal();
-  }, [closeModal]);
-
-  const handleDelete = useCallback((userId: string) => {
+  const removeUser = useCallback((userId: string) => {
     setUsers(prev => prev.filter(u => u.id !== userId));
-    closeModal();
-  }, [closeModal]);
-
-  const handleChangeRole = useCallback((userId: string, role: UserRole) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
     closeModal();
   }, [closeModal]);
 
@@ -93,16 +86,43 @@ export function AdminPage() {
     openModal('changeRole', userId, role);
   }, [openModal]);
 
+  const handleCreate = useCallback(() => {
+    const newUser: AdminUser = {
+      id: String(Date.now()),
+      fullName: 'Người dùng mới',
+      email: `user${Date.now()}@gmail.com`,
+      role: 'USER',
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+    setUsers(prev => [newUser, ...prev]);
+    toast.success(TOAST.createSuccess);
+  }, [toast]);
+
   const handleConfirm = useCallback(() => {
     if (!modal.userId || !modal.type) return;
     const actions: Record<NonNullable<AdminModalType>, () => void> = {
-      ban: () => handleBan(modal.userId!),
-      unban: () => handleUnban(modal.userId!),
-      delete: () => handleDelete(modal.userId!),
-      changeRole: () => modal.newRole && handleChangeRole(modal.userId!, modal.newRole),
+      ban: () => {
+        updateUser(modal.userId!, { status: 'BANNED' });
+        toast.success(TOAST.banSuccess);
+      },
+      unban: () => {
+        updateUser(modal.userId!, { status: 'ACTIVE' });
+        toast.success(TOAST.unbanSuccess);
+      },
+      delete: () => {
+        removeUser(modal.userId!);
+        toast.success(TOAST.deleteSuccess);
+      },
+      changeRole: () => {
+        if (modal.newRole) {
+          updateUser(modal.userId!, { role: modal.newRole });
+          toast.success(TOAST.changeRoleSuccess);
+        }
+      },
     };
     actions[modal.type]?.();
-  }, [modal, handleBan, handleUnban, handleDelete, handleChangeRole]);
+  }, [modal, updateUser, removeUser, toast]);
 
   const modalConfig = modal.type ? ADMIN_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;
 
@@ -119,6 +139,12 @@ export function AdminPage() {
           roleFilter={roleFilter}
           statusFilter={statusFilter}
           searchSuggestions={searchSuggestions}
+          action={
+            <Button variant="primary" size="sm" onClick={handleCreate} className="gap-1.5">
+              <PlusIcon className={ICON_SM} />
+              {LABELS.create}
+            </Button>
+          }
           onKeywordChange={setKeyword}
           onRoleChange={setRoleFilter}
           onStatusChange={setStatusFilter}
@@ -127,13 +153,13 @@ export function AdminPage() {
           onDelete={handleDeleteClick}
           onChangeRole={handleChangeRoleClick}
         />
-        <ConfirmModal
+        <Dialog
           isOpen={modal.type !== null}
           title={modalConfig.title}
           message={modalConfig.message}
           danger={modalConfig.danger}
-          onConfirm={handleConfirm}
-          onCancel={closeModal}
+          onPrimary={handleConfirm}
+          onSecondary={closeModal}
         />
       </div>
     </AdminLayout>

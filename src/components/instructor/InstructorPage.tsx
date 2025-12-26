@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { DataTable, ConfirmModal, Pagination, Panel } from '@/components/ui';
-import { PAGE } from '@/components/ui/ui.styles';
+import { useRouter } from 'next/navigation';
+import { DataTable, Dialog, Pagination, Panel, Button, PlusIcon, useToast } from '@/components/ui';
+import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
   INSTRUCTOR_LABELS,
@@ -11,19 +12,24 @@ import {
   COURSE_MODAL_CONFIG,
 } from '@/constants/instructor';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
-import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion } from '@/types/instructor';
+import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion, CourseEditData } from '@/types/instructor';
 import { InstructorLayout } from './InstructorLayout';
 import { CourseFilters } from './CourseFilters';
 import { CourseRow } from './CourseRow';
+import { CourseEditModal } from './CourseEditModal';
 
 const LABELS = INSTRUCTOR_LABELS.courses;
+const TOAST = LABELS.toast;
 
 export function InstructorPage() {
+  const router = useRouter();
+  const toast = useToast();
   const [courses, setCourses] = useState<InstructorCourse[]>(MOCK_INSTRUCTOR_COURSES);
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<InstructorModalState>({ type: null, courseId: null });
+  const [editingCourse, setEditingCourse] = useState<InstructorCourse | null>(null);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -62,21 +68,41 @@ export function InstructorPage() {
   const handleDelete = useCallback((courseId: string) => {
     setCourses(prev => prev.filter(c => c.id !== courseId));
     closeModal();
-  }, [closeModal]);
+    toast.success(TOAST.deleteSuccess);
+  }, [closeModal, toast]);
 
   const handlePublish = useCallback((courseId: string) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'published' as const } : c));
     closeModal();
-  }, [closeModal]);
+    toast.success(TOAST.publishSuccess);
+  }, [closeModal, toast]);
 
   const handleUnpublish = useCallback((courseId: string) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'draft' as const } : c));
     closeModal();
-  }, [closeModal]);
+    toast.success(TOAST.unpublishSuccess);
+  }, [closeModal, toast]);
 
   const handleEdit = useCallback((courseId: string) => {
-    console.log('Edit course:', courseId);
+    const course = courses.find(c => c.id === courseId);
+    if (course) setEditingCourse(course);
+  }, [courses]);
+
+  const handleSaveEdit = useCallback((courseId: string, data: CourseEditData) => {
+    setCourses(prev => prev.map(c => 
+      c.id === courseId ? { ...c, ...data, updatedAt: new Date().toISOString() } : c
+    ));
+    setEditingCourse(null);
+    toast.success(TOAST.editSuccess);
+  }, [toast]);
+
+  const handleCloseEdit = useCallback(() => {
+    setEditingCourse(null);
   }, []);
+
+  const handleCreate = useCallback(() => {
+    router.push('/instructor/courses/create');
+  }, [router]);
 
   const handleDeleteClick = useCallback((courseId: string) => {
     openModal('delete', courseId);
@@ -111,6 +137,12 @@ export function InstructorPage() {
 
         <Panel
           title={LABELS.title}
+          action={
+            <Button variant="primary" size="sm" onClick={handleCreate} className="gap-1.5">
+              <PlusIcon className={ICON_SM} />
+              {LABELS.create}
+            </Button>
+          }
           footer={
             <div className="flex items-center justify-between">
               <span className="text-sm text-[var(--text)]/50">
@@ -137,13 +169,20 @@ export function InstructorPage() {
             ))}
           </DataTable>
         </Panel>
-        <ConfirmModal
+        <Dialog
           isOpen={modal.type !== null}
           title={modalConfig.title}
           message={modalConfig.message}
           danger={modalConfig.danger}
-          onConfirm={handleConfirm}
-          onCancel={closeModal}
+          onPrimary={handleConfirm}
+          onSecondary={closeModal}
+        />
+
+        <CourseEditModal
+          isOpen={!!editingCourse}
+          course={editingCourse}
+          onSave={handleSaveEdit}
+          onClose={handleCloseEdit}
         />
       </div>
     </InstructorLayout>

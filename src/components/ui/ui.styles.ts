@@ -6,6 +6,7 @@ export const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   secondary: 'bg-[var(--bg-alt)] text-[var(--text)]',
   ghost: 'bg-transparent text-[var(--text)]',
   inverse: 'bg-white text-[var(--accent)]',
+  danger: 'bg-[var(--incorrect)] text-white',
 };
 export const BUTTON_SIZES: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5 text-xs sm:text-sm',
@@ -446,25 +447,21 @@ export const STATUS_BADGE = {
 
 export const DROPDOWN = {
   CONTAINER: 'absolute right-0 top-full mt-1 w-48 bg-white border border-[var(--border)] rounded-lg shadow-lg py-1 z-20',
+  PORTAL: 'fixed w-48 bg-white border border-[var(--border)] rounded-lg shadow-lg py-1 z-[9999]',
   ITEM: 'w-full px-4 py-2 text-left text-sm text-[var(--text)]/70 hover:bg-[var(--bg-alt)] transition-colors flex items-center gap-2',
   ITEM_DANGER: 'w-full px-4 py-2 text-left text-sm text-[var(--incorrect)] hover:bg-[var(--incorrect)]/5 transition-colors flex items-center gap-2',
   LABEL: 'px-4 py-2 text-xs text-[var(--text)]/40 uppercase tracking-wider',
+  WIDTH: 192,
+  ITEM_HEIGHT: 40,
+  PADDING: 8,
+  GAP: 4,
+  VIEWPORT_MARGIN: 8,
 } as const;
 
 export const ACTION_BTN = {
   BASE: 'p-2 rounded-lg text-[var(--text)]/40 hover:text-[var(--text)]/70 hover:bg-[var(--text)]/5 transition-colors',
   DANGER: 'p-2 rounded-lg text-[var(--text)]/40 hover:text-[var(--incorrect)] hover:bg-[var(--incorrect)]/5 transition-colors',
   GROUP: 'flex items-center gap-1',
-} as const;
-
-export const CONFIRM_MODAL = {
-  OVERLAY: 'fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4',
-  CONTAINER: 'bg-white rounded-lg shadow-xl max-w-md w-full',
-  HEADER: 'px-6 py-4 border-b border-[var(--border)]',
-  TITLE: 'text-lg font-medium text-[var(--text)]',
-  BODY: 'px-6 py-4',
-  MESSAGE: 'text-sm text-[var(--text)]/70',
-  FOOTER: 'px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3',
 } as const;
 
 export const USER_CELL = {
@@ -563,4 +560,19 @@ export const TOAST_PROGRESS_COLOR = {
   error: 'bg-[var(--incorrect)]',
   warning: 'bg-[var(--warning)]',
   info: 'bg-[var(--accent)]',
+} as const;
+
+export const DIALOG = {
+  OVERLAY: 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm',
+  CONTAINER: 'bg-white rounded-xl shadow-xl max-w-md w-full mx-4 overflow-hidden',
+  HEADER: 'flex items-center gap-3 p-5 border-b border-[var(--border)]',
+  ICON: 'w-10 h-10 p-2 rounded-full bg-[var(--accent)]/10 text-[var(--accent)]',
+  ICON_DANGER: 'w-10 h-10 p-2 rounded-full bg-[var(--incorrect)]/10 text-[var(--incorrect)]',
+  ICON_INNER: 'w-full h-full',
+  TITLE: 'text-lg font-semibold text-[var(--text)]',
+  BODY: 'p-5',
+  MESSAGE: 'text-sm text-[var(--text)]/70 leading-relaxed',
+  ACTIONS: 'flex items-center justify-end gap-3 p-4 bg-[var(--bg-alt)]/30',
+  DEFAULT_PRIMARY_TEXT: 'Xác nhận',
+  DEFAULT_SECONDARY_TEXT: 'Hủy',
 } as const;

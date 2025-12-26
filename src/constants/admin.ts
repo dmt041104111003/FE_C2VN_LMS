@@ -1,11 +1,14 @@
 import type { AdminUser, UserRole, UserStatus, AdminModalType } from '@/types/admin';
 import type { ModalConfig } from '@/types/common';
 
+export const USER_CODE_PREFIX = 'ND';
+
 export const ADMIN_LABELS = {
   title: 'Quản trị hệ thống',
   logout: 'Đăng xuất',
   users: {
     title: 'Quản lý người dùng',
+    create: 'Thêm người dùng',
     search: 'Tìm kiếm',
     searchPlaceholder: 'Tìm theo tên hoặc email...',
     filterRole: 'Vai trò',
@@ -22,7 +25,6 @@ export const ADMIN_LABELS = {
       actions: 'Thao tác',
     },
     actions: {
-      view: 'Xem chi tiết',
       ban: 'Khóa tài khoản',
       unban: 'Mở khóa',
       changeRole: 'Đổi vai trò',
@@ -38,6 +40,13 @@ export const ADMIN_LABELS = {
       changeRoleTitle: 'Thay đổi vai trò',
       changeRoleMessage: 'Bạn có chắc muốn thay đổi vai trò của người dùng này?',
     },
+    toast: {
+      createSuccess: 'Thêm người dùng thành công',
+      banSuccess: 'Đã khóa tài khoản',
+      unbanSuccess: 'Đã mở khóa tài khoản',
+      deleteSuccess: 'Đã xóa người dùng',
+      changeRoleSuccess: 'Đã thay đổi vai trò',
+    },
     empty: 'Không tìm thấy người dùng nào',
     total: 'Tổng cộng',
     users: 'người dùng',
@@ -50,19 +59,6 @@ export const ADMIN_LABELS = {
   },
 } as const;
 
-export const ROLE_OPTIONS: { value: UserRole | ''; label: string }[] = [
-  { value: '', label: ADMIN_LABELS.users.allRoles },
-  { value: 'USER', label: 'Học viên' },
-  { value: 'INSTRUCTOR', label: 'Giảng viên' },
-  { value: 'ADMIN', label: 'Quản trị viên' },
-];
-
-export const STATUS_OPTIONS: { value: UserStatus | ''; label: string }[] = [
-  { value: '', label: ADMIN_LABELS.users.allStatus },
-  { value: 'ACTIVE', label: 'Hoạt động' },
-  { value: 'BANNED', label: 'Đã khóa' },
-];
-
 export const ROLE_LABELS: Record<UserRole, string> = {
   USER: 'Học viên',
   INSTRUCTOR: 'Giảng viên',
@@ -73,6 +69,27 @@ export const STATUS_LABELS: Record<UserStatus, string> = {
   ACTIVE: 'Hoạt động',
   BANNED: 'Đã khóa',
 };
+
+const createOptionsFromLabels = <T extends string>(
+  labels: Record<T, string>,
+  allLabel: string
+): { value: T | ''; label: string }[] => [
+  { value: '', label: allLabel },
+  ...Object.entries(labels).map(([value, label]) => ({ 
+    value: value as T, 
+    label: label as string 
+  })),
+];
+
+export const ROLE_OPTIONS = createOptionsFromLabels<UserRole>(
+  ROLE_LABELS,
+  ADMIN_LABELS.users.allRoles
+);
+
+export const STATUS_OPTIONS = createOptionsFromLabels<UserStatus>(
+  STATUS_LABELS,
+  ADMIN_LABELS.users.allStatus
+);
 
 export const MOCK_USERS: AdminUser[] = [
   { id: '1', email: 'nguyenvana@gmail.com', fullName: 'Nguyễn Văn A', role: 'USER', status: 'ACTIVE', createdAt: '2024-01-15T10:00:00Z', lastLogin: '2024-12-25T08:30:00Z' },

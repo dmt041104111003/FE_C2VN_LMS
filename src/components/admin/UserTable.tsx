@@ -19,6 +19,7 @@ export const UserTable = memo(function UserTable({
   roleFilter,
   statusFilter,
   searchSuggestions,
+  action,
   onKeywordChange,
   onRoleChange,
   onStatusChange,
@@ -41,6 +42,7 @@ export const UserTable = memo(function UserTable({
 
       <Panel
         title={LABELS.title}
+        action={action}
         footer={
           <div className="flex items-center justify-between">
             <span className="text-sm text-[var(--text)]/50">

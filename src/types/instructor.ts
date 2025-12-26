@@ -26,11 +26,15 @@ export interface CourseRowProps {
   onToggleStatus: (courseId: string, isPublished: boolean) => void;
 }
 
-export type InstructorModalType = 'delete' | 'publish' | 'unpublish' | null;
+export type InstructorModalType = 'delete' | 'publish' | 'unpublish' | 'edit' | null;
 
 export interface InstructorModalState {
   type: InstructorModalType;
   courseId: string | null;
+}
+
+export interface CourseEditData {
+  title: string;
 }
 
 export interface SearchSuggestion {
