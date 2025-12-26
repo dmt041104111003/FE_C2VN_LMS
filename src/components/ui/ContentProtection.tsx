@@ -32,8 +32,8 @@ const preventDefault = (e: Event): false => {
   return false;
 };
 
-const ALWAYS_PROTECTED_EVENTS = ['dragstart', 'contextmenu', 'copy'] as const;
-const PRODUCTION_ONLY_EVENTS = ['keydown'] as const;
+const ALWAYS_PROTECTED_EVENTS = ['dragstart', 'copy'] as const;
+const PRODUCTION_ONLY_EVENTS = ['keydown', 'contextmenu'] as const;
 
 export function ContentProtection() {
   const handlersRef = useRef<Map<string, EventHandler>>(new Map());
@@ -49,10 +49,7 @@ export function ContentProtection() {
     });
 
     handlers.set('contextmenu', (e: Event) => {
-      if (isMediaElement(e.target)) {
-        return preventDefault(e);
-      }
-      return true;
+      return preventDefault(e);
     });
 
     handlers.set('copy', (e: Event) => {
