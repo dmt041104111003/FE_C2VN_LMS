@@ -59,8 +59,6 @@ export {
   BLOCKED_CTRL_SHIFT_KEYS,
   BLOCKED_KEYS,
   EDITABLE_TAGS,
-  PROTECTION_EVENTS,
-  type ProtectionEventType,
 } from './protection';
 export {
   REVIEW_LABELS,

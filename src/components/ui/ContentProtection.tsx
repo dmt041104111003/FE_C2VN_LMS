@@ -7,8 +7,6 @@ import {
   BLOCKED_CTRL_SHIFT_KEYS,
   BLOCKED_KEYS,
   EDITABLE_TAGS,
-  PROTECTION_EVENTS,
-  ProtectionEventType,
 } from '@/constants';
 
 type EventHandler = (e: Event) => boolean | void;
@@ -34,30 +32,14 @@ const preventDefault = (e: Event): false => {
   return false;
 };
 
+const ALWAYS_PROTECTED_EVENTS = ['dragstart', 'contextmenu', 'copy'] as const;
+const PRODUCTION_ONLY_EVENTS = ['keydown'] as const;
+
 export function ContentProtection() {
-  const handlersRef = useRef<Map<ProtectionEventType, EventHandler>>(new Map());
+  const handlersRef = useRef<Map<string, EventHandler>>(new Map());
 
-  const createHandlers = useCallback((): Map<ProtectionEventType, EventHandler> => {
-    const handlers = new Map<ProtectionEventType, EventHandler>();
-
-    handlers.set('keydown', (e: Event) => {
-      const ke = e as KeyboardEvent;
-      const key = ke.key.toLowerCase();
-
-      if (isEditableElement(e.target)) return true;
-
-      if ((ke.ctrlKey || ke.metaKey) && ke.shiftKey && BLOCKED_CTRL_SHIFT_KEYS.has(key)) {
-        return preventDefault(e);
-      }
-
-      if ((ke.ctrlKey || ke.metaKey) && BLOCKED_CTRL_KEYS.has(key)) {
-        return preventDefault(e);
-      }
-
-      if (BLOCKED_KEYS.has(ke.key)) {
-        return preventDefault(e);
-      }
-    });
+  const createHandlers = useCallback((): Map<string, EventHandler> => {
+    const handlers = new Map<string, EventHandler>();
 
     handlers.set('dragstart', (e: Event) => {
       if (isImageElement(e.target)) {
@@ -80,28 +62,63 @@ export function ContentProtection() {
       return true;
     });
 
+    handlers.set('keydown', (e: Event) => {
+      const ke = e as KeyboardEvent;
+      const key = ke.key.toLowerCase();
+
+      if (isEditableElement(e.target)) return true;
+
+      if ((ke.ctrlKey || ke.metaKey) && ke.shiftKey && BLOCKED_CTRL_SHIFT_KEYS.has(key)) {
+        return preventDefault(e);
+      }
+
+      if ((ke.ctrlKey || ke.metaKey) && BLOCKED_CTRL_KEYS.has(key)) {
+        return preventDefault(e);
+      }
+
+      if (BLOCKED_KEYS.has(ke.key)) {
+        return preventDefault(e);
+      }
+    });
+
     return handlers;
   }, []);
 
   useEffect(() => {
-    if (!IS_PROTECTION_ENABLED) return;
-
     handlersRef.current = createHandlers();
 
-    PROTECTION_EVENTS.forEach((event) => {
+    ALWAYS_PROTECTED_EVENTS.forEach((event) => {
       const handler = handlersRef.current.get(event);
       if (handler) {
         document.addEventListener(event, handler);
       }
     });
 
+    if (IS_PROTECTION_ENABLED) {
+      PRODUCTION_ONLY_EVENTS.forEach((event) => {
+        const handler = handlersRef.current.get(event);
+        if (handler) {
+          document.addEventListener(event, handler);
+        }
+      });
+    }
+
     return () => {
-      PROTECTION_EVENTS.forEach((event) => {
+      ALWAYS_PROTECTED_EVENTS.forEach((event) => {
         const handler = handlersRef.current.get(event);
         if (handler) {
           document.removeEventListener(event, handler);
         }
       });
+
+      if (IS_PROTECTION_ENABLED) {
+        PRODUCTION_ONLY_EVENTS.forEach((event) => {
+          const handler = handlersRef.current.get(event);
+          if (handler) {
+            document.removeEventListener(event, handler);
+          }
+        });
+      }
     };
   }, [createHandlers]);
 

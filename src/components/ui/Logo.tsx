@@ -37,7 +37,6 @@ function LogoComponent({
         src={LOGO_SRC}
         className={className || LOGO_COMPACT}
         alt={LOGO_ALT}
-        draggable={false}
         style={{ aspectRatio: '1/1' }}
       />
     );
@@ -51,7 +50,6 @@ function LogoComponent({
           src={LOGO_SRC}
           className={LOGO_INLINE_IMG[size]}
           alt={LOGO_ALT}
-          draggable={false}
           style={{ aspectRatio: '1/1' }}
         />
 
@@ -77,7 +75,6 @@ function LogoComponent({
           src={LOGO_SRC}
           className={LOGO_STACKED_IMG}
           alt={LOGO_ALT}
-          draggable={false}
         />
       </div>
 

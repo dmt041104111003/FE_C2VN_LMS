@@ -37,10 +37,8 @@ function QuizIntroComponent({ quiz, onStart }: QuizIntroProps) {
           alt=""
           width={120}
           height={120}
-          className="mb-6 rounded-lg pointer-events-none select-none"
+          className="mb-6 rounded-lg"
           priority
-          onContextMenu={(e) => e.preventDefault()}
-          draggable={false}
         />
         <h1 className={QUIZ.INTRO_TITLE}>{quiz.title}</h1>
         
