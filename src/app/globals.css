@@ -19,7 +19,10 @@
 
 img,
 video,
-canvas {
+canvas,
+svg,
+pre,
+code {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
@@ -34,6 +37,17 @@ canvas {
 
 img::selection,
 video::selection,
-canvas::selection {
+canvas::selection,
+svg::selection,
+pre::selection,
+code::selection {
   background: transparent;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }

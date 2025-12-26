@@ -59,6 +59,7 @@ export {
   BLOCKED_CTRL_SHIFT_KEYS,
   BLOCKED_KEYS,
   EDITABLE_TAGS,
+  DEVTOOLS_THRESHOLD,
 } from './protection';
 export {
   REVIEW_LABELS,
