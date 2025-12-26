@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">CARDANO2VN.IO</h1>
-<h3 align="center">BREAK THE BLOCKS</h3>
+
 
 <p align="center">
   <strong>Hệ thống quản lý học tập (LMS) của cộng đồng Cardano Việt Nam</strong>
@@ -12,7 +12,7 @@
 ---
 
 <p align="center">
-  <img src="public/website.png" alt="C2VN Background" width="600">
+  <img src="public/website.png" alt="C2VN Background" width="100%" height="auto">
 </p>
 
 ---
