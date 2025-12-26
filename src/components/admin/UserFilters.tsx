@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { SearchInput } from '@/components/ui';
+import { SearchInput, Button, PlusIcon } from '@/components/ui';
 import { ROLE_OPTIONS, STATUS_OPTIONS, ADMIN_LABELS } from '@/constants/admin';
 import type { UserFiltersProps, UserRole, UserStatus } from '@/types/admin';
 import {
@@ -10,6 +10,7 @@ import {
   FILTER_COL,
   FILTER_LABEL,
   FILTER_SELECT,
+  ICON_SM,
 } from '@/components/ui/ui.styles';
 
 const LABELS = ADMIN_LABELS.users;
@@ -22,9 +23,18 @@ export const UserFilters = memo(function UserFilters({
   onKeywordChange,
   onRoleChange,
   onStatusChange,
+  onAddUser,
 }: UserFiltersProps) {
   return (
     <div className={`${FILTER_WRAPPER} mb-8`}>
+      <div className="flex items-center justify-between mb-4">
+        <div />
+        <Button variant="primary" size="sm" onClick={onAddUser} className="gap-1.5">
+          <PlusIcon className={ICON_SM} />
+          {LABELS.addUser}
+        </Button>
+      </div>
+
       <SearchInput
         value={keyword}
         onChange={onKeywordChange}

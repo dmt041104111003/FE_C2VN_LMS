@@ -502,6 +502,7 @@ export const SIDEBAR = {
   ITEM_ICON: 'w-4 h-4 flex-shrink-0',
   ITEM_CONTENT: 'flex-1 min-w-0',
   ITEM_TITLE: 'text-sm truncate',
+  ITEM_BADGE: 'ml-1 text-[var(--accent)]',
   ITEM_META: 'text-xs opacity-50 mt-0.5',
   FOOTER: 'px-5 py-4 border-t border-[var(--border)]',
   LOGOUT_BTN: 'w-full justify-start gap-3 hover:!text-[var(--incorrect)] hover:!bg-[var(--incorrect)]/5',
@@ -593,4 +594,17 @@ export const FORM_MODAL = {
   SELECT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer',
   TEXTAREA: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors resize-none',
   FOOTER: 'flex items-center justify-end gap-3 p-4 bg-[var(--bg-alt)]/30 border-t border-[var(--border)]',
+} as const;
+
+export const COPYABLE_TEXT = {
+  BASE: 'text-left hover:text-[var(--accent)] transition-colors cursor-pointer',
+  TRUNCATE_LENGTH: 20,
+  TOAST: {
+    SUCCESS: 'Đã sao chép',
+    ERROR: 'Không thể sao chép',
+  },
+  TOOLTIP: {
+    DEFAULT: 'Click để sao chép',
+    TRUNCATED_SUFFIX: '\n(Click để sao chép)',
+  },
 } as const;

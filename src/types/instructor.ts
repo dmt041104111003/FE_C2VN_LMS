@@ -8,6 +8,8 @@ export interface InstructorCourse {
   students: number;
   revenue: number;
   status: CourseStatus;
+  completedCount: number;
+  pendingCertificateCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,19 +18,18 @@ export interface InstructorLayoutProps {
   children: ReactNode;
   activeId: string;
   title?: string;
+  inboxUnreadCount?: number;
 }
 
 export interface CourseRowProps {
   index: number;
   course: InstructorCourse;
-  onEdit: (courseId: string) => void;
-  onDelete: (courseId: string) => void;
+  onViewDetails: (courseId: string) => void;
   onToggleStatus: (courseId: string, isPublished: boolean) => void;
-  onAddStudent: (courseId: string, courseTitle: string) => void;
   onViewStudents: (courseId: string) => void;
 }
 
-export type InstructorModalType = 'delete' | 'publish' | 'unpublish' | 'edit' | null;
+export type InstructorModalType = 'publish' | 'unpublish' | null;
 
 export interface InstructorModalState {
   type: InstructorModalType;
@@ -50,10 +51,7 @@ export interface CourseFiltersProps {
   searchSuggestions?: SearchSuggestion[];
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: CourseStatus | '') => void;
-}
-
-export interface CourseEditPageProps {
-  params: { id: string };
+  onCreateCourse: () => void;
 }
 
 export interface AddStudentModalState {

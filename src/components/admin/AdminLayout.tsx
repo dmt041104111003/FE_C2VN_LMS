@@ -29,7 +29,7 @@ export const AdminLayout = memo(function AdminLayout({ children, activeId, title
   );
 
   return (
-    <SidebarLayout sidebar={sidebar} sidebarWidth="w-64" header={{ title }}>
+    <SidebarLayout sidebar={sidebar} sidebarWidth="w-52" header={{ title }}>
       {children}
     </SidebarLayout>
   );

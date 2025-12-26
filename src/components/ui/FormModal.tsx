@@ -74,6 +74,17 @@ function FormModalComponent<T extends Record<string, unknown>>({
     e.stopPropagation();
   }, []);
 
+  const handleCancel = useCallback(() => {
+    clearDraftStorage();
+    setFormData(initialData);
+    onClose();
+  }, [clearDraftStorage, setFormData, initialData, onClose]);
+
+  const handleClearForm = useCallback(() => {
+    clearDraftStorage();
+    clearForm();
+  }, [clearDraftStorage, clearForm]);
+
   const renderField = useCallback((field: FormFieldConfig) => {
     const value = formData[field.name] as string || '';
 
@@ -163,11 +174,11 @@ function FormModalComponent<T extends Record<string, unknown>>({
 
             <div className={FORM_MODAL.FOOTER}>
               {hasFormData && (
-                <Button type="button" variant="ghost" onClick={clearForm} className="mr-auto text-[var(--incorrect)]">
+                <Button type="button" variant="ghost" onClick={handleClearForm} className="mr-auto text-[var(--incorrect)]">
                   {labels.clearForm}
                 </Button>
               )}
-              <Button type="button" variant="ghost" onClick={onClose}>
+              <Button type="button" variant="ghost" onClick={handleCancel}>
                 {labels.cancel}
               </Button>
               <Button type="submit" variant="primary" disabled={!valid}>

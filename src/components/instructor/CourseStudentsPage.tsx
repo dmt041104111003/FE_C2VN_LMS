@@ -15,6 +15,9 @@ import {
 import {
   MOCK_INSTRUCTOR_COURSES,
   ADD_STUDENT_FIELDS,
+  ADD_STUDENT_LABELS,
+  ADD_STUDENT_INITIAL_DATA,
+  ADD_STUDENT_DRAFT_KEY,
   EDIT_STUDENT_LABELS,
   EDIT_STUDENT_DRAFT_KEY,
 } from '@/constants/instructor';
@@ -61,6 +64,7 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<StudentModalState>(INITIAL_STUDENT_MODAL);
   const [editModal, setEditModal] = useState<EditStudentModalState>(INITIAL_EDIT_STUDENT_MODAL);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const studentsMap = useMemo(
     () => new Map(students.map(s => [s.id, s])),
@@ -95,6 +99,12 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
     return result;
   }, [students]);
 
+  const pendingCertificateCount = useMemo(() => {
+    return students.filter(s => 
+      s.status === 'completed' && s.certificateStatus !== 'issued'
+    ).length;
+  }, [students]);
+
   const totalPages = Math.ceil(filteredStudents.length / DEFAULT_PAGE_SIZE);
   const startIndex = (page - 1) * DEFAULT_PAGE_SIZE;
   const paginatedStudents = filteredStudents.slice(startIndex, startIndex + DEFAULT_PAGE_SIZE);
@@ -121,16 +131,62 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
     setModal({ type: 'remove', studentId });
   }, []);
 
+  const handleIssueCertificateClick = useCallback((studentId: string) => {
+    setModal({ type: 'issueCertificate', studentId });
+  }, []);
+
+  const handleIssueAllCertificatesClick = useCallback(() => {
+    setModal({ type: 'issueAllCertificates', studentId: null });
+  }, []);
+
   const handleConfirm = useCallback(() => {
     const { studentId, type } = modal;
-    if (!studentId || type !== 'remove') return;
+    if (!type) return;
 
-    setStudents(prev => prev.filter(s => s.id !== studentId));
-    toast.success(TOAST.removeSuccess);
+    if (type === 'remove' && studentId) {
+      setStudents(prev => prev.filter(s => s.id !== studentId));
+      toast.success(TOAST.removeSuccess);
+    } else if (type === 'issueCertificate' && studentId) {
+      setStudents(prev => prev.map(s =>
+        s.id === studentId ? { ...s, certificateStatus: 'issued' as const } : s
+      ));
+      toast.success(TOAST.certificateSuccess);
+    } else if (type === 'issueAllCertificates') {
+      setStudents(prev => prev.map(s =>
+        s.status === 'completed' && s.certificateStatus !== 'issued'
+          ? { ...s, certificateStatus: 'issued' as const }
+          : s
+      ));
+      toast.success(TOAST.allCertificatesSuccess);
+    }
+
     closeModal();
   }, [modal, closeModal, toast]);
 
   const handleBack = useCallback(() => router.push('/instructor'), [router]);
+
+  const handleAddStudentClick = useCallback(() => setShowAddModal(true), []);
+  const handleCloseAddModal = useCallback(() => setShowAddModal(false), []);
+
+  const handleAddStudentSubmit = useCallback((data: Record<string, unknown>) => {
+    const fullName = data.fullName as string;
+    const contactType = data.contactType as string;
+    const contactValue = data.contactValue as string;
+    const isEmail = contactType === 'email';
+
+    const newStudent: CourseStudent = {
+      id: `new-${Date.now()}`,
+      fullName,
+      email: isEmail ? contactValue : '',
+      walletAddress: isEmail ? undefined : contactValue,
+      enrolledAt: new Date().toISOString(),
+      status: 'active',
+    };
+
+    setStudents(prev => [newStudent, ...prev]);
+    setShowAddModal(false);
+    toast.success(TOAST.addSuccess);
+  }, [toast]);
 
   const handleCloseEditModal = useCallback(() => {
     setEditModal(INITIAL_EDIT_STUDENT_MODAL);
@@ -179,11 +235,15 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           statusFilter={statusFilter}
           searchSuggestions={searchSuggestions}
           courseTitle={course?.title || LABELS.title}
+          pendingCertificateCount={pendingCertificateCount}
           onKeywordChange={setKeyword}
           onStatusChange={setStatusFilter}
           onPageChange={setPage}
           onEdit={handleEdit}
           onRemove={handleRemoveClick}
+          onIssueCertificate={handleIssueCertificateClick}
+          onIssueAllCertificates={handleIssueAllCertificatesClick}
+          onAddStudent={handleAddStudentClick}
           onBack={handleBack}
         />
 
@@ -194,6 +254,21 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           danger={modalConfig.danger}
           onPrimary={handleConfirm}
           onSecondary={closeModal}
+        />
+
+        <FormModal
+          isOpen={showAddModal}
+          labels={{
+            ...ADD_STUDENT_LABELS,
+            subtitle: course?.title,
+          }}
+          fields={ADD_STUDENT_FIELDS}
+          storageKey={`${ADD_STUDENT_DRAFT_KEY}_${courseId}`}
+          initialData={ADD_STUDENT_INITIAL_DATA}
+          isEmpty={isFormEmpty}
+          isValid={isFormValid}
+          onClose={handleCloseAddModal}
+          onSubmit={handleAddStudentSubmit}
         />
 
         <FormModal

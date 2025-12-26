@@ -4,6 +4,7 @@ export const ROUTES = {
   COURSE_DETAIL: '/courses',
   PROFILE: '/profile',
   PROFILE_EDIT: '/profile/edit',
+  PROFILE_INBOX: '/profile/inbox',
   CERTIFICATES: '/certificates',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',

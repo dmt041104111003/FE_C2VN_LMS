@@ -65,7 +65,7 @@ const UserCourseItem = memo(function UserCourseItem({ course }: UserCourseItemPr
   const isCompleted = course.progress === USER_CONFIG.PROGRESS_COMPLETE;
 
   return (
-    <Link href={`${ROUTES.COURSES}/${course.courseId}`} className={S.USER_COURSE_ITEM.CONTAINER}>
+    <Link href={`${ROUTES.COURSES}/${course.courseId}/learn`} className={S.USER_COURSE_ITEM.CONTAINER}>
       <div className={S.USER_COURSE_ITEM.IMAGE_WRAPPER}>
         <CourseImage thumbnail={course.courseThumbnail} title={course.courseTitle} />
       </div>

@@ -2,6 +2,8 @@ export { useFullscreen } from './useFullscreen';
 export { useQuizState } from './useQuizState';
 export { useModalState, useSelection, useTooltipState } from './useTooltip';
 export { useFormDraft } from './useFormDraft';
+export { useInfiniteScroll } from './useInfiniteScroll';
+export { useMessages } from './useMessages';
 
 export type {
   UseFullscreenOptions,
@@ -13,5 +15,8 @@ export type {
   UseTooltipStateReturn,
   UseFormDraftOptions,
   UseFormDraftReturn,
+  UseInfiniteScrollOptions,
+  UseInfiniteScrollResult,
+  UseMessagesResult,
 } from '@/types/hooks';
 

@@ -8,6 +8,7 @@ export const ADMIN_LABELS = {
   logout: 'Đăng xuất',
   users: {
     title: 'Quản lý người dùng',
+    addUser: 'Thêm người dùng',
     search: 'Tìm kiếm',
     searchPlaceholder: 'Tìm theo tên hoặc email...',
     filterRole: 'Vai trò',
@@ -40,6 +41,7 @@ export const ADMIN_LABELS = {
       changeRoleMessage: 'Bạn có chắc muốn thay đổi vai trò của người dùng này?',
     },
     toast: {
+      addSuccess: 'Đã thêm người dùng',
       banSuccess: 'Đã khóa tài khoản',
       unbanSuccess: 'Đã mở khóa tài khoản',
       deleteSuccess: 'Đã xóa người dùng',
@@ -139,5 +141,65 @@ export const ADMIN_MODAL_CONFIG: Record<NonNullable<AdminModalType>, ModalConfig
   unban: { title: CONFIRM.unbanTitle, message: CONFIRM.unbanMessage, danger: false },
   delete: { title: CONFIRM.deleteTitle, message: CONFIRM.deleteMessage, danger: true },
   changeRole: { title: CONFIRM.changeRoleTitle, message: CONFIRM.changeRoleMessage, danger: false },
+};
+
+export const ADD_USER_DRAFT_KEY = 'add_user_draft';
+
+export const ADD_USER_INITIAL_DATA = {
+  fullName: '',
+  contactType: 'email',
+  contactValue: '',
+  role: 'USER',
+};
+
+export const ADD_USER_FIELDS = [
+  {
+    name: 'fullName',
+    label: 'Họ và tên',
+    type: 'text' as const,
+    placeholder: 'Nhập họ và tên',
+    required: true,
+    autoFocus: true,
+  },
+  {
+    name: 'contactType',
+    label: 'Loại liên hệ',
+    type: 'select' as const,
+    options: [
+      { value: 'email', label: 'Email' },
+      { value: 'wallet', label: 'Địa chỉ ví' },
+    ],
+    required: true,
+  },
+  {
+    name: 'contactValue',
+    label: 'Thông tin liên hệ',
+    type: 'text' as const,
+    placeholder: 'Nhập email hoặc địa chỉ ví',
+    required: true,
+  },
+  {
+    name: 'role',
+    label: 'Vai trò',
+    type: 'select' as const,
+    options: [
+      { value: 'USER', label: 'Người dùng' },
+      { value: 'INSTRUCTOR', label: 'Giảng viên' },
+      { value: 'ADMIN', label: 'Quản trị viên' },
+    ],
+  },
+];
+
+export const ADD_USER_LABELS = {
+  title: 'Thêm người dùng',
+  submit: 'Thêm người dùng',
+  cancel: 'Hủy',
+  clearForm: 'Xóa form',
+  resumeDialog: {
+    title: 'Tiếp tục nhập?',
+    message: 'Bạn có thông tin người dùng chưa lưu. Bạn muốn tiếp tục nhập hay bắt đầu mới?',
+    continueText: 'Tiếp tục nhập',
+    newText: 'Nhập mới',
+  },
 };
 

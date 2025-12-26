@@ -12,7 +12,9 @@ import {
   SearchIcon,
   AppleIcon,
   PlayStoreIcon,
+  MailIcon,
 } from './icons';
+import { Badge } from './Badge';
 import {
   ROUTES,
   NAV_ITEMS,
@@ -121,6 +123,13 @@ function HeaderInner() {
             <button className={HEADER_ICON_BTN} onClick={openSearch}>
               <SearchIcon />
             </button>
+
+            <Link href={ROUTES.PROFILE_INBOX} className={`${HEADER_ICON_BTN} relative`}>
+              <MailIcon />
+              <Badge variant="accent" className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] rounded-full">
+                5
+              </Badge>
+            </Link>
 
             <Link href={ROUTES.LOGIN} className={HEADER_AUTH_LINK}>
               {AUTH_TEXT.login}

@@ -27,6 +27,7 @@ export const UserTable = memo(function UserTable({
   onToggleStatus,
   onDelete,
   onChangeRole,
+  onAddUser,
 }: UserTableProps) {
   return (
     <>
@@ -38,6 +39,7 @@ export const UserTable = memo(function UserTable({
         onKeywordChange={onKeywordChange}
         onRoleChange={onRoleChange}
         onStatusChange={onStatusChange}
+        onAddUser={onAddUser}
       />
 
       <Panel

@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { SearchInput } from '@/components/ui';
+import { SearchInput, Button, PlusIcon } from '@/components/ui';
 import { INSTRUCTOR_LABELS, COURSE_STATUS_OPTIONS } from '@/constants/instructor';
 import type { CourseFiltersProps, CourseStatus } from '@/types/instructor';
 import {
@@ -10,6 +10,7 @@ import {
   FILTER_COL,
   FILTER_LABEL,
   FILTER_SELECT,
+  ICON_SM,
 } from '@/components/ui/ui.styles';
 
 const LABELS = INSTRUCTOR_LABELS.courses;
@@ -20,9 +21,18 @@ export const CourseFilters = memo(function CourseFilters({
   searchSuggestions,
   onKeywordChange,
   onStatusChange,
+  onCreateCourse,
 }: CourseFiltersProps) {
   return (
     <div className={`${FILTER_WRAPPER} mb-8`}>
+      <div className="flex items-center justify-between mb-4">
+        <div />
+        <Button variant="primary" size="sm" onClick={onCreateCourse} className="gap-1.5">
+          <PlusIcon className={ICON_SM} />
+          {LABELS.create}
+        </Button>
+      </div>
+
       <SearchInput
         value={keyword}
         onChange={onKeywordChange}

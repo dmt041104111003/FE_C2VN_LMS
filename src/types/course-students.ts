@@ -1,6 +1,7 @@
 export type StudentStatus = 'active' | 'completed';
 export type StudentContactType = 'email' | 'wallet';
-export type StudentModalType = 'remove' | null;
+export type CertificateStatus = 'pending' | 'issued';
+export type StudentModalType = 'remove' | 'issueCertificate' | 'issueAllCertificates' | null;
 export type SearchSuggestionType = 'course' | 'instructor' | 'tag';
 
 export interface CourseStudent {
@@ -10,6 +11,7 @@ export interface CourseStudent {
   walletAddress?: string;
   enrolledAt: string;
   status: StudentStatus;
+  certificateStatus?: CertificateStatus;
 }
 
 export interface StudentFormData {
@@ -40,6 +42,7 @@ export interface StudentRowProps {
   student: CourseStudent;
   onEdit: (studentId: string) => void;
   onRemove: (studentId: string) => void;
+  onIssueCertificate: (studentId: string) => void;
 }
 
 export interface CourseStudentsPageProps {
@@ -50,8 +53,11 @@ export interface StudentFiltersProps {
   keyword: string;
   statusFilter: StudentStatus | '';
   searchSuggestions?: SearchSuggestion[];
+  pendingCertificateCount: number;
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: StudentStatus | '') => void;
+  onIssueAllCertificates: () => void;
+  onAddStudent: () => void;
 }
 
 export interface StudentTableProps {
@@ -64,11 +70,15 @@ export interface StudentTableProps {
   statusFilter: StudentStatus | '';
   searchSuggestions?: SearchSuggestion[];
   courseTitle: string;
+  pendingCertificateCount: number;
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: StudentStatus | '') => void;
   onPageChange: (page: number) => void;
   onEdit: (studentId: string) => void;
   onRemove: (studentId: string) => void;
+  onIssueCertificate: (studentId: string) => void;
+  onIssueAllCertificates: () => void;
+  onAddStudent: () => void;
   onBack: () => void;
 }
 

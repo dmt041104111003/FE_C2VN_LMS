@@ -800,6 +800,17 @@ const LogoutIconComponent = ({ className }: IconProps) => (
 );
 export const LogoutIcon = memo(LogoutIconComponent);
 
+const CertificateIconComponent = ({ className }: IconProps) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="12" rx="2" />
+    <path d="M8 20h8" />
+    <path d="M12 16v4" />
+    <circle cx="12" cy="10" r="2" />
+    <path d="M8 10h.01M16 10h.01" />
+  </svg>
+);
+export const CertificateIcon = memo(CertificateIconComponent);
+
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,
   youtube: YouTubeIcon,

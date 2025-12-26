@@ -24,6 +24,7 @@ import {
   ROLE_BADGE_VARIANT,
   STATUS_BADGE_VARIANT,
 } from '@/constants/admin';
+import { COPYABLE_TEXT } from '@/components/ui/ui.styles';
 import type { UserRowProps, UserRole } from '@/types/admin';
 
 const LABELS = ADMIN_LABELS.users;
@@ -58,7 +59,13 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
         <span className="font-mono text-xs">{formatCode(USER_CODE_PREFIX, user.id)}</span>
       </TableCell>
       <TableCell hideOnMobile>
-        <UserCell name={user.fullName} email={user.email} showAvatar={false} />
+        <UserCell 
+          name={user.fullName} 
+          email={user.email} 
+          showAvatar={false} 
+          copyable 
+          copySuccessMessage={COPYABLE_TEXT.TOAST.SUCCESS} 
+        />
       </TableCell>
       <TableCell label={LABELS.table.role}>
         <StatusBadge variant={ROLE_BADGE_VARIANT[user.role]}>

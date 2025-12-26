@@ -71,7 +71,12 @@ const SidebarItemComponent = memo(function SidebarItemComponent({
     <>
       {item.icon && <item.icon className={SIDEBAR.ITEM_ICON} />}
       <div className={SIDEBAR.ITEM_CONTENT}>
-        <div className={SIDEBAR.ITEM_TITLE}>{item.title}</div>
+        <div className={SIDEBAR.ITEM_TITLE}>
+          {item.title}
+          {item.badge !== undefined && item.badge > 0 && (
+            <span className={SIDEBAR.ITEM_BADGE}>({item.badge})</span>
+          )}
+        </div>
         {item.meta && <div className={SIDEBAR.ITEM_META}>{item.meta}</div>}
       </div>
     </>

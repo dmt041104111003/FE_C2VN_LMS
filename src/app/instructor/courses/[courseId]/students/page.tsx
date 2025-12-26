@@ -1,10 +1,6 @@
 import { CourseStudentsPage } from '@/components/instructor/CourseStudentsPage';
+import type { CourseIdPageProps } from '@/types/page';
 
-interface PageProps {
-  params: { courseId: string };
-}
-
-export default function StudentsPage({ params }: PageProps) {
+export default function StudentsPage({ params }: CourseIdPageProps) {
   return <CourseStudentsPage courseId={params.courseId} />;
 }
-

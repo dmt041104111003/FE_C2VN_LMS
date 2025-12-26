@@ -4,6 +4,7 @@ import { SYSTEM_CONFIG } from './config';
 export const COURSE_CREATE_LABELS = {
   pageTitle: 'Tạo khóa học mới',
   editPageTitle: 'Chỉnh sửa khóa học',
+  back: 'Quay lại',
   basicInfo: {
     title: 'Thông tin cơ bản',
     courseTitle: 'Tên khóa học',

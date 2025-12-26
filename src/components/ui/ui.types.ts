@@ -452,6 +452,15 @@ export interface UserCellProps {
   email: string;
   avatar?: string;
   showAvatar?: boolean;
+  copyable?: boolean;
+  copySuccessMessage?: string;
+}
+
+export interface CopyableTextProps {
+  text: string;
+  maxLength?: number;
+  className?: string;
+  successMessage?: string;
 }
 
 export interface SearchFilterProps {
@@ -472,6 +481,7 @@ export interface SidebarItem {
   title: string;
   icon?: React.FC<{ className?: string }>;
   meta?: string;
+  badge?: number;
   disabled?: boolean;
   href?: string;
 }

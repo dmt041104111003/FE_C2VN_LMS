@@ -62,6 +62,7 @@ export interface UserFiltersProps {
   onKeywordChange: (value: string) => void;
   onRoleChange: (value: UserRole | '') => void;
   onStatusChange: (value: UserStatus | '') => void;
+  onAddUser: () => void;
 }
 
 export interface UserTableProps {
@@ -82,6 +83,15 @@ export interface UserTableProps {
   onToggleStatus: (userId: string, isBan: boolean) => void;
   onDelete: (userId: string) => void;
   onChangeRole: (userId: string, role: UserRole) => void;
+  onAddUser: () => void;
+}
+
+export interface AddUserFormData {
+  fullName: string;
+  contactType: string;
+  contactValue: string;
+  role: string;
+  [key: string]: unknown;
 }
 
 export interface AdminLayoutProps {

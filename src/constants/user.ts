@@ -30,6 +30,7 @@ export const USER_LABELS = {
   statsTitle: 'Thống kê học tập',
   coursesTitle: 'Khóa học đã đăng ký',
   certificatesTitle: 'Chứng chỉ NFT',
+  inbox: 'Hòm thư',
   enrolledCourses: 'Khóa học',
   completedCourses: 'Hoàn thành',
   certificates: 'Chứng chỉ',

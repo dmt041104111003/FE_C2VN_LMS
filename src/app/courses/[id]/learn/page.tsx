@@ -1,11 +1,8 @@
 import { LearningPage } from '@/components/learning';
 import { MOCK_LEARNING_CHAPTERS, MOCK_COURSE_PROGRESS } from '@/constants/learning';
+import type { AsyncIdPageProps } from '@/types/page';
 
-interface LearnPageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function LearnPage({ params }: LearnPageProps) {
+export default async function LearnPage({ params }: AsyncIdPageProps) {
   const { id } = await params;
 
   return (
@@ -24,5 +21,3 @@ export function generateStaticParams() {
     { id: 'smart-contracts' },
   ];
 }
-
-

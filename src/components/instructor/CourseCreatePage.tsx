@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, PlusIcon, useToast, Dialog } from '@/components/ui';
+import { Button, PlusIcon, useToast, Dialog, ChevronLeftIcon } from '@/components/ui';
 import { ICON_SM } from '@/components/ui/ui.styles';
 import {
   COURSE_CREATE_LABELS as LABELS,
@@ -192,12 +192,26 @@ export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
     toast.success(isEditMode ? LABELS.toast.updateSuccess : LABELS.toast.createSuccess);
     clearDraftStorage();
     if (!isEditMode) clearForm();
-    router.push('/instructor');
-  }, [formData, router, clearForm, clearDraftStorage, toast, isEditMode]);
+    const redirectPath = isEditMode ? `/instructor/courses/${courseId}` : '/instructor';
+    router.push(redirectPath);
+  }, [formData, router, clearForm, clearDraftStorage, toast, isEditMode, courseId]);
+
+  const backPath = isEditMode ? `/instructor/courses/${courseId}` : '/instructor';
 
   const navigateBack = useCallback(() => {
-    router.push('/instructor');
-  }, [router]);
+    router.push(backPath);
+  }, [router, backPath]);
+
+  const handleCancel = useCallback(() => {
+    clearDraftStorage();
+    clearForm();
+    router.push(backPath);
+  }, [clearDraftStorage, clearForm, router, backPath]);
+
+  const handleClearForm = useCallback(() => {
+    clearDraftStorage();
+    clearForm();
+  }, [clearDraftStorage, clearForm]);
 
   const pageTitle = isEditMode ? LABELS.editPageTitle : LABELS.pageTitle;
   const submitLabel = isEditMode ? LABELS.actions.save : LABELS.actions.create;
@@ -229,6 +243,13 @@ export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
       />
 
       <div className={S.CONTAINER}>
+        <div className="mb-6">
+          <Button variant="ghost" size="sm" onClick={navigateBack} className="gap-1.5">
+            <ChevronLeftIcon className={ICON_SM} />
+            {LABELS.back}
+          </Button>
+        </div>
+
         <CourseBasicInfo
           title={formData.title}
           price={formData.price}
@@ -294,11 +315,11 @@ export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
 
         <div className={S.ACTIONS}>
           {hasFormData && (
-            <Button variant="ghost" onClick={clearForm} className="mr-auto text-[var(--incorrect)]">
+            <Button variant="ghost" onClick={handleClearForm} className="mr-auto text-[var(--incorrect)]">
               {LABELS.actions.clearForm}
             </Button>
           )}
-          <Button variant="ghost" onClick={navigateBack}>
+          <Button variant="ghost" onClick={handleCancel}>
             {LABELS.actions.cancel}
           </Button>
           <Button variant="primary" onClick={handleSubmit}>

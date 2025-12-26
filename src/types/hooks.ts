@@ -1,6 +1,7 @@
 import type { RefObject } from 'react';
 import type { Question, QuizAttempt, QuizState, QuizActions } from './learning';
 import type { SelectionInfo } from './editor';
+import type { InboxMessage, InboxFilter } from './inbox';
 
 export interface UseFullscreenOptions {
   isActive: boolean;
@@ -11,6 +12,27 @@ export interface UseFullscreenReturn<T extends HTMLElement> {
   ref: RefObject<T>;
   enter: () => Promise<void>;
   exit: () => Promise<void>;
+}
+
+export interface UseInfiniteScrollOptions {
+  itemsPerPage: number;
+  totalItems: number;
+}
+
+export interface UseInfiniteScrollResult {
+  visibleCount: number;
+  isLoading: boolean;
+  hasMore: boolean;
+  loaderRef: RefObject<HTMLDivElement>;
+  resetVisibleCount: () => void;
+}
+
+export interface UseMessagesResult {
+  messages: InboxMessage[];
+  messagesMap: Map<string, InboxMessage>;
+  unreadCount: number;
+  filteredMessages: InboxMessage[];
+  markAsRead: (id: string) => void;
 }
 
 export interface QuizComputed {

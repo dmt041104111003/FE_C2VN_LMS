@@ -2,22 +2,17 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { DataTable, Dialog, Pagination, Panel, Button, PlusIcon, useToast, FormModal } from '@/components/ui';
-import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
+import { DataTable, Dialog, Pagination, Panel, useToast } from '@/components/ui';
+import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
   INSTRUCTOR_LABELS,
   MOCK_INSTRUCTOR_COURSES,
   COURSE_TABLE,
   COURSE_MODAL_CONFIG,
-  INITIAL_ADD_STUDENT_MODAL,
-  ADD_STUDENT_FIELDS,
-  ADD_STUDENT_LABELS,
-  ADD_STUDENT_DRAFT_KEY,
-  ADD_STUDENT_INITIAL_DATA,
 } from '@/constants/instructor';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
-import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion, AddStudentModalState, AddStudentFormData } from '@/types/instructor';
+import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion } from '@/types/instructor';
 import { InstructorLayout } from './InstructorLayout';
 import { CourseFilters } from './CourseFilters';
 import { CourseRow } from './CourseRow';
@@ -34,7 +29,6 @@ export function InstructorPage() {
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<InstructorModalState>(INITIAL_MODAL);
-  const [addStudentModal, setAddStudentModal] = useState<AddStudentModalState>(INITIAL_ADD_STUDENT_MODAL);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -70,12 +64,6 @@ export function InstructorPage() {
     setModal(INITIAL_MODAL);
   }, []);
 
-  const handleDelete = useCallback((courseId: string) => {
-    setCourses(prev => prev.filter(c => c.id !== courseId));
-    closeModal();
-    toast.success(TOAST.deleteSuccess);
-  }, [closeModal, toast]);
-
   const handlePublish = useCallback((courseId: string) => {
     setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'published' as const } : c));
     closeModal();
@@ -88,65 +76,30 @@ export function InstructorPage() {
     toast.success(TOAST.unpublishSuccess);
   }, [closeModal, toast]);
 
-  const handleEdit = useCallback((courseId: string) => {
-    router.push(`/instructor/courses/edit/${courseId}`);
-  }, [router]);
-
   const handleViewStudents = useCallback((courseId: string) => {
     router.push(`/instructor/courses/${courseId}/students`);
+  }, [router]);
+
+  const handleViewDetails = useCallback((courseId: string) => {
+    router.push(`/instructor/courses/${courseId}`);
   }, [router]);
 
   const handleCreate = useCallback(() => {
     router.push('/instructor/courses/create');
   }, [router]);
 
-  const handleDeleteClick = useCallback((courseId: string) => {
-    openModal('delete', courseId);
-  }, [openModal]);
-
   const handleToggleStatusClick = useCallback((courseId: string, isPublished: boolean) => {
     openModal(isPublished ? 'unpublish' : 'publish', courseId);
   }, [openModal]);
 
-  const handleAddStudentClick = useCallback((courseId: string, courseTitle: string) => {
-    setAddStudentModal({ isOpen: true, courseId, courseTitle });
-  }, []);
-
-  const handleCloseAddStudent = useCallback(() => {
-    setAddStudentModal(INITIAL_ADD_STUDENT_MODAL);
-  }, []);
-
-  const handleAddStudentSubmit = useCallback((data: Record<string, unknown>) => {
-    const formData = data as AddStudentFormData;
-    console.log('Add student:', addStudentModal.courseId, formData);
-    setCourses(prev => prev.map(c =>
-      c.id === addStudentModal.courseId
-        ? { ...c, students: c.students + 1 }
-        : c
-    ));
-    handleCloseAddStudent();
-    toast.success(TOAST.addStudentSuccess);
-  }, [addStudentModal.courseId, handleCloseAddStudent, toast]);
-
-  const isAddStudentFormEmpty = useCallback((data: Record<string, unknown>) => {
-    const form = data as AddStudentFormData;
-    return !form.fullName?.trim() && !form.contactValue?.trim();
-  }, []);
-
-  const isAddStudentFormValid = useCallback((data: Record<string, unknown>) => {
-    const form = data as AddStudentFormData;
-    return Boolean(form.fullName?.trim() && form.contactValue?.trim());
-  }, []);
-
   const handleConfirm = useCallback(() => {
     if (!modal.courseId) return;
     const actions: Record<NonNullable<InstructorModalType>, () => void> = {
-      delete: () => handleDelete(modal.courseId!),
       publish: () => handlePublish(modal.courseId!),
       unpublish: () => handleUnpublish(modal.courseId!),
     };
     modal.type && actions[modal.type]?.();
-  }, [modal, handleDelete, handlePublish, handleUnpublish]);
+  }, [modal, handlePublish, handleUnpublish]);
 
   const modalConfig = modal.type ? COURSE_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;
 
@@ -159,16 +112,11 @@ export function InstructorPage() {
           searchSuggestions={searchSuggestions}
           onKeywordChange={setKeyword}
           onStatusChange={setStatusFilter}
+          onCreateCourse={handleCreate}
         />
 
         <Panel
           title={LABELS.title}
-          action={
-            <Button variant="primary" size="sm" onClick={handleCreate} className="gap-1.5">
-              <PlusIcon className={ICON_SM} />
-              {LABELS.create}
-            </Button>
-          }
           footer={
             <div className="flex items-center justify-between">
               <span className="text-sm text-[var(--text)]/50">
@@ -188,10 +136,8 @@ export function InstructorPage() {
                 key={course.id}
                 index={(page - 1) * DEFAULT_PAGE_SIZE + idx + 1}
                 course={course}
-                onEdit={handleEdit}
-                onDelete={handleDeleteClick}
+                onViewDetails={handleViewDetails}
                 onToggleStatus={handleToggleStatusClick}
-                onAddStudent={handleAddStudentClick}
                 onViewStudents={handleViewStudents}
               />
             ))}
@@ -204,20 +150,6 @@ export function InstructorPage() {
           danger={modalConfig.danger}
           onPrimary={handleConfirm}
           onSecondary={closeModal}
-        />
-        <FormModal
-          isOpen={addStudentModal.isOpen}
-          labels={{
-            ...ADD_STUDENT_LABELS,
-            subtitle: addStudentModal.courseTitle,
-          }}
-          fields={ADD_STUDENT_FIELDS}
-          storageKey={ADD_STUDENT_DRAFT_KEY}
-          initialData={ADD_STUDENT_INITIAL_DATA}
-          isEmpty={isAddStudentFormEmpty}
-          isValid={isAddStudentFormValid}
-          onClose={handleCloseAddStudent}
-          onSubmit={handleAddStudentSubmit}
         />
       </div>
     </InstructorLayout>

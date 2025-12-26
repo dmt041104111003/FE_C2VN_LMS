@@ -3,12 +3,9 @@ import { Header, Footer } from '@/components/ui';
 import { CourseDetail } from '@/components/courses';
 import { getMockCourseDetail, MOCK_REVIEWS, MOCK_REVIEW_STATS } from '@/constants/course';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
+import type { AsyncIdPageProps } from '@/types/page';
 
-interface CourseDetailPageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
+export default async function CourseDetailPage({ params }: AsyncIdPageProps) {
   const { id } = await params;
   const course = getMockCourseDetail(id);
 
@@ -37,4 +34,3 @@ export async function generateStaticParams() {
     { id: '5' },
   ];
 }
-

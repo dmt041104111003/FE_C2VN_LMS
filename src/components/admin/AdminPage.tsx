@@ -1,12 +1,20 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { Dialog, useToast } from '@/components/ui';
+import { Dialog, useToast, FormModal } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
-import { ADMIN_LABELS, MOCK_USERS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
+import {
+  ADMIN_LABELS,
+  MOCK_USERS,
+  ADMIN_MODAL_CONFIG,
+  ADD_USER_FIELDS,
+  ADD_USER_LABELS,
+  ADD_USER_INITIAL_DATA,
+  ADD_USER_DRAFT_KEY,
+} from '@/constants/admin';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
-import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState } from '@/types/admin';
+import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState, AddUserFormData } from '@/types/admin';
 import { AdminLayout } from './AdminLayout';
 import { UserTable } from './UserTable';
 
@@ -22,6 +30,7 @@ export function AdminPage() {
   const [statusFilter, setStatusFilter] = useState<UserStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<AdminModalState>({ type: null, userId: null });
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const filteredUsers = useMemo(() => {
     return users.filter(user => {
@@ -86,6 +95,35 @@ export function AdminPage() {
     openModal('changeRole', userId, role);
   }, [openModal]);
 
+  const handleAddUserClick = useCallback(() => setShowAddModal(true), []);
+  const handleCloseAddModal = useCallback(() => setShowAddModal(false), []);
+
+  const handleAddUserSubmit = useCallback((data: Record<string, unknown>) => {
+    const formData = data as AddUserFormData;
+    const isEmail = formData.contactType === 'email';
+    const newUser: AdminUser = {
+      id: `new-${Date.now()}`,
+      fullName: formData.fullName,
+      email: isEmail ? formData.contactValue : `wallet-${Date.now()}@placeholder.com`,
+      role: formData.role as UserRole,
+      status: 'ACTIVE',
+      createdAt: new Date().toISOString(),
+    };
+    setUsers(prev => [newUser, ...prev]);
+    setShowAddModal(false);
+    toast.success(TOAST.addSuccess);
+  }, [toast]);
+
+  const isAddUserFormEmpty = useCallback((data: Record<string, unknown>) => {
+    const form = data as AddUserFormData;
+    return !form.fullName?.trim() && !form.contactValue?.trim();
+  }, []);
+
+  const isAddUserFormValid = useCallback((data: Record<string, unknown>) => {
+    const form = data as AddUserFormData;
+    return Boolean(form.fullName?.trim() && form.contactValue?.trim());
+  }, []);
+
   const handleConfirm = useCallback(() => {
     if (!modal.userId || !modal.type) return;
     const actions: Record<NonNullable<AdminModalType>, () => void> = {
@@ -133,6 +171,7 @@ export function AdminPage() {
           onToggleStatus={handleToggleStatus}
           onDelete={handleDeleteClick}
           onChangeRole={handleChangeRoleClick}
+          onAddUser={handleAddUserClick}
         />
         <Dialog
           isOpen={modal.type !== null}
@@ -141,6 +180,17 @@ export function AdminPage() {
           danger={modalConfig.danger}
           onPrimary={handleConfirm}
           onSecondary={closeModal}
+        />
+        <FormModal
+          isOpen={showAddModal}
+          labels={ADD_USER_LABELS}
+          fields={ADD_USER_FIELDS}
+          storageKey={ADD_USER_DRAFT_KEY}
+          initialData={ADD_USER_INITIAL_DATA}
+          isEmpty={isAddUserFormEmpty}
+          isValid={isAddUserFormValid}
+          onClose={handleCloseAddModal}
+          onSubmit={handleAddUserSubmit}
         />
       </div>
     </AdminLayout>

@@ -37,6 +37,7 @@ export { StatusBadge } from './StatusBadge';
 export { ActionButton, ActionDropdown, ActionsCell } from './ActionMenu';
 export { SearchFilter, SelectFilter, FiltersBar } from './DataFilters';
 export { Dialog } from './Dialog';
+export { CopyableText } from './CopyableText';
 export { UserCell } from './UserCell';
 export { Sidebar } from './Sidebar';
 export { SidebarLayout } from './SidebarLayout';
@@ -96,7 +97,7 @@ export type {
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
-export type { DialogProps, FormModalProps, FormModalLabels, FormFieldConfig, FormFieldOption, FormFieldType } from './ui.types';
+export type { DialogProps, FormModalProps, FormModalLabels, FormFieldConfig, FormFieldOption, FormFieldType, CopyableTextProps } from './ui.types';
 export {
   GitHubIcon,
   YouTubeIcon,
@@ -167,6 +168,7 @@ export {
   BanIcon,
   UnlockIcon,
   LogoutIcon,
+  CertificateIcon,
   WarningIcon,
   ErrorCircleIcon,
   SOCIAL_ICONS,
