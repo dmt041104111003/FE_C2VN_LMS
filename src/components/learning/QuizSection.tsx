@@ -93,10 +93,9 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
     const resultLabel = `${attempt.score}% · ${attempt.passed ? LABELS.passed : LABELS.failed}`;
     
     return (
-      <div className={QUIZ.CONTAINER_FULL}>
+      <div>
         <QuizProgress current={currentQuestionNumber} total={totalQuestions} label={resultLabel} />
-        <div className={QUIZ.MAIN}>
-          <div className={QUIZ.MAIN_INNER}>
+        <div className={QUIZ.MAIN_INNER}>
             <div className={QUIZ.GRID}>
               <div className={QUIZ.GRID_SIDEBAR}>
                 <QuestionList
@@ -133,7 +132,6 @@ function QuizSectionComponent({ quiz, onSubmit, onComplete }: QuizSectionProps) 
             </div>
           </div>
         </div>
-      </div>
     );
   }
 

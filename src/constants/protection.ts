@@ -1,6 +1,6 @@
 export const IS_PROTECTION_ENABLED = 
-  process.env.NODE_ENV || 
-  process.env.PROTECTION ;
+  process.env.NODE_ENV === 'production' || 
+  process.env.PROTECTION === 'true';
 
 export const BLOCKED_CTRL_KEYS = new Set([
   's',      // save

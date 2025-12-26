@@ -24,6 +24,8 @@ const isImageElement = (target: EventTarget | null): boolean => {
 
 const preventDefault = (e: Event): false => {
   e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
   return false;
 };
 
@@ -91,24 +93,41 @@ export function ContentProtection() {
     return handlers;
   }, []);
 
-  // DevTools detection
   useEffect(() => {
     if (!IS_PROTECTION_ENABLED) return;
+
+    const STORAGE_KEY = '__dp';
+
+    const blockPage = () => {
+      if (!devtoolsOpenRef.current) {
+        devtoolsOpenRef.current = true;
+        try {
+          sessionStorage.setItem(STORAGE_KEY, '1');
+        } catch {}
+        document.body.innerHTML = '';
+        document.body.style.background = '#000';
+      }
+    };
+
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+        blockPage();
+        return;
+      }
+    } catch {}
 
     const checkDevTools = () => {
       const widthThreshold = window.outerWidth - window.innerWidth > DEVTOOLS_THRESHOLD;
       const heightThreshold = window.outerHeight - window.innerHeight > DEVTOOLS_THRESHOLD;
       
       if (widthThreshold || heightThreshold) {
-        if (!devtoolsOpenRef.current) {
-          devtoolsOpenRef.current = true;
-          document.body.innerHTML = '';
-          document.body.style.background = '#000';
-        }
+        blockPage();
       }
     };
 
-    const interval = setInterval(checkDevTools, 1000);
+    checkDevTools();
+
+    const interval = setInterval(checkDevTools, 500);
     window.addEventListener('resize', checkDevTools);
 
     return () => {
@@ -117,7 +136,6 @@ export function ContentProtection() {
     };
   }, []);
 
-  // Disable console methods
   useEffect(() => {
     if (!IS_PROTECTION_ENABLED) return;
 
@@ -135,7 +153,7 @@ export function ContentProtection() {
     ALWAYS_PROTECTED_EVENTS.forEach((event) => {
       const handler = handlersRef.current.get(event);
       if (handler) {
-        document.addEventListener(event, handler);
+        document.addEventListener(event, handler, { capture: true });
       }
     });
 
@@ -143,7 +161,7 @@ export function ContentProtection() {
       PRODUCTION_ONLY_EVENTS.forEach((event) => {
         const handler = handlersRef.current.get(event);
         if (handler) {
-          document.addEventListener(event, handler);
+          document.addEventListener(event, handler, { capture: true });
         }
       });
     }
@@ -152,7 +170,7 @@ export function ContentProtection() {
       ALWAYS_PROTECTED_EVENTS.forEach((event) => {
         const handler = handlersRef.current.get(event);
         if (handler) {
-          document.removeEventListener(event, handler);
+          document.removeEventListener(event, handler, { capture: true });
         }
       });
 
@@ -160,7 +178,7 @@ export function ContentProtection() {
         PRODUCTION_ONLY_EVENTS.forEach((event) => {
           const handler = handlersRef.current.get(event);
           if (handler) {
-            document.removeEventListener(event, handler);
+            document.removeEventListener(event, handler, { capture: true });
           }
         });
       }
