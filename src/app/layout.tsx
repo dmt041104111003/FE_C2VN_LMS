@@ -2,7 +2,10 @@ import './globals.css';
 import { Metadata, Viewport } from 'next';
 import { ContentProtection } from '@/components/ui';
 
+const BASE_URL = 'https://lms.cardano2vn.io';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: 'C2VN - Học Blockchain & Cardano',
     template: '%s | C2VN',
@@ -15,17 +18,25 @@ export const metadata: Metadata = {
   icons: {
     icon: '/loading.png',
     apple: '/loading.png',
+    shortcut: '/loading.png',
   },
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
-    url: 'https://lms.cardano2vn.io',
+    url: BASE_URL,
     siteName: 'C2VN Learning',
     title: 'C2VN - Học Blockchain & Cardano',
     description: 'Nền tảng học trực tuyến về Blockchain và Cardano. Khóa học chất lượng, chứng chỉ NFT.',
     images: [
       {
-        url: '/background.png',
+        url: `${BASE_URL}/loading.png`,
+        width: 512,
+        height: 512,
+        alt: 'C2VN Logo',
+        type: 'image/png',
+      },
+      {
+        url: `${BASE_URL}/background.png`,
         width: 1200,
         height: 630,
         alt: 'C2VN Learning Platform',
@@ -33,10 +44,11 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'C2VN - Học Blockchain & Cardano',
     description: 'Nền tảng học trực tuyến về Blockchain và Cardano',
-    images: ['/background.png'],
+    images: [`${BASE_URL}/loading.png`],
+    creator: '@cardano2vn',
   },
   robots: {
     index: true,
@@ -50,7 +62,24 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: process.env.GOOGLE_VERIFICATION,
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Cardano2VN',
+  url: BASE_URL,
+  logo: `${BASE_URL}/loading.png`,
+  sameAs: [
+    'https://facebook.com/cardano2vn',
+    'https://twitter.com/cardano2vn',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    availableLanguage: 'Vietnamese',
   },
 };
 
@@ -67,6 +96,12 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="vi">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>
         <ContentProtection />
         {children}
