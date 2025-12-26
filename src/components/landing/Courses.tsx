@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { Button, Badge, CardModal } from '@/components/ui';
 import {
   ROUTES,
-  MOCK_COURSES,
   COURSES_LABELS,
   COURSES_IMAGES,
-  formatPrice,
 } from '@/constants';
+import { MOCK_COURSES } from '@/constants/course';
 import {
   COURSES_SECTION,
   COURSES_CONTAINER,
@@ -34,11 +33,13 @@ function CoursesComponent() {
 
   const modalItems = useMemo(() => 
     MOCK_COURSES.slice(0, 3).map((course, index) => ({
-      image: COURSES_IMAGES[index],
-      tag: course.tag,
+      image: COURSES_IMAGES[index] || course.thumbnail,
+      tag: course.tags?.[0] || '',
       title: course.title,
-      subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructor}`,
-      price: formatPrice(course.price),
+      subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructorName}`,
+      price: course.price,
+      currency: course.currency,
+      discount: course.discount,
       buttonText: COURSES_LABELS.viewDetail,
       buttonHref: `/courses/${course.id}`,
     })),
@@ -85,7 +86,7 @@ function CoursesComponent() {
               onClick={() => openModal(index)}
             >
               <img
-                src={COURSES_IMAGES[index]}
+                src={COURSES_IMAGES[index] || course.thumbnail}
                 alt={course.title}
                 className={COURSES_CARD_IMAGE}
                 draggable={false}
@@ -94,7 +95,7 @@ function CoursesComponent() {
               <div className={COURSES_CARD_GRADIENT} />
               <div className={COURSES_CARD_CONTENT}>
                 <Badge variant="accent" className={COURSES_CARD_BADGE}>
-                  {course.tag}
+                  {course.tags?.[0] || ''}
                 </Badge>
                 <h3 className={COURSES_CARD_TITLE}>{course.title}</h3>
               </div>

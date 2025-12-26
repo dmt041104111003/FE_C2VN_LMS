@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CardModalProps } from './ui.types';
 import { CloseIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
 import { Badge } from './Badge';
+import { PriceDisplay } from './PriceDisplay';
 import {
   CARD_MODAL_OVERLAY,
   CARD_MODAL_CLOSE,
@@ -94,8 +95,15 @@ function CardModalComponent({
             <p className={CARD_MODAL_SUBTITLE}>{currentItem.subtitle}</p>
           )}
 
-          {currentItem.price && (
-            <p className={CARD_MODAL_PRICE}>{currentItem.price}</p>
+          {currentItem.price !== undefined && (
+            <div className={CARD_MODAL_PRICE}>
+              <PriceDisplay
+                price={currentItem.price}
+                currency={currentItem.currency}
+                discount={currentItem.discount}
+                size="md"
+              />
+            </div>
           )}
 
           {currentItem.buttonText && currentItem.buttonHref && (

@@ -3,10 +3,11 @@
 import { memo } from 'react';
 import { PriceDisplayProps } from './ui.types';
 import { PRICE_SIZES } from './ui.styles';
+import { SYSTEM_CONFIG } from '@/constants';
 
 function PriceDisplayComponent({
   price,
-  currency,
+  currency = SYSTEM_CONFIG.DEFAULT_CURRENCY,
   discount,
   freeText = 'Miễn phí',
   size = 'sm',

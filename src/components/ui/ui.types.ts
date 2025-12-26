@@ -96,7 +96,9 @@ export interface CardModalItem {
   tag?: string;
   title: string;
   subtitle?: string;
-  price?: string;
+  price?: number;
+  currency?: string;
+  discount?: number;
   buttonText?: string;
   buttonHref?: string;
 }
@@ -236,7 +238,7 @@ export interface TagsProps {
 
 export interface PriceDisplayProps {
   price: number;
-  currency: string;
+  currency?: string;
   discount?: number;
   freeText?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
