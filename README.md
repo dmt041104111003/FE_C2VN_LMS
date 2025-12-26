@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/website.png" alt="C2VN" width="280">
+  <img src="public/loading.png" alt="C2VN Logo" width="120" height="120">
 </p>
 
 <h1 align="center">CARDANO2VN.IO</h1>
@@ -7,6 +7,12 @@
 
 <p align="center">
   <strong>Hệ thống quản lý học tập (LMS) của cộng đồng Cardano Việt Nam</strong>
+</p>
+
+---
+
+<p align="center">
+  <img src="public/website.png" alt="C2VN Background" width="600">
 </p>
 
 ---
