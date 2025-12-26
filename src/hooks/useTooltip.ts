@@ -2,16 +2,14 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { Editor } from '@tiptap/react';
-import { getSelectionInfo, hasTooltipMark, rangesOverlap } from '@/constants';
 import type { SelectionInfo } from '@/types/editor';
+import type { LockedRange, UseModalStateReturn, UseTooltipStateReturn } from '@/types/hooks';
+import { getSelectionInfo, hasTooltipMark, rangesOverlap } from '@/constants';
 
-interface LockedRange {
-  text: string;
-  from: number;
-  to: number;
-}
-
-export function useModalState(editor: Editor | null, onSubmit: (url: string) => void) {
+export function useModalState(
+  editor: Editor | null, 
+  onSubmit: (url: string) => void
+): UseModalStateReturn {
   const [isOpen, setIsOpen] = useState(false);
   const [url, setUrl] = useState('');
 
@@ -38,7 +36,7 @@ export function useSelection(editor: Editor): SelectionInfo {
   return selection;
 }
 
-export function useTooltipState(editor: Editor) {
+export function useTooltipState(editor: Editor): UseTooltipStateReturn {
   const [isOpen, setIsOpen] = useState(false);
   const [tooltipText, setTooltipText] = useState('');
   const [count, setCount] = useState(0);
@@ -50,7 +48,7 @@ export function useTooltipState(editor: Editor) {
   const isLocked = useCallback((text: string) => 
     lockedRangesRef.current.has(text), []);
 
-  const hasOverlap = useCallback((from: number, to: number) => {
+  const hasOverlap = useCallback((from: number, to: number): boolean => {
     for (const range of lockedRangesRef.current.values()) {
       if (rangesOverlap([from, to], [range.from, range.to])) return true;
     }
@@ -58,17 +56,18 @@ export function useTooltipState(editor: Editor) {
   }, []);
 
   const lock = useCallback((text: string, from: number, to: number) => {
+    const ranges = lockedRangesRef.current;
     if (hasOverlap(from, to)) {
-      const newMap = new Map<string, LockedRange>();
-      for (const [key, range] of lockedRangesRef.current) {
+      const filtered = new Map<string, LockedRange>();
+      for (const [key, range] of ranges) {
         if (!rangesOverlap([from, to], [range.from, range.to])) {
-          newMap.set(key, range);
+          filtered.set(key, range);
         }
       }
-      newMap.set(text, { text, from, to });
-      lockedRangesRef.current = newMap;
+      filtered.set(text, { text, from, to });
+      lockedRangesRef.current = filtered;
     } else {
-      lockedRangesRef.current.set(text, { text, from, to });
+      ranges.set(text, { text, from, to });
     }
     editor.chain().focus().setMark('lockMark').run();
   }, [editor, hasOverlap]);
@@ -96,10 +95,11 @@ export function useTooltipState(editor: Editor) {
   const toggle = useCallback(() => {
     if (!selection.hasSelection || hasTooltip) return;
     
-    if (isLocked(selection.text)) {
-      unlock(selection.text, selection.from, selection.to);
+    const { text, from, to } = selection;
+    if (isLocked(text)) {
+      unlock(text, from, to);
     } else {
-      lock(selection.text, selection.from, selection.to);
+      lock(text, from, to);
       setIsOpen(true);
     }
   }, [selection, hasTooltip, isLocked, lock, unlock]);
@@ -110,8 +110,6 @@ export function useTooltipState(editor: Editor) {
   }, []);
 
   useEffect(() => {
-    const editorDom = editor.view.dom;
-    
     const handleDblClick = (e: MouseEvent) => {
       const el = (e.target as HTMLElement).closest('[data-tooltip]');
       if (el) {
@@ -124,8 +122,9 @@ export function useTooltipState(editor: Editor) {
       }
     };
 
-    editorDom.addEventListener('dblclick', handleDblClick);
-    return () => editorDom.removeEventListener('dblclick', handleDblClick);
+    const dom = editor.view.dom;
+    dom.addEventListener('dblclick', handleDblClick);
+    return () => dom.removeEventListener('dblclick', handleDblClick);
   }, [editor]);
 
   useEffect(() => {

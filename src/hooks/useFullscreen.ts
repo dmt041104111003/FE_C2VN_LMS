@@ -1,47 +1,35 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import type { UseFullscreenOptions, UseFullscreenReturn } from '@/types/hooks';
 
-interface UseFullscreenOptions {
-  isActive: boolean;
-  onExit?: () => void;
-}
-
-export function useFullscreen<T extends HTMLElement>({ isActive, onExit }: UseFullscreenOptions) {
+export function useFullscreen<T extends HTMLElement>({ 
+  isActive, 
+  onExit 
+}: UseFullscreenOptions): UseFullscreenReturn<T> {
   const ref = useRef<T>(null);
 
   const enter = useCallback(async () => {
     try {
       await ref.current?.requestFullscreen?.();
-    } catch (error) {
-      console.warn('Fullscreen not supported:', error);
-    }
+    } catch {}
   }, []);
 
   const exit = useCallback(async () => {
-    try {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
-    } catch (error) {
-      console.warn('Exit fullscreen failed:', error);
+    if (document.fullscreenElement) {
+      try { await document.exitFullscreen(); } catch {}
     }
   }, []);
 
   useEffect(() => {
-    if (isActive && ref.current) {
-      enter();
-    }
+    if (isActive && ref.current) enter();
   }, [isActive, enter]);
 
   useEffect(() => {
     if (!isActive || !onExit) return;
 
     const handleChange = () => {
-      const hasExitedFullscreen = !document.fullscreenElement;
-      if (hasExitedFullscreen) {
-        onExit();
-      }
+      if (!document.fullscreenElement) onExit();
     };
 
     document.addEventListener('fullscreenchange', handleChange);
@@ -50,4 +38,3 @@ export function useFullscreen<T extends HTMLElement>({ isActive, onExit }: UseFu
 
   return { ref, enter, exit };
 }
-

@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import { InfoIcon } from '@/components/ui';
 import { TooltipPopup } from './TooltipPopup';
-import { useTooltipState } from '../hooks';
+import { useTooltipState } from '@/hooks';
 import * as S from '../editor.styles';
 import { TOOLBAR_TITLES, MENU_STYLES } from '@/constants';
 import type { TooltipButtonProps, TooltipBadgesProps } from '@/types/editor';

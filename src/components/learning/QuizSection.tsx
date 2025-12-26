@@ -4,7 +4,7 @@ import { memo, useCallback } from 'react';
 import { Button } from '@/components/ui';
 import { LEARNING_LABELS } from '@/constants/learning';
 import type { QuizSectionProps } from '@/types/learning';
-import { useQuizState, useFullscreen } from './hooks';
+import { useQuizState, useFullscreen } from '@/hooks';
 import { QuizIntro, QuizProgress, QuizQuestion, QuestionList, QuizExplanation } from './components';
 import { QUIZ } from './learning.styles';
 

@@ -3,7 +3,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { LinkModal, ImageModal } from './EditorModal';
 import { TooltipButton } from './TooltipButton';
-import { useModalState } from '../hooks';
+import { useModalState } from '@/hooks';
 import { EDITOR_ICON_MAP } from '../editor.icons';
 import {
   MENU_STYLES as S,

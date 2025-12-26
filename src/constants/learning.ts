@@ -180,6 +180,18 @@ export const QUIZ_CONSTANTS = {
   DANGER_THRESHOLD_SECONDS: 30,
 } as const;
 
+export const toSeconds = (minutes?: number): number => 
+  minutes ? minutes * QUIZ_CONSTANTS.SECONDS_PER_MINUTE : 0;
+
+export const createInitialQuizState = (timeLimit?: number): import('@/types/learning').QuizState => ({
+  started: false,
+  currentIndex: 0,
+  answers: new Map(),
+  showResults: false,
+  attempt: undefined,
+  timeLeft: toSeconds(timeLimit),
+});
+
 export const MOCK_QUIZ: Quiz = {
   id: 'quiz-1',
   title: 'Kiểm tra kiến thức Blockchain cơ bản',
