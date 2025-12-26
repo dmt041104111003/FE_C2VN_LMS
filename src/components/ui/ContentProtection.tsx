@@ -44,7 +44,7 @@ export function ContentProtection() {
       return true;
     });
 
-    handlers.set('contextmenu', () => preventDefault(new Event('contextmenu')));
+    handlers.set('contextmenu', (e: Event) => preventDefault(e));
 
     handlers.set('copy', (e: Event) => {
       if (isEditableElement(e.target)) return true;
