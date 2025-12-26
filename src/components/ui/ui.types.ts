@@ -366,9 +366,17 @@ export interface DataTableProps {
   isEmpty?: boolean;
 }
 
+export interface TableRowProps {
+  children: React.ReactNode;
+  mobileTitle?: string;
+}
+
 export interface TableCellProps {
   children: React.ReactNode;
+  label?: string;
   className?: string;
+  hideOnMobile?: boolean;
+  isActions?: boolean;
 }
 
 export interface ActionButtonProps {

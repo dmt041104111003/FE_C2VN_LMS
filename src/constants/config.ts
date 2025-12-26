@@ -89,6 +89,12 @@ export const getInitials = (name: string): string => {
   return (first + last).toUpperCase();
 };
 
+export const DEFAULT_PAGE_SIZE = 10;
+const CODE_PAD_LENGTH = 3;
+
+export const formatCode = (prefix: string, id: string): string => 
+  `${prefix}${id.padStart(CODE_PAD_LENGTH, '0')}`;
+
 const YOUTUBE_PATTERNS = [
   /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
   /^([a-zA-Z0-9_-]{11})$/,

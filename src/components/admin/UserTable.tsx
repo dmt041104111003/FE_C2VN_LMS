@@ -14,6 +14,7 @@ export const UserTable = memo(function UserTable({
   totalCount,
   currentPage,
   totalPages,
+  startIndex,
   keyword,
   roleFilter,
   statusFilter,
@@ -54,9 +55,10 @@ export const UserTable = memo(function UserTable({
           isEmpty={users.length === 0}
           emptyMessage={LABELS.empty}
         >
-          {users.map(user => (
+          {users.map((user, idx) => (
             <UserRow
               key={user.id}
+              index={startIndex + idx + 1}
               user={user}
               onToggleStatus={onToggleStatus}
               onDelete={onDelete}

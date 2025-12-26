@@ -6,3 +6,5 @@ export * from './user';
 export * from './editor';
 export * from './learning';
 export * from './hooks';
+export * from './instructor';
+export * from './common';

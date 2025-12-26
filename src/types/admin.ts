@@ -42,6 +42,7 @@ export interface AdminModalState {
 }
 
 export interface UserRowProps {
+  index: number;
   user: AdminUser;
   onToggleStatus: (userId: string, isBan: boolean) => void;
   onDelete: (userId: string) => void;
@@ -68,6 +69,7 @@ export interface UserTableProps {
   totalCount: number;
   currentPage: number;
   totalPages: number;
+  startIndex: number;
   keyword: string;
   roleFilter: UserRole | '';
   statusFilter: UserStatus | '';

@@ -2,7 +2,10 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { ConfirmModal } from '@/components/ui';
-import { ADMIN_LABELS, MOCK_USERS, DEFAULT_PAGE_SIZE } from '@/constants/admin';
+import { PAGE } from '@/components/ui/ui.styles';
+import { DEFAULT_PAGE_SIZE } from '@/constants/config';
+import { ADMIN_LABELS, MOCK_USERS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
+import { DEFAULT_MODAL_CONFIG } from '@/types/common';
 import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState } from '@/types/admin';
 import { AdminLayout } from './AdminLayout';
 import { UserTable } from './UserTable';
@@ -91,35 +94,27 @@ export function AdminPage() {
   }, [openModal]);
 
   const handleConfirm = useCallback(() => {
-    if (!modal.userId) return;
-    switch (modal.type) {
-      case 'ban': handleBan(modal.userId); break;
-      case 'unban': handleUnban(modal.userId); break;
-      case 'delete': handleDelete(modal.userId); break;
-      case 'changeRole': modal.newRole && handleChangeRole(modal.userId, modal.newRole); break;
-    }
+    if (!modal.userId || !modal.type) return;
+    const actions: Record<NonNullable<AdminModalType>, () => void> = {
+      ban: () => handleBan(modal.userId!),
+      unban: () => handleUnban(modal.userId!),
+      delete: () => handleDelete(modal.userId!),
+      changeRole: () => modal.newRole && handleChangeRole(modal.userId!, modal.newRole),
+    };
+    actions[modal.type]?.();
   }, [modal, handleBan, handleUnban, handleDelete, handleChangeRole]);
 
-  const getModalConfig = () => {
-    switch (modal.type) {
-      case 'ban': return { title: LABELS.confirm.banTitle, message: LABELS.confirm.banMessage, danger: true };
-      case 'unban': return { title: LABELS.confirm.unbanTitle, message: LABELS.confirm.unbanMessage, danger: false };
-      case 'delete': return { title: LABELS.confirm.deleteTitle, message: LABELS.confirm.deleteMessage, danger: true };
-      case 'changeRole': return { title: LABELS.confirm.changeRoleTitle, message: LABELS.confirm.changeRoleMessage, danger: false };
-      default: return { title: '', message: '', danger: false };
-    }
-  };
-
-  const modalConfig = getModalConfig();
+  const modalConfig = modal.type ? ADMIN_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;
 
   return (
     <AdminLayout activeId="users" title={LABELS.title}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className={PAGE.CONTAINER}>
         <UserTable
           users={paginatedUsers}
           totalCount={filteredUsers.length}
           currentPage={page}
           totalPages={totalPages}
+          startIndex={(page - 1) * DEFAULT_PAGE_SIZE}
           keyword={keyword}
           roleFilter={roleFilter}
           statusFilter={statusFilter}

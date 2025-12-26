@@ -417,7 +417,7 @@ export const STAT = {
 } as const;
 
 export const TABLE = {
-  WRAPPER: 'overflow-x-auto',
+  WRAPPER: 'hidden md:block overflow-x-auto',
   BASE: 'w-full',
   THEAD: 'bg-[var(--bg-alt)]/50',
   TH: 'px-4 py-3 text-left text-xs font-medium text-[var(--text)]/50 uppercase tracking-wider',
@@ -425,6 +425,14 @@ export const TABLE = {
   TR: 'hover:bg-[var(--bg-alt)]/30 transition-colors',
   TD: 'px-4 py-4 text-sm text-[var(--text)]/70',
   EMPTY: 'text-center py-12 text-sm text-[var(--text)]/40',
+  MOBILE_LIST: 'md:hidden space-y-3',
+  MOBILE_CARD: 'bg-white border border-[var(--border)] rounded-lg p-4 space-y-3',
+  MOBILE_HEADER: 'flex items-center justify-between pb-3 border-b border-[var(--border)]',
+  MOBILE_TITLE: 'font-medium text-[var(--text)]',
+  MOBILE_ROW: 'flex items-center justify-between py-1.5',
+  MOBILE_LABEL: 'text-xs text-[var(--text)]/50 uppercase tracking-wider',
+  MOBILE_VALUE: 'text-sm text-[var(--text)]/70 text-right',
+  MOBILE_ACTIONS: 'pt-3 border-t border-[var(--border)] flex justify-end',
 } as const;
 
 export const STATUS_BADGE = {
@@ -499,6 +507,8 @@ export const SIDEBAR = {
   ITEM_TITLE: 'text-sm truncate',
   ITEM_META: 'text-xs opacity-50 mt-0.5',
   FOOTER: 'px-5 py-4 border-t border-[var(--border)]',
+  LOGOUT_BTN: 'w-full justify-start gap-3 hover:!text-[var(--incorrect)] hover:!bg-[var(--incorrect)]/5',
+  LOGOUT_ICON: 'w-5 h-5',
 } as const;
 
 export const SIDEBAR_LAYOUT = {

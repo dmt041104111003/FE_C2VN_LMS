@@ -75,6 +75,7 @@ export type {
   PanelProps,
   StatCardProps,
   DataTableProps,
+  TableRowProps,
   TableCellProps,
   ActionButtonProps,
   DropdownItem,

@@ -52,6 +52,8 @@ export {
   deobfuscateVideoUrl,
   isObfuscated,
   YOUTUBE_PLAYER_VARS,
+  DEFAULT_PAGE_SIZE,
+  formatCode,
 } from './config';
 export {
   IS_PROTECTION_ENABLED,
@@ -114,5 +116,13 @@ export {
   ROLE_LABELS as ADMIN_ROLE_LABELS,
   STATUS_LABELS,
   MOCK_USERS,
-  DEFAULT_PAGE_SIZE,
+  ADMIN_MODAL_CONFIG,
 } from './admin';
+export {
+  INSTRUCTOR_LABELS,
+  INSTRUCTOR_SIDEBAR_ITEMS,
+  COURSE_STATUS_LABELS,
+  COURSE_STATUS_VARIANT,
+  MOCK_INSTRUCTOR_COURSES,
+  COURSE_MODAL_CONFIG,
+} from './instructor';

@@ -14,6 +14,8 @@ import {
   TrashIcon,
   ShieldIcon,
 } from '@/components/ui';
+import { ICON_SM } from '@/components/ui/ui.styles';
+import { formatCode, formatDate } from '@/constants/config';
 import {
   ADMIN_LABELS,
   ROLE_OPTIONS,
@@ -21,13 +23,13 @@ import {
   STATUS_LABELS,
   ROLE_BADGE_VARIANT,
   STATUS_BADGE_VARIANT,
-  formatDate,
 } from '@/constants/admin';
 import type { UserRowProps, UserRole } from '@/types/admin';
 
 const LABELS = ADMIN_LABELS.users;
+const USER_CODE_PREFIX = 'ND';
 
-export const UserRow = memo(function UserRow({ user, onToggleStatus, onDelete, onChangeRole }: UserRowProps) {
+export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDelete, onChangeRole }: UserRowProps) {
   const isActive = user.status === 'ACTIVE';
 
   const handleToggleStatus = useCallback(() => {
@@ -37,37 +39,41 @@ export const UserRow = memo(function UserRow({ user, onToggleStatus, onDelete, o
   const dropdownItems = [
     ...ROLE_OPTIONS.filter(r => r.value && r.value !== user.role).map(role => ({
       label: role.label,
-      icon: <ShieldIcon className="w-4 h-4" />,
+      icon: <ShieldIcon className={ICON_SM} />,
       onClick: () => onChangeRole(user.id, role.value as UserRole),
     })),
     {
       label: LABELS.actions.delete,
-      icon: <TrashIcon className="w-4 h-4" />,
+      icon: <TrashIcon className={ICON_SM} />,
       onClick: () => onDelete(user.id),
       danger: true,
     },
   ];
 
   return (
-    <TableRow>
-      <TableCell>
+    <TableRow mobileTitle={user.fullName}>
+      <TableCell hideOnMobile>{index}</TableCell>
+      <TableCell label={LABELS.table.email}>
+        <span className="font-mono text-xs">{formatCode(USER_CODE_PREFIX, user.id)}</span>
+      </TableCell>
+      <TableCell hideOnMobile>
         <UserCell name={user.fullName} email={user.email} showAvatar={false} />
       </TableCell>
-      <TableCell>
+      <TableCell label={LABELS.table.role}>
         <StatusBadge variant={ROLE_BADGE_VARIANT[user.role]}>
           {ROLE_LABELS[user.role]}
         </StatusBadge>
       </TableCell>
-      <TableCell>
+      <TableCell label={LABELS.table.status}>
         <StatusBadge variant={STATUS_BADGE_VARIANT[user.status]}>
           {STATUS_LABELS[user.status]}
         </StatusBadge>
       </TableCell>
-      <TableCell>{formatDate(user.createdAt)}</TableCell>
-      <TableCell>
+      <TableCell label={LABELS.table.createdAt}>{formatDate(user.createdAt)}</TableCell>
+      <TableCell isActions>
         <ActionsCell>
           <ActionButton
-            icon={isActive ? <LockIcon className="w-4 h-4" /> : <UnlockIcon className="w-4 h-4" />}
+            icon={isActive ? <LockIcon className={ICON_SM} /> : <UnlockIcon className={ICON_SM} />}
             onClick={handleToggleStatus}
             title={isActive ? LABELS.actions.ban : LABELS.actions.unban}
           />
