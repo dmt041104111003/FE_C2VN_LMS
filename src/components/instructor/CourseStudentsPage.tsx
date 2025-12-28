@@ -8,12 +8,10 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
   STUDENTS_LABELS,
   STUDENT_MODAL_CONFIG,
-  MOCK_COURSE_STUDENTS,
   INITIAL_STUDENT_MODAL,
   INITIAL_EDIT_STUDENT_MODAL,
 } from '@/constants/course-students';
 import {
-  MOCK_INSTRUCTOR_COURSES,
   ADD_STUDENT_FIELDS,
   ADD_STUDENT_LABELS,
   ADD_STUDENT_INITIAL_DATA,
@@ -52,13 +50,9 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
   const router = useRouter();
   const toast = useToast();
 
-  const course = useMemo(() => {
-    return MOCK_INSTRUCTOR_COURSES.find(c => c.id === courseId);
-  }, [courseId]);
+  const course = useMemo(() => null, [courseId]);
 
-  const [students, setStudents] = useState<CourseStudent[]>(
-    () => MOCK_COURSE_STUDENTS[courseId] || []
-  );
+  const [students, setStudents] = useState<CourseStudent[]>([]);
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<StudentStatus | ''>('');
   const [page, setPage] = useState(1);

@@ -9,7 +9,6 @@ import {
   INBOX_LABELS,
   INBOX_STYLES,
   INBOX_FILTER_OPTIONS,
-  MOCK_INBOX_MESSAGES,
   MESSAGE_TYPE_LABELS,
   MESSAGE_TYPE_COLORS,
   REPLY_LABELS,
@@ -39,7 +38,7 @@ export function InboxPage() {
   const [filter, setFilter] = useState<InboxFilter>('all');
   const [replyMessage, setReplyMessage] = useState<InboxMessage | null>(null);
 
-  const { filteredMessages, unreadCount, markAsRead } = useMessages(MOCK_INBOX_MESSAGES, filter);
+  const { filteredMessages, unreadCount, markAsRead } = useMessages([], filter);
 
   const {
     visibleCount,

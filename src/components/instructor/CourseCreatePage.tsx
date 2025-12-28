@@ -14,7 +14,6 @@ import {
   COURSE_DRAFT_KEY,
   COURSE_EDIT_DRAFT_KEY_PREFIX,
 } from '@/constants/course-create';
-import { MOCK_INSTRUCTOR_COURSES } from '@/constants/instructor';
 import { updateAtIndex, removeAtIndex, appendItem } from '@/hooks/useListManager';
 import { useFormDraft } from '@/hooks';
 import { validateCourseForm } from '@/utils/course-validation';
@@ -27,17 +26,7 @@ interface CourseCreatePageProps {
 }
 
 const convertCourseToFormData = (courseId: string): CourseFormData | null => {
-  const course = MOCK_INSTRUCTOR_COURSES.find(c => c.id === courseId);
-  if (!course) return null;
-
-  return {
-    title: course.title,
-    description: '',
-    price: course.revenue / Math.max(course.students, 1),
-    status: course.status === 'published' ? 'published' : 'draft',
-    chapters: [createEmptyChapter()],
-    quizzes: [],
-  };
+  return null;
 };
 
 const isFormEmpty = (form: CourseFormData): boolean => {

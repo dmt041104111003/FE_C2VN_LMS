@@ -511,9 +511,9 @@ export const SIDEBAR = {
 
 export const SIDEBAR_LAYOUT = {
   CONTAINER: 'h-screen bg-[var(--bg)] flex overflow-hidden',
-  SIDEBAR_DESKTOP: 'w-72 flex-shrink-0 hidden lg:block border-r border-[var(--border)]',
+  SIDEBAR_DESKTOP: 'w-52 flex-shrink-0 hidden lg:block border-r border-[var(--border)]',
   SIDEBAR_MOBILE_OVERLAY: 'fixed inset-0 z-50 bg-black/30 lg:hidden',
-  SIDEBAR_MOBILE_CONTENT: 'w-72 h-full bg-[var(--bg)]',
+  SIDEBAR_MOBILE_CONTENT: 'w-52 h-full bg-[var(--bg)]',
   MAIN: 'flex-1 flex flex-col min-w-0 h-full',
   HEADER: 'h-14 border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 flex-shrink-0',
   HEADER_LEFT: 'flex items-center gap-3',
@@ -540,27 +540,36 @@ export const TOAST = {
   PROGRESS: 'absolute bottom-0 left-0 h-0.5',
   WRAPPER: 'pointer-events-auto',
   DURATION: 4000,
+  ANIMATION_DURATION: 300,
+  ERROR_MSG: 'useToast phải được sử dụng trong ToastProvider',
+  VARIANT: {
+    success: 'border-l-[var(--correct)] bg-[var(--correct)]/10',
+    error: 'border-l-[var(--incorrect)] bg-[var(--incorrect)]/10',
+    warning: 'border-l-[var(--warning)] bg-[var(--warning)]/10',
+    info: 'border-l-[var(--accent)] bg-[var(--accent)]/10',
+  },
+  ICON_COLOR: {
+    success: 'text-[var(--correct)]',
+    error: 'text-[var(--incorrect)]',
+    warning: 'text-[var(--warning)]',
+    info: 'text-[var(--accent)]',
+  },
+  PROGRESS_COLOR: {
+    success: 'bg-[var(--correct)]',
+    error: 'bg-[var(--incorrect)]',
+    warning: 'bg-[var(--warning)]',
+    info: 'bg-[var(--accent)]',
+  },
 } as const;
 
-export const TOAST_VARIANT = {
-  success: 'border-l-[var(--correct)] bg-[var(--correct)]/10',
-  error: 'border-l-[var(--incorrect)] bg-[var(--incorrect)]/10',
-  warning: 'border-l-[var(--warning)] bg-[var(--warning)]/10',
-  info: 'border-l-[var(--accent)] bg-[var(--accent)]/10',
-} as const;
-
-export const TOAST_ICON_COLOR = {
-  success: 'text-[var(--correct)]',
-  error: 'text-[var(--incorrect)]',
-  warning: 'text-[var(--warning)]',
-  info: 'text-[var(--accent)]',
-} as const;
-
-export const TOAST_PROGRESS_COLOR = {
-  success: 'bg-[var(--correct)]',
-  error: 'bg-[var(--incorrect)]',
-  warning: 'bg-[var(--warning)]',
-  info: 'bg-[var(--accent)]',
+export const SEARCH_TYPE_LABELS: Record<string, string> = {
+  course: 'Khóa học',
+  instructor: 'Giảng viên',
+  tag: 'Chủ đề',
+  history: 'Gần đây',
+  USER: 'Học viên',
+  INSTRUCTOR: 'Giảng viên',
+  ADMIN: 'Quản trị viên',
 } as const;
 
 export const DIALOG = {

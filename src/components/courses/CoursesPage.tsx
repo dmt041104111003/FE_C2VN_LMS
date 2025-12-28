@@ -4,7 +4,10 @@ import { memo, useState, useMemo, useEffect, useCallback, Suspense } from 'react
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from '@/components/ui';
 import { CourseCard } from './CourseCard';
-import { COURSE_PAGE, COURSE_GRID, MOCK_COURSES } from '@/constants/course';
+import { COURSE_PAGE, COURSE_GRID } from '@/constants/course';
+import type { Course } from '@/types/course';
+
+const COURSES: Course[] = [];
 import { SYSTEM_CONFIG } from '@/constants/config';
 import {
   COURSES_PAGE,
@@ -55,7 +58,7 @@ function CoursesPageInner() {
   const [ratingFilter, setRatingFilter] = useState<RatingFilterType>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const maxPrice = useMemo(() => Math.max(...MOCK_COURSES.map(c => c.price)), []);
+  const maxPrice = useMemo(() => Math.max(...COURSES.map(c => c.price)), []);
 
   const parsePriceParam = useCallback((param: string | null, max: number): PriceRange => {
     if (param === 'free') return { min: 0, max: 0 };
@@ -84,7 +87,7 @@ function CoursesPageInner() {
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
-    for (const course of MOCK_COURSES) {
+    for (const course of COURSES) {
       course.tags?.forEach(tag => tags.add(tag));
     }
     return Array.from(tags).sort();
@@ -94,7 +97,7 @@ function CoursesPageInner() {
     const seen = new Set<string>();
     const suggestions: { text: string; type: 'course' | 'instructor' | 'tag' }[] = [];
 
-    for (const course of MOCK_COURSES) {
+    for (const course of COURSES) {
       if (!seen.has(course.title)) {
         suggestions.push({ text: course.title, type: 'course' });
         seen.add(course.title);
@@ -118,7 +121,7 @@ function CoursesPageInner() {
   const filteredCourses = useMemo(() => {
     const searchLower = search.toLowerCase();
     
-    return MOCK_COURSES.filter(course => {
+    return COURSES.filter(course => {
       const matchSearch = !search || 
         course.title.toLowerCase().includes(searchLower) ||
         course.instructorName.toLowerCase().includes(searchLower);

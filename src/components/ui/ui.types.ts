@@ -48,6 +48,7 @@ export interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
+
 export interface BadgeProps {
   children: React.ReactNode;
   variant?: BadgeVariant;
@@ -169,6 +170,7 @@ export interface InputProps {
   className?: string;
   autoFocus?: boolean;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export interface TextareaProps {
@@ -237,7 +239,7 @@ export interface FilterOption<T = string> {
 
 export interface SearchSuggestionItem {
   text: string;
-  type?: 'course' | 'instructor' | 'tag' | 'history';
+  type?: 'course' | 'instructor' | 'tag' | 'history' | 'USER' | 'INSTRUCTOR' | 'ADMIN';
 }
 
 export interface SearchInputProps {

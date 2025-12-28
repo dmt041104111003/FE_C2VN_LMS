@@ -8,7 +8,9 @@ import {
   COURSES_LABELS,
   COURSES_IMAGES,
 } from '@/constants';
-import { MOCK_COURSES } from '@/constants/course';
+import type { Course } from '@/types/course';
+
+const COURSES: Course[] = [];
 import {
   COURSES_SECTION,
   COURSES_CONTAINER,
@@ -32,7 +34,7 @@ function CoursesComponent() {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   const modalItems = useMemo(() => 
-    MOCK_COURSES.slice(0, 3).map((course, index) => ({
+    COURSES.slice(0, 3).map((course, index) => ({
       image: COURSES_IMAGES[index] || course.thumbnail,
       tag: course.tags?.[0] || '',
       title: course.title,
@@ -79,7 +81,7 @@ function CoursesComponent() {
           </Link>
         </div>
         <div className={COURSES_GRID}>
-          {MOCK_COURSES.slice(0, 3).map((course, index) => (
+          {COURSES.slice(0, 3).map((course, index) => (
             <div
               key={course.id}
               className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES[index]} cursor-pointer`}

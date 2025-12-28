@@ -1,6 +1,20 @@
-import { CourseStudentsPage } from '@/components/instructor/CourseStudentsPage';
-import type { CourseIdPageProps } from '@/types/page';
+'use client';
 
-export default function StudentsPage({ params }: CourseIdPageProps) {
-  return <CourseStudentsPage courseId={params.courseId} />;
+import { use } from 'react';
+import { AuthGuard } from '@/components/auth';
+import { CourseStudentsPage } from '@/components/instructor/CourseStudentsPage';
+import { ROLE } from '@/constants/auth';
+
+interface PageProps {
+  params: Promise<{ courseId: string }>;
+}
+
+export default function StudentsPage({ params }: PageProps) {
+  const { courseId } = use(params);
+
+  return (
+    <AuthGuard allowedRoles={ROLE.INSTRUCTOR}>
+      <CourseStudentsPage courseId={courseId} />
+    </AuthGuard>
+  );
 }

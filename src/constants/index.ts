@@ -17,7 +17,6 @@ export {
 export { CTA } from './cta';
 export { DEMO } from './demo';
 export {
-  MOCK_COURSES,
   COURSES_LABELS,
   COURSES_IMAGES,
   formatPrice,
@@ -33,7 +32,7 @@ export {
   validateEmail,
 } from './validation';
 export { FEEDBACK_FIELDS } from './feedback';
-export { LOGIN, LOGIN_FIELDS } from './login';
+export { LOGIN, LOGIN_FIELDS, FORGOT_PASSWORD, RESET_PASSWORD, VERIFY_EMAIL, CHANGE_PASSWORD } from './login';
 export {
   SYSTEM_CONFIG,
   DATE_FORMAT,
@@ -73,12 +72,11 @@ export {
   USER_CONFIG,
   ROLE_LABELS,
   LOGIN_METHOD_ICONS,
+  LOGIN_METHOD_LABELS,
   STATS_ITEMS,
   truncateWalletAddress,
-  MOCK_USER_PROFILE,
-  MOCK_USER_STATS,
-  MOCK_USER_COURSES,
-  MOCK_USER_CERTIFICATES,
+  DEFAULT_USER_STATS,
+  mapAuthUserToProfile,
 } from './user';
 export {
   EDITOR_LABELS,
@@ -105,17 +103,12 @@ export {
   checkAnswer,
   calculateQuizScore,
   createCorrectAnswersMap,
-  MOCK_QUIZ,
-  MOCK_LEARNING_CHAPTERS,
-  MOCK_COURSE_PROGRESS,
 } from './learning';
 export {
   ADMIN_LABELS,
   ROLE_OPTIONS,
   STATUS_OPTIONS,
-  ROLE_LABELS as ADMIN_ROLE_LABELS,
   STATUS_LABELS,
-  MOCK_USERS,
   ADMIN_MODAL_CONFIG,
 } from './admin';
 export {
@@ -123,6 +116,14 @@ export {
   INSTRUCTOR_SIDEBAR_ITEMS,
   COURSE_STATUS_LABELS,
   COURSE_STATUS_VARIANT,
-  MOCK_INSTRUCTOR_COURSES,
   COURSE_MODAL_CONFIG,
 } from './instructor';
+export {
+  API_BASE_URL,
+  API_ENDPOINTS,
+  API_ERROR_MESSAGES,
+} from './api';
+export {
+  ROLE,
+  hasRole,
+} from './auth';

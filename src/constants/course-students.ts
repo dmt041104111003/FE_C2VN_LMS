@@ -1,7 +1,6 @@
 import type {
   StudentStatus,
   StudentModalType,
-  CourseStudent,
   StudentModalState,
   EditStudentModalState,
   StudentFormData,
@@ -109,28 +108,4 @@ export const STUDENT_MODAL_CONFIG: Record<NonNullable<StudentModalType>, ModalCo
 };
 
 export const STUDENT_CODE_PREFIX = 'HV';
-
-export const MOCK_COURSE_STUDENTS: Record<string, CourseStudent[]> = {
-  '1': [
-    { id: '101', fullName: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', enrolledAt: '2024-01-20T10:00:00Z', status: 'active' },
-    { id: '102', fullName: 'Trần Thị B', email: 'tranthib@gmail.com', walletAddress: 'addr1qxyprqtspqzqszqgpqyqszqgpqyqszqgpqyqszqgpqyqs0v4yh7', enrolledAt: '2024-02-15T14:00:00Z', status: 'completed', certificateStatus: 'issued' },
-    { id: '103', fullName: 'Lê Văn C', email: 'levanc@gmail.com', enrolledAt: '2024-03-10T09:00:00Z', status: 'active' },
-    { id: '104', fullName: 'Phạm Thị D', email: 'phamthid@gmail.com', walletAddress: 'addr1qxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890', enrolledAt: '2024-04-05T11:00:00Z', status: 'active' },
-    { id: '105', fullName: 'Hoàng Văn E', email: 'hoangvane@gmail.com', enrolledAt: '2024-05-20T16:00:00Z', status: 'active' },
-    { id: '106', fullName: 'Ngô Thị F', email: 'ngothif@gmail.com', enrolledAt: '2024-06-01T08:00:00Z', status: 'completed', certificateStatus: 'pending' },
-    { id: '107', fullName: 'Vũ Văn G', email: 'vuvang@gmail.com', enrolledAt: '2024-06-15T10:30:00Z', status: 'active' },
-    { id: '108', fullName: 'Đỗ Thị H', email: 'dothih@gmail.com', enrolledAt: '2024-07-01T14:00:00Z', status: 'active' },
-    { id: '109', fullName: 'Bùi Văn I', email: 'buivani@gmail.com', enrolledAt: '2024-07-10T09:00:00Z', status: 'completed', certificateStatus: 'issued' },
-    { id: '110', fullName: 'Trương Thị K', email: 'truongthik@gmail.com', enrolledAt: '2024-07-20T11:00:00Z', status: 'active' },
-    { id: '111', fullName: 'Lý Văn L', email: 'lyvanl@gmail.com', walletAddress: 'addr1qabcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl', enrolledAt: '2024-08-01T08:30:00Z', status: 'active' },
-    { id: '112', fullName: 'Hồ Thị M', email: 'hothim@gmail.com', enrolledAt: '2024-08-15T15:00:00Z', status: 'completed', certificateStatus: 'pending' },
-    { id: '113', fullName: 'Dương Văn N', email: 'duongvann@gmail.com', enrolledAt: '2024-09-01T10:00:00Z', status: 'active' },
-    { id: '114', fullName: 'Mai Thị O', email: 'maithio@gmail.com', enrolledAt: '2024-09-10T13:00:00Z', status: 'active' },
-    { id: '115', fullName: 'Đinh Văn P', email: 'dinhvanp@gmail.com', enrolledAt: '2024-10-01T09:30:00Z', status: 'completed', certificateStatus: 'pending' },
-  ],
-  '2': [
-    { id: '201', fullName: 'Võ Thị F', email: 'vothif@gmail.com', enrolledAt: '2024-03-25T10:00:00Z', status: 'completed', certificateStatus: 'issued' },
-    { id: '202', fullName: 'Đặng Văn G', email: 'dangvang@gmail.com', walletAddress: 'addr1q9876543210zyxwvutsrqponmlkjihgfedcba0987654321zy', enrolledAt: '2024-04-10T14:00:00Z', status: 'active' },
-  ],
-};
 

@@ -18,7 +18,6 @@ import {
   USER_INBOX_REPLY_DRAFT_KEY,
   USER_MESSAGE_TYPE_LABELS,
   USER_MESSAGE_TYPE_COLORS,
-  MOCK_USER_INBOX_MESSAGES,
   formatTimeAgo,
   isReplyEmpty,
   isReplyValid,
@@ -40,7 +39,7 @@ export function UserInboxPage() {
   const [filter, setFilter] = useState<InboxFilter>('all');
   const [replyMessage, setReplyMessage] = useState<InboxMessage | null>(null);
 
-  const { filteredMessages, markAsRead } = useMessages(MOCK_USER_INBOX_MESSAGES, filter);
+  const { filteredMessages, markAsRead } = useMessages([], filter);
 
   const {
     visibleCount,

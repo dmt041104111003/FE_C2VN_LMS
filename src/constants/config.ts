@@ -26,25 +26,39 @@ const timeFormatter = createFormatter(DATE_FORMAT.TIME as Intl.DateTimeFormatOpt
 const dateTimeFormatter = createFormatter(DATE_FORMAT.DATETIME as Intl.DateTimeFormatOptions);
 const fullFormatter = createFormatter(DATE_FORMAT.FULL as Intl.DateTimeFormatOptions);
 
-export const formatDate = (date: Date | string | number): string => {
-  return dateFormatter.format(new Date(date));
+const DEFAULT_DATE_STRING = '-';
+
+const toSafeDate = (date: Date | string | number | null | undefined): Date | null => {
+  if (!date && date !== 0) return null;
+  const parsed = new Date(date);
+  return isNaN(parsed.getTime()) ? null : parsed;
 };
 
-export const formatTime = (date: Date | string | number): string => {
-  return timeFormatter.format(new Date(date));
+export const formatDate = (date: Date | string | number | null | undefined): string => {
+  const safeDate = toSafeDate(date);
+  return safeDate ? dateFormatter.format(safeDate) : DEFAULT_DATE_STRING;
 };
 
-export const formatDateTime = (date: Date | string | number): string => {
-  return dateTimeFormatter.format(new Date(date));
+export const formatTime = (date: Date | string | number | null | undefined): string => {
+  const safeDate = toSafeDate(date);
+  return safeDate ? timeFormatter.format(safeDate) : DEFAULT_DATE_STRING;
 };
 
-export const formatFullDate = (date: Date | string | number): string => {
-  return fullFormatter.format(new Date(date));
+export const formatDateTime = (date: Date | string | number | null | undefined): string => {
+  const safeDate = toSafeDate(date);
+  return safeDate ? dateTimeFormatter.format(safeDate) : DEFAULT_DATE_STRING;
 };
 
-export const getRelativeTime = (date: Date | string | number): string => {
+export const formatFullDate = (date: Date | string | number | null | undefined): string => {
+  const safeDate = toSafeDate(date);
+  return safeDate ? fullFormatter.format(safeDate) : DEFAULT_DATE_STRING;
+};
+
+export const getRelativeTime = (date: Date | string | number | null | undefined): string => {
+  const target = toSafeDate(date);
+  if (!target) return DEFAULT_DATE_STRING;
+  
   const now = new Date();
-  const target = new Date(date);
   const diffMs = now.getTime() - target.getTime();
   const diffSec = Math.floor(diffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);

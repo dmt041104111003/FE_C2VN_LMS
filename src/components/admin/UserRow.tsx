@@ -19,11 +19,11 @@ import {
   ADMIN_LABELS,
   USER_CODE_PREFIX,
   ROLE_OPTIONS,
-  ROLE_LABELS,
   STATUS_LABELS,
   ROLE_BADGE_VARIANT,
   STATUS_BADGE_VARIANT,
 } from '@/constants/admin';
+import { ROLE_LABELS } from '@/constants/user';
 import { COPYABLE_TEXT } from '@/components/ui/ui.styles';
 import type { UserRowProps, UserRole } from '@/types/admin';
 
@@ -33,10 +33,10 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
   const isActive = user.status === 'ACTIVE';
 
   const dropdownItems = [
-    ...ROLE_OPTIONS.filter(r => r.value && r.value !== user.role).map(role => ({
-      label: role.label,
+    ...ROLE_OPTIONS.filter(r => r.value && r.value !== user.role).map(opt => ({
+      label: opt.label,
       icon: <ShieldIcon className={ICON_SM} />,
-      onClick: () => onChangeRole(user.id, role.value as UserRole),
+      onClick: () => onChangeRole(user.id, opt.value as UserRole),
     })),
     {
       label: isActive ? LABELS.actions.ban : LABELS.actions.unban,
@@ -55,10 +55,10 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
   return (
     <TableRow mobileTitle={user.fullName}>
       <TableCell hideOnMobile>{index}</TableCell>
-      <TableCell label={LABELS.table.email}>
+      <TableCell label={LABELS.table.code}>
         <span className="font-mono text-xs">{formatCode(USER_CODE_PREFIX, user.id)}</span>
       </TableCell>
-      <TableCell hideOnMobile>
+      <TableCell label={LABELS.table.email}>
         <UserCell 
           name={user.fullName} 
           email={user.email} 
@@ -68,13 +68,13 @@ export const UserRow = memo(function UserRow({ index, user, onToggleStatus, onDe
         />
       </TableCell>
       <TableCell label={LABELS.table.role}>
-        <StatusBadge variant={ROLE_BADGE_VARIANT[user.role]}>
-          {ROLE_LABELS[user.role]}
+        <StatusBadge variant={ROLE_BADGE_VARIANT[user.role] || 'default'}>
+          {ROLE_LABELS[user.role] || user.role || 'N/A'}
         </StatusBadge>
       </TableCell>
       <TableCell label={LABELS.table.status}>
-        <StatusBadge variant={STATUS_BADGE_VARIANT[user.status]}>
-          {STATUS_LABELS[user.status]}
+        <StatusBadge variant={STATUS_BADGE_VARIANT[user.status] || 'default'}>
+          {STATUS_LABELS[user.status] || user.status || 'N/A'}
         </StatusBadge>
       </TableCell>
       <TableCell label={LABELS.table.createdAt}>{formatDate(user.createdAt)}</TableCell>

@@ -1,24 +1,29 @@
+'use client';
+
 import { Header, Footer } from '@/components/ui';
 import { UserProfile } from '@/components/user';
-import {
-  MOCK_USER_PROFILE,
-  MOCK_USER_STATS,
-  MOCK_USER_COURSES,
-  MOCK_USER_CERTIFICATES,
-} from '@/constants/user';
+import { AuthGuard } from '@/components/auth';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
+import { useAuth } from '@/contexts';
+import { mapAuthUserToProfile, DEFAULT_USER_STATS } from '@/constants';
 
-export default function ProfilePage() {
+function ProfileContent() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <>
       <Header />
       <div className={HEADER_SPACER} />
       <main>
         <UserProfile
-          user={MOCK_USER_PROFILE}
-          stats={MOCK_USER_STATS}
-          courses={MOCK_USER_COURSES}
-          certificates={MOCK_USER_CERTIFICATES}
+          user={mapAuthUserToProfile(user)}
+          stats={DEFAULT_USER_STATS}
+          courses={[]}
+          certificates={[]}
           isOwnProfile
         />
       </main>
@@ -27,3 +32,10 @@ export default function ProfilePage() {
   );
 }
 
+export default function ProfilePage() {
+  return (
+    <AuthGuard>
+      <ProfileContent />
+    </AuthGuard>
+  );
+}

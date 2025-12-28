@@ -1,69 +1,66 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
-import { Dialog, useToast, FormModal } from '@/components/ui';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { Dialog, useToast } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
-import {
-  ADMIN_LABELS,
-  MOCK_USERS,
-  ADMIN_MODAL_CONFIG,
-  ADD_USER_FIELDS,
-  ADD_USER_LABELS,
-  ADD_USER_INITIAL_DATA,
-  ADD_USER_DRAFT_KEY,
-} from '@/constants/admin';
+import { ADMIN_LABELS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
-import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState, AddUserFormData } from '@/types/admin';
+import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState } from '@/types/admin';
+import * as userService from '@/services/user';
 import { AdminLayout } from './AdminLayout';
 import { UserTable } from './UserTable';
 
 const LABELS = ADMIN_LABELS.users;
-
 const TOAST = ADMIN_LABELS.users.toast;
 
 export function AdminPage() {
   const toast = useToast();
-  const [users, setUsers] = useState<AdminUser[]>(MOCK_USERS);
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
+
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const [statusFilter, setStatusFilter] = useState<UserStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<AdminModalState>({ type: null, userId: null });
-  const [showAddModal, setShowAddModal] = useState(false);
+  const isInitialMount = useRef(true);
 
-  const filteredUsers = useMemo(() => {
-    return users.filter(user => {
-      const matchKeyword = !keyword ||
-        user.fullName.toLowerCase().includes(keyword.toLowerCase()) ||
-        user.email.toLowerCase().includes(keyword.toLowerCase());
-      const matchRole = !roleFilter || user.role === roleFilter;
-      const matchStatus = !statusFilter || user.status === statusFilter;
-      return matchKeyword && matchRole && matchStatus;
-    });
-  }, [users, keyword, roleFilter, statusFilter]);
-
-  const totalPages = Math.ceil(filteredUsers.length / DEFAULT_PAGE_SIZE);
-  const paginatedUsers = useMemo(() => {
-    const start = (page - 1) * DEFAULT_PAGE_SIZE;
-    return filteredUsers.slice(start, start + DEFAULT_PAGE_SIZE);
-  }, [filteredUsers, page]);
-
-  const searchSuggestions = useMemo(() => {
-    const seen = new Set<string>();
-    const suggestions: { text: string; type: 'course' | 'instructor' | 'tag' }[] = [];
-    for (const user of users) {
-      if (!seen.has(user.fullName)) {
-        suggestions.push({ text: user.fullName, type: 'instructor' });
-        seen.add(user.fullName);
-      }
-      if (!seen.has(user.email)) {
-        suggestions.push({ text: user.email, type: 'tag' });
-        seen.add(user.email);
-      }
+  const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await userService.getUsers({
+        keyword: keyword || undefined,
+        role: roleFilter || undefined,
+        status: statusFilter || undefined,
+        page: page - 1,
+        size: DEFAULT_PAGE_SIZE,
+      });
+      setUsers(response.content);
+      setTotalCount(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch {
+      toastRef.current.error('Không thể tải danh sách người dùng');
+    } finally {
+      setIsLoading(false);
     }
-    return suggestions;
-  }, [users]);
+  }, [keyword, roleFilter, statusFilter, page]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    setPage(1);
+  }, [keyword, roleFilter, statusFilter]);
 
   const openModal = useCallback((type: AdminModalType, userId: string, newRole?: UserRole) => {
     setModal({ type, userId, newRole });
@@ -72,16 +69,6 @@ export function AdminPage() {
   const closeModal = useCallback(() => {
     setModal({ type: null, userId: null });
   }, []);
-
-  const updateUser = useCallback((userId: string, updates: Partial<AdminUser>) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
-    closeModal();
-  }, [closeModal]);
-
-  const removeUser = useCallback((userId: string) => {
-    setUsers(prev => prev.filter(u => u.id !== userId));
-    closeModal();
-  }, [closeModal]);
 
   const handleToggleStatus = useCallback((userId: string, isBan: boolean) => {
     openModal(isBan ? 'ban' : 'unban', userId);
@@ -95,68 +82,63 @@ export function AdminPage() {
     openModal('changeRole', userId, role);
   }, [openModal]);
 
-  const handleAddUserClick = useCallback(() => setShowAddModal(true), []);
-  const handleCloseAddModal = useCallback(() => setShowAddModal(false), []);
-
-  const handleAddUserSubmit = useCallback((data: Record<string, unknown>) => {
-    const formData = data as AddUserFormData;
-    const isEmail = formData.contactType === 'email';
-    const newUser: AdminUser = {
-      id: `new-${Date.now()}`,
-      fullName: formData.fullName,
-      email: isEmail ? formData.contactValue : `wallet-${Date.now()}@placeholder.com`,
-      role: formData.role as UserRole,
-      status: 'ACTIVE',
-      createdAt: new Date().toISOString(),
-    };
-    setUsers(prev => [newUser, ...prev]);
-    setShowAddModal(false);
-    toast.success(TOAST.addSuccess);
-  }, [toast]);
-
-  const isAddUserFormEmpty = useCallback((data: Record<string, unknown>) => {
-    const form = data as AddUserFormData;
-    return !form.fullName?.trim() && !form.contactValue?.trim();
-  }, []);
-
-  const isAddUserFormValid = useCallback((data: Record<string, unknown>) => {
-    const form = data as AddUserFormData;
-    return Boolean(form.fullName?.trim() && form.contactValue?.trim());
-  }, []);
-
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!modal.userId || !modal.type) return;
-    const actions: Record<NonNullable<AdminModalType>, () => void> = {
-      ban: () => {
-        updateUser(modal.userId!, { status: 'BANNED' });
-        toast.success(TOAST.banSuccess);
-      },
-      unban: () => {
-        updateUser(modal.userId!, { status: 'ACTIVE' });
-        toast.success(TOAST.unbanSuccess);
-      },
-      delete: () => {
-        removeUser(modal.userId!);
-        toast.success(TOAST.deleteSuccess);
-      },
-      changeRole: () => {
-        if (modal.newRole) {
-          updateUser(modal.userId!, { role: modal.newRole });
-          toast.success(TOAST.changeRoleSuccess);
-        }
-      },
-    };
-    actions[modal.type]?.();
-  }, [modal, updateUser, removeUser, toast]);
+
+    try {
+      switch (modal.type) {
+        case 'ban':
+          await userService.banUser(modal.userId);
+          toastRef.current.success(TOAST.banSuccess);
+          break;
+        case 'unban':
+          await userService.unbanUser(modal.userId);
+          toastRef.current.success(TOAST.unbanSuccess);
+          break;
+        case 'delete':
+          await userService.deleteUser(modal.userId);
+          toastRef.current.success(TOAST.deleteSuccess);
+          break;
+        case 'changeRole':
+          if (modal.newRole) {
+            await userService.updateUserRole(modal.userId, modal.newRole);
+            toastRef.current.success(TOAST.changeRoleSuccess);
+          }
+          break;
+      }
+      closeModal();
+      await fetchUsers();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Thao tác thất bại';
+      toastRef.current.error(message);
+    }
+  }, [modal, closeModal, fetchUsers]);
 
   const modalConfig = modal.type ? ADMIN_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;
+
+  const searchSuggestions = useMemo(() => {
+    const seen = new Set<string>();
+    const suggestions: { text: string; type: 'USER' | 'INSTRUCTOR' | 'ADMIN' }[] = [];
+    for (const user of users) {
+      const roleType = user.role || 'USER';
+      if (user.fullName && !seen.has(user.fullName)) {
+        suggestions.push({ text: user.fullName, type: roleType });
+        seen.add(user.fullName);
+      }
+      if (user.email && !seen.has(user.email)) {
+        suggestions.push({ text: user.email, type: roleType });
+        seen.add(user.email);
+      }
+    }
+    return suggestions;
+  }, [users]);
 
   return (
     <AdminLayout activeId="users" title={LABELS.title}>
       <div className={PAGE.CONTAINER}>
         <UserTable
-          users={paginatedUsers}
-          totalCount={filteredUsers.length}
+          users={users}
+          totalCount={totalCount}
           currentPage={page}
           totalPages={totalPages}
           startIndex={(page - 1) * DEFAULT_PAGE_SIZE}
@@ -171,7 +153,6 @@ export function AdminPage() {
           onToggleStatus={handleToggleStatus}
           onDelete={handleDeleteClick}
           onChangeRole={handleChangeRoleClick}
-          onAddUser={handleAddUserClick}
         />
         <Dialog
           isOpen={modal.type !== null}
@@ -180,17 +161,6 @@ export function AdminPage() {
           danger={modalConfig.danger}
           onPrimary={handleConfirm}
           onSecondary={closeModal}
-        />
-        <FormModal
-          isOpen={showAddModal}
-          labels={ADD_USER_LABELS}
-          fields={ADD_USER_FIELDS}
-          storageKey={ADD_USER_DRAFT_KEY}
-          initialData={ADD_USER_INITIAL_DATA}
-          isEmpty={isAddUserFormEmpty}
-          isValid={isAddUserFormValid}
-          onClose={handleCloseAddModal}
-          onSubmit={handleAddUserSubmit}
         />
       </div>
     </AdminLayout>

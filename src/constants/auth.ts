@@ -1,61 +1,29 @@
-export const VERIFY_EMAIL = {
-  title: 'Xác thực email',
-  subtitle: 'Nhập mã xác thực đã gửi đến email của bạn',
-  codePlaceholder: 'Mã xác thực',
-  submitText: 'Xác thực',
-  resendText: 'Gửi lại mã',
-  resendSuccess: 'Đã gửi lại mã xác thực',
+import type { UserRole } from '@/types/user';
+
+export const ROLE = {
+  INSTRUCTOR: ['INSTRUCTOR'] as UserRole[],
+  ADMIN: ['ADMIN'] as UserRole[],
 } as const;
 
-export const FORGOT_PASSWORD = {
-  title: 'Quên mật khẩu',
-  subtitle: 'Nhập email để nhận mã đặt lại mật khẩu',
-  emailPlaceholder: 'Email',
-  submitText: 'Gửi mã',
-  backToLogin: 'Quay lại đăng nhập',
-  successMessage: 'Đã gửi mã đặt lại mật khẩu đến email của bạn',
-} as const;
+export const hasRole = (userRole: string | undefined, allowed: UserRole[]): boolean => {
+  return !!userRole && allowed.includes(userRole as UserRole);
+};
 
-export const RESET_PASSWORD = {
-  title: 'Đặt lại mật khẩu',
-  subtitle: 'Nhập mã và mật khẩu mới',
-  codePlaceholder: 'Mã đặt lại',
-  newPasswordPlaceholder: 'Mật khẩu mới',
-  confirmPasswordPlaceholder: 'Xác nhận mật khẩu mới',
-  submitText: 'Đặt lại mật khẩu',
-  backToLogin: 'Quay lại đăng nhập',
-} as const;
+export const ERROR_MESSAGES: Record<string, string> = {
+  'User existed': 'Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.',
+  'User not existed': 'Tài khoản không tồn tại.',
+  'Unauthenticated': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  'You do not have permission': 'Bạn không có quyền thực hiện thao tác này.',
+  'Login method not supported': 'Tài khoản này không hỗ trợ đăng nhập bằng mật khẩu. Vui lòng đăng nhập bằng Google/GitHub.',
+  'Please verify your email before login': 'Vui lòng xác thực email trước khi đăng nhập.',
+  'Missing credential': 'Vui lòng nhập đầy đủ thông tin đăng nhập.',
+  'This code not exactly': 'Mã xác thực không chính xác.',
+  'Not found': 'Không tìm thấy dữ liệu.',
+  'Your account has been baned by admin': 'Tài khoản của bạn đã bị khóa.',
+  'Email has been used by another people': 'Email này đã được sử dụng bởi tài khoản khác.',
+  'Invalid password': 'Mật khẩu không chính xác.',
+};
 
-export const CHANGE_PASSWORD = {
-  title: 'Đổi mật khẩu',
-  subtitle: 'Nhập mật khẩu hiện tại và mật khẩu mới',
-  currentPasswordPlaceholder: 'Mật khẩu hiện tại',
-  newPasswordPlaceholder: 'Mật khẩu mới',
-  confirmPasswordPlaceholder: 'Xác nhận mật khẩu mới',
-  submitText: 'Đổi mật khẩu',
-} as const;
-
-export interface VerifyEmailRequest {
-  email: string;
-  code: string;
-}
-
-export interface ResendCodeRequest {
-  email: string;
-}
-
-export interface ForgotPasswordRequest {
-  email: string;
-}
-
-export interface ResetPasswordRequest {
-  email: string;
-  code: string;
-  newPassword: string;
-}
-
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
+export const translateError = (message: string): string => {
+  return ERROR_MESSAGES[message] || message;
+};

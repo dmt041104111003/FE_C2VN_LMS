@@ -13,7 +13,9 @@ import {
   SEARCH_SUGGESTIONS,
   ROUTES,
 } from '@/constants';
-import { MOCK_COURSES } from '@/constants/course';
+import type { Course } from '@/types/course';
+
+const COURSES: Course[] = [];
 import {
   SEARCH_OVERLAY,
   SEARCH_MODAL,
@@ -34,13 +36,13 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
   const [searchValue, setSearchValue] = useState('');
 
   const newestCourses = useMemo(() => {
-    return [...MOCK_COURSES]
+    return [...COURSES]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 3);
   }, []);
 
   const trendingSearches = useMemo(() => {
-    return [...MOCK_COURSES]
+    return [...COURSES]
       .sort((a, b) => b.totalStudents - a.totalStudents)
       .slice(0, 4)
       .map((c) => c.title);

@@ -1,6 +1,7 @@
 import './globals.css';
 import { Metadata, Viewport } from 'next';
 import { ContentProtection, ToastProvider } from '@/components/ui';
+import { AuthProvider } from '@/contexts';
 
 const BASE_URL = 'https://lms.cardano2vn.io';
 
@@ -104,9 +105,11 @@ export default function RootLayout({ children }: Props) {
       </head>
       <body>
         <ContentProtection />
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <AuthProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -12,6 +12,8 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
   CHANGE_PASSWORD: '/auth/change-password',
+  ADMIN: '/admin',
+  INSTRUCTOR: '/instructor',
   ABOUT: '/about',
   PROJECT: '/project',
   CATALYST: '/catalyst',

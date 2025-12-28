@@ -16,6 +16,7 @@ function InputComponent({
   className = '',
   autoFocus,
   required,
+  disabled,
 }: InputProps) {
   const inputClass = `${INPUT_BASE} ${INPUT_VARIANTS[variant]} ${INPUT_SIZES[size]} ${className}`;
 
@@ -28,6 +29,7 @@ function InputComponent({
       className={inputClass}
       autoFocus={autoFocus}
       required={required}
+      disabled={disabled}
     />
   );
 }

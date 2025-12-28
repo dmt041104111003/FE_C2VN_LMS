@@ -13,6 +13,9 @@ import {
   AppleIcon,
   PlayStoreIcon,
   MailIcon,
+  LogoutIcon,
+  UserIcon,
+  UsersIcon,
 } from './icons';
 import { Badge } from './Badge';
 import {
@@ -20,7 +23,10 @@ import {
   NAV_ITEMS,
   AUTH_TEXT,
   APP_DOWNLOAD,
+  ROLE_LABELS,
 } from '@/constants';
+import { useAuth } from '@/contexts';
+import { getUserAvatar } from '@/utils/avatar';
 import {
   HEADER,
   HEADER_CONTAINER,
@@ -54,8 +60,17 @@ import {
 function HeaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  const userAvatar = getUserAvatar(user);
+
+  const roleInfo = user?.role ? {
+    label: ROLE_LABELS[user.role as keyof typeof ROLE_LABELS] || user.role,
+    href: user.role === 'ADMIN' ? ROUTES.ADMIN : user.role === 'INSTRUCTOR' ? ROUTES.INSTRUCTOR : null,
+  } : null;
 
   const isActive = useCallback((href: string) => {
     if (href === '/') return pathname === '/';
@@ -124,16 +139,82 @@ function HeaderInner() {
               <SearchIcon />
             </button>
 
-            <Link href={ROUTES.PROFILE_INBOX} className={`${HEADER_ICON_BTN} relative`}>
-              <MailIcon />
-              <Badge variant="accent" className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] rounded-full">
-                5
-              </Badge>
-            </Link>
+            {isAuthenticated && user ? (
+              <>
+                <Link href={ROUTES.PROFILE_INBOX} className={`${HEADER_ICON_BTN} relative`}>
+                  <MailIcon />
+                </Link>
 
-            <Link href={ROUTES.LOGIN} className={HEADER_AUTH_LINK}>
-              {AUTH_TEXT.login}
-            </Link>
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center gap-2 ml-2"
+                  >
+                    {userAvatar ? (
+                      <img 
+                        src={userAvatar} 
+                        alt={user?.fullName || 'User'} 
+                        className="w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center text-white text-sm font-medium">
+                        {user?.fullName?.[0] || user?.email?.[0] || 'U'}
+                      </div>
+                    )}
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-[var(--bg)] border border-[var(--text)]/10 rounded-lg shadow-lg py-2 z-50">
+                      <div className="px-4 py-2 border-b border-[var(--text)]/10">
+                        <p className="text-sm font-medium text-[var(--text)] truncate">
+                          {user?.fullName || 'User'}
+                        </p>
+                        <p className="text-xs text-[var(--text)]/50 truncate">
+                          {user?.email || (user?.walletAddress ? user.walletAddress.slice(0, 12) + '...' : user?.loginMethod || '')}
+                        </p>
+                      </div>
+                      {roleInfo?.href && (
+                        <Link 
+                          href={roleInfo.href} 
+                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
+                            isActive(roleInfo.href) 
+                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                              : 'text-[var(--text)]/70'
+                          }`}
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <UsersIcon className="w-4 h-4" />
+                          {roleInfo.label}
+                        </Link>
+                      )}
+                      <Link 
+                        href={ROUTES.PROFILE} 
+                        className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
+                          isActive(ROUTES.PROFILE) 
+                            ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                            : 'text-[var(--text)]/70'
+                        }`}
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <UserIcon className="w-4 h-4" />
+                        Hồ sơ
+                      </Link>
+                      <button 
+                        onClick={() => { setIsUserMenuOpen(false); logout(); }}
+                        className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:bg-[var(--text)]/5"
+                      >
+                        <LogoutIcon className="w-4 h-4" />
+                        Đăng xuất
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <Link href={ROUTES.LOGIN} className={HEADER_AUTH_LINK}>
+                {AUTH_TEXT.login}
+              </Link>
+            )}
           </div>
         </div>
       </header>

@@ -7,7 +7,6 @@ import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
   INSTRUCTOR_LABELS,
-  MOCK_INSTRUCTOR_COURSES,
   COURSE_TABLE,
   COURSE_MODAL_CONFIG,
 } from '@/constants/instructor';
@@ -24,7 +23,7 @@ const INITIAL_MODAL: InstructorModalState = { type: null, courseId: null };
 export function InstructorPage() {
   const router = useRouter();
   const toast = useToast();
-  const [courses, setCourses] = useState<InstructorCourse[]>(MOCK_INSTRUCTOR_COURSES);
+  const [courses, setCourses] = useState<InstructorCourse[]>([]);
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);

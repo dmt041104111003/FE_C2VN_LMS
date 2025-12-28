@@ -14,14 +14,8 @@ import {
   SEARCH_SUGGESTION_ICON,
   SEARCH_SUGGESTION_HIGHLIGHT,
   SEARCH_SUGGESTION_TYPE,
+  SEARCH_TYPE_LABELS,
 } from './ui.styles';
-
-const TYPE_LABELS: Record<string, string> = {
-  course: 'Khóa học',
-  instructor: 'Giảng viên',
-  tag: 'Chủ đề',
-  history: 'Gần đây',
-};
 
 function SearchInputComponent({
   value,
@@ -138,7 +132,7 @@ function SearchInputComponent({
               </div>
               {suggestion.type && (
                 <span className={SEARCH_SUGGESTION_TYPE}>
-                  {TYPE_LABELS[suggestion.type] || ''}
+                  {SEARCH_TYPE_LABELS[suggestion.type] || ''}
                 </span>
               )}
             </li>

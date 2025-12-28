@@ -10,9 +10,7 @@ import { formatCurrency } from '@/constants/config';
 import { 
   COURSE_DETAIL_LABELS, 
   COURSE_DETAIL_STYLES, 
-  MOCK_COURSE_DETAILS,
   COURSE_DETAIL_TABS,
-  MOCK_COURSE_ACTIVITIES,
 } from '@/constants/course-detail';
 import { COURSE_STATUS_LABELS, COURSE_STATUS_VARIANT } from '@/constants/instructor';
 import { ActivityHistory, ChapterCard, QuizCard } from './course-detail';
@@ -25,8 +23,8 @@ const S = COURSE_DETAIL_STYLES;
 export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
   const router = useRouter();
   const toast = useToast();
-  const course = useMemo(() => MOCK_COURSE_DETAILS[courseId], [courseId]);
-  const activities = useMemo(() => MOCK_COURSE_ACTIVITIES[courseId] || [], [courseId]);
+  const course = useMemo(() => null, [courseId]);
+  const activities = useMemo(() => [], [courseId]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [activeTab, setActiveTab] = useState('content');
 

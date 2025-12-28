@@ -1,5 +1,6 @@
 export * from './course';
 export * from './auth';
+export * from './api';
 export * from './landing';
 export * from './review';
 export * from './user';

@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
 export type UserStatus = 'ACTIVE' | 'BANNED';
 
+export type LoginMethod = 'EMAIL_PASSWORD' | 'WALLET' | 'GOOGLE' | 'GITHUB';
+
 export interface AdminUser {
   id: string;
   email: string;
@@ -10,6 +12,7 @@ export interface AdminUser {
   avatar?: string;
   role: UserRole;
   status: UserStatus;
+  loginMethod?: LoginMethod;
   createdAt: string;
   lastLogin?: string;
 }
@@ -51,7 +54,7 @@ export interface UserRowProps {
 
 export interface SearchSuggestion {
   text: string;
-  type?: 'course' | 'instructor' | 'tag' | 'history';
+  type?: 'course' | 'instructor' | 'tag' | 'history' | 'USER' | 'INSTRUCTOR' | 'ADMIN';
 }
 
 export interface UserFiltersProps {
@@ -62,7 +65,6 @@ export interface UserFiltersProps {
   onKeywordChange: (value: string) => void;
   onRoleChange: (value: UserRole | '') => void;
   onStatusChange: (value: UserStatus | '') => void;
-  onAddUser: () => void;
 }
 
 export interface UserTableProps {
@@ -83,7 +85,6 @@ export interface UserTableProps {
   onToggleStatus: (userId: string, isBan: boolean) => void;
   onDelete: (userId: string) => void;
   onChangeRole: (userId: string, role: UserRole) => void;
-  onAddUser: () => void;
 }
 
 export interface AddUserFormData {

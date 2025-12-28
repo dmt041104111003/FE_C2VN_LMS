@@ -1,12 +1,5 @@
-import {
-  UserProfile,
-  UserStats,
-  UserCourse,
-  UserCertificate,
-  UserRole,
-  LoginMethod,
-  StatsKey,
-} from '@/types/user';
+import type { User } from '@/types/auth';
+import type { UserRole, LoginMethod, StatsKey, UserProfile, UserStats } from '@/types/user';
 import {
   GoogleIcon,
   GitHubIcon,
@@ -62,6 +55,13 @@ export const LOGIN_METHOD_ICONS: Record<LoginMethod, React.FC<{ className?: stri
   EMAIL_PASSWORD: MailIcon,
 } as const;
 
+export const LOGIN_METHOD_LABELS: Record<LoginMethod, string> = {
+  WALLET: 'Ví Cardano',
+  GOOGLE: 'Google',
+  GITHUB: 'GitHub',
+  EMAIL_PASSWORD: 'Email',
+} as const;
+
 export const STATS_ITEMS: { key: StatsKey; label: string }[] = [
   { key: 'enrolledCourses', label: USER_LABELS.enrolledCourses },
   { key: 'completedCourses', label: USER_LABELS.completedCourses },
@@ -86,114 +86,23 @@ export const truncateWalletAddress = (address: string): string => {
   return `${address.slice(0, WALLET_SLICE_START)}...${address.slice(-WALLET_SLICE_END)}`;
 };
 
-export const MOCK_USER_PROFILE: UserProfile = {
-  id: 'user-1',
-  email: 'nguyenvana@example.com',
-  fullName: 'Nguyễn Văn A',
-  bio: 'Đam mê công nghệ blockchain và Web3. Đang học tập và nghiên cứu về Cardano ecosystem.',
-  role: 'USER',
-  loginMethod: 'GOOGLE',
-  walletAddress: 'addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp',
+export const DEFAULT_USER_STATS: UserStats = {
+  enrolledCourses: 0,
+  completedCourses: 0,
+  certificates: 0,
+  totalLearningHours: 0,
+};
+
+export const mapAuthUserToProfile = (user: User): UserProfile => ({
+  id: user.id,
+  email: user.email || '',
+  fullName: user.fullName || '',
+  bio: '',
+  role: (user.role as UserRole) || 'USER',
+  loginMethod: (user.loginMethod as LoginMethod) || 'EMAIL_PASSWORD',
+  walletAddress: user.walletAddress,
+  avatar: user.imageUrl,
   status: 'ACTIVE',
-  createdAt: '2024-06-15',
-};
+  createdAt: user.createdAt || '',
+});
 
-export const MOCK_USER_STATS: UserStats = {
-  enrolledCourses: 8,
-  completedCourses: 5,
-  certificates: 5,
-  totalLearningHours: 124,
-};
-
-export const MOCK_USER_COURSES: UserCourse[] = [
-  {
-    id: 'uc1',
-    courseId: '1',
-    courseTitle: 'Blockchain cơ bản cho người mới bắt đầu',
-    courseThumbnail: '',
-    instructorName: 'Nguyễn Văn AA',
-    progress: 100,
-    enrolledAt: '2024-07-01',
-    completedAt: '2024-08-15',
-    certificateId: 'cert1',
-  },
-  {
-    id: 'uc2',
-    courseId: '2',
-    courseTitle: 'Smart Contract với Aiken',
-    courseThumbnail: '',
-    instructorName: 'Trần Thị BB',
-    progress: 75,
-    enrolledAt: '2024-08-20',
-  },
-  {
-    id: 'uc3',
-    courseId: '3',
-    courseTitle: 'DeFi trên Cardano',
-    courseThumbnail: '',
-    instructorName: 'Lê Văn CC',
-    progress: 100,
-    enrolledAt: '2024-09-01',
-    completedAt: '2024-10-20',
-    certificateId: 'cert2',
-  },
-  {
-    id: 'uc4',
-    courseId: '4',
-    courseTitle: 'NFT Marketplace Development',
-    courseThumbnail: '',
-    instructorName: 'Phạm Thị DD',
-    progress: 45,
-    enrolledAt: '2024-10-15',
-  },
-  {
-    id: 'uc5',
-    courseId: '5',
-    courseTitle: 'Cardano Node Operation',
-    courseThumbnail: '',
-    instructorName: 'Hoàng Văn EE',
-    progress: 100,
-    completedAt: '2024-11-10',
-    enrolledAt: '2024-09-25',
-    certificateId: 'cert3',
-  },
-  {
-    id: 'uc6',
-    courseId: '6',
-    courseTitle: 'Plutus Core Fundamentals',
-    courseThumbnail: '',
-    instructorName: 'Vũ Thị FF',
-    progress: 20,
-    enrolledAt: '2024-11-20',
-  },
-];
-
-export const MOCK_USER_CERTIFICATES: UserCertificate[] = [
-  {
-    id: 'cert1',
-    courseId: '1',
-    courseTitle: 'Blockchain cơ bản cho người mới bắt đầu',
-    issuedAt: '2024-08-15',
-    transactionHash: '7f4e8d2a1b3c5f6e9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f',
-    policyId: 'policy123abc',
-    assetName: 'BlockchainBasics001',
-  },
-  {
-    id: 'cert2',
-    courseId: '3',
-    courseTitle: 'DeFi trên Cardano',
-    issuedAt: '2024-10-20',
-    transactionHash: '8e5f9d3b2c4a6e7f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f',
-    policyId: 'policy456def',
-    assetName: 'DeFiCardano002',
-  },
-  {
-    id: 'cert3',
-    courseId: '5',
-    courseTitle: 'Cardano Node Operation',
-    issuedAt: '2024-11-10',
-    transactionHash: '9f6e0d4c3b5a7f8e1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f',
-    policyId: 'policy789ghi',
-    assetName: 'NodeOps003',
-  },
-];

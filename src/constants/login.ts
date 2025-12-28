@@ -22,6 +22,43 @@ export const LOGIN = {
   noWalletText: 'Không tìm thấy ví. Vui lòng cài đặt ví Cardano.',
 } as const;
 
+export const FORGOT_PASSWORD = {
+  title: 'Quên mật khẩu',
+  subtitle: 'Nhập email để nhận mã xác thực',
+  emailPlaceholder: 'Nhập email của bạn',
+  submitText: 'Gửi mã xác thực',
+  successMessage: 'Mã xác thực đã được gửi đến email của bạn',
+  backToLogin: 'Quay lại đăng nhập',
+} as const;
+
+export const RESET_PASSWORD = {
+  title: 'Đặt lại mật khẩu',
+  subtitle: 'Nhập mã xác thực và mật khẩu mới',
+  codePlaceholder: 'Nhập mã xác thực',
+  newPasswordPlaceholder: 'Nhập mật khẩu mới',
+  confirmPasswordPlaceholder: 'Xác nhận mật khẩu',
+  submitText: 'Đặt lại mật khẩu',
+  backToLogin: 'Quay lại đăng nhập',
+} as const;
+
+export const VERIFY_EMAIL = {
+  title: 'Xác thực email',
+  subtitle: 'Nhập mã xác thực đã được gửi đến email của bạn',
+  codePlaceholder: 'Nhập mã xác thực',
+  submitText: 'Xác thực',
+  resendText: 'Gửi lại mã',
+  resendSuccess: 'Đã gửi lại mã xác thực',
+} as const;
+
+export const CHANGE_PASSWORD = {
+  title: 'Đổi mật khẩu',
+  subtitle: 'Nhập mật khẩu hiện tại và mật khẩu mới',
+  currentPasswordPlaceholder: 'Nhập mật khẩu hiện tại',
+  newPasswordPlaceholder: 'Nhập mật khẩu mới',
+  confirmPasswordPlaceholder: 'Xác nhận mật khẩu mới',
+  submitText: 'Đổi mật khẩu',
+} as const;
+
 export const LOGIN_FIELDS = {
   email: {
     name: 'email',

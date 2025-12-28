@@ -26,7 +26,7 @@ import { ROUTES } from '@/constants/navigation';
 import { formatDate } from '@/constants/config';
 import { ShowMore } from '@/components/ui';
 import { TipTapPreview } from '@/components/editor';
-import { getAvatarFromName } from '@/utils';
+import { getUserAvatar } from '@/utils';
 import { CheckCircleIcon, CalendarIcon } from '@/components/ui/icons';
 import * as S from './user.styles';
 
@@ -132,10 +132,22 @@ function ListSection<T>({ title, items, emptyText, initialCount, incrementCount,
 }
 
 function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile = false }: UserProfilePageProps) {
+  if (!user) {
+    return (
+      <div className={S.USER_PROFILE.CONTAINER}>
+        <div className="flex items-center justify-center py-20">
+          <p className="text-[var(--text)]/50">{USER_LABELS.noCourses}</p>
+        </div>
+      </div>
+    );
+  }
+
   const roleLabel = ROLE_LABELS[user.role];
 
   const loginMethodInfo = useMemo((): LoginMethodInfo | null => {
+    if (!user.loginMethod) return null;
     const Icon = LOGIN_METHOD_ICONS[user.loginMethod];
+    if (!Icon) return null;
     if (user.loginMethod === 'WALLET') {
       return user.walletAddress ? { icon: Icon, text: truncateWalletAddress(user.walletAddress) } : null;
     }
@@ -148,8 +160,12 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
   const getCertificateKey = useCallback((cert: UserCertificate) => cert.id, []);
 
   const avatarSrc = useMemo(
-    () => user.avatar || getAvatarFromName(user.fullName),
-    [user.avatar, user.fullName]
+    () => getUserAvatar({
+      walletAddress: user.walletAddress,
+      fullName: user.fullName,
+      email: user.email,
+    }),
+    [user.walletAddress, user.fullName, user.email]
   );
 
   return (

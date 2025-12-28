@@ -1,23 +1,33 @@
+'use client';
+
+import { use } from 'react';
+import { AuthGuard } from '@/components/auth';
 import { LearningPage } from '@/components/learning';
-import { MOCK_LEARNING_CHAPTERS, MOCK_COURSE_PROGRESS } from '@/constants/learning';
-import type { AsyncIdPageProps } from '@/types/page';
+import type { LearningChapter, CourseProgress } from '@/types/learning';
 
-export default async function LearnPage({ params }: AsyncIdPageProps) {
-  const { id } = await params;
+const CHAPTERS: LearningChapter[] = [];
+const PROGRESS: CourseProgress = {
+  courseId: '',
+  currentLessonId: '',
+  completionRate: 0,
+  lastAccessedAt: new Date().toISOString(),
+  lessonProgress: {},
+};
 
-  return (
-    <LearningPage
-      courseId={id}
-      chapters={MOCK_LEARNING_CHAPTERS}
-      progress={MOCK_COURSE_PROGRESS}
-    />
-  );
+interface PageProps {
+  params: Promise<{ id: string }>;
 }
 
-export function generateStaticParams() {
-  return [
-    { id: 'course-1' },
-    { id: 'blockchain-basics' },
-    { id: 'smart-contracts' },
-  ];
+export default function LearnPage({ params }: PageProps) {
+  const { id } = use(params);
+
+  return (
+    <AuthGuard>
+      <LearningPage
+        courseId={id}
+        chapters={CHAPTERS}
+        progress={PROGRESS}
+      />
+    </AuthGuard>
+  );
 }

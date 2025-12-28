@@ -4,7 +4,7 @@ import { memo, useState, useCallback, useMemo, useRef } from 'react';
 import { Input, Button } from '@/components/ui';
 import { TipTapEditor } from '@/components/editor';
 import { USER_LABELS } from '@/constants/user';
-import { getAvatarFromName } from '@/utils';
+import { getUserAvatar } from '@/utils';
 import type { UserProfileEditProps, FormSectionProps, ActionButtonsProps } from '@/types/user';
 import * as S from './user.styles';
 
@@ -31,14 +31,18 @@ const ActionButtons = memo(function ActionButtons({ onCancel, onSave }: ActionBu
 });
 
 function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditProps) {
-  const [fullName, setFullName] = useState(user.fullName);
-  const [bio, setBio] = useState(user.bio || '');
-  const [avatar, setAvatar] = useState(user.avatar);
+  const [fullName, setFullName] = useState(user?.fullName || '');
+  const [bio, setBio] = useState(user?.bio || '');
+  const [avatar, setAvatar] = useState(user?.avatar);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const avatarSrc = useMemo(
-    () => avatar || getAvatarFromName(fullName || user.fullName),
-    [avatar, fullName, user.fullName]
+    () => getUserAvatar({
+      walletAddress: user?.walletAddress,
+      fullName: fullName || user?.fullName,
+      email: user?.email,
+    }),
+    [user?.walletAddress, fullName, user?.fullName, user?.email]
   );
 
   const handleAvatarClick = useCallback(() => {

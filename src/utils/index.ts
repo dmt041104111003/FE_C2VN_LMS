@@ -1,2 +1,2 @@
-export { generateBlockieAvatar, getAvatarFromName, getAvatarFromAddress } from './avatar';
+export { generateBlockieAvatar, getAvatarFromName, getAvatarFromAddress, getUserAvatar } from './avatar';
 

@@ -1,11 +1,9 @@
 'use client';
 
-import { memo, useCallback, useEffect, useState, createContext, useContext, ReactNode } from 'react';
+import { memo, useCallback, useEffect, useState, useMemo, createContext, useContext, type ReactNode } from 'react';
 import { CheckCircleIcon, InfoIcon, CloseIcon, WarningIcon, ErrorCircleIcon } from './icons';
 import type { ToastType, ToastItem, ToastContextValue, ToastItemProps } from './ui.types';
-import { TOAST, TOAST_VARIANT, TOAST_ICON_COLOR, TOAST_PROGRESS_COLOR } from './ui.styles';
-
-const ToastContext = createContext<ToastContextValue | null>(null);
+import { TOAST } from './ui.styles';
 
 const TOAST_ICONS: Record<ToastType, React.FC<{ className?: string }>> = {
   success: CheckCircleIcon,
@@ -14,9 +12,18 @@ const TOAST_ICONS: Record<ToastType, React.FC<{ className?: string }>> = {
   info: InfoIcon,
 };
 
+const generateId = (): string => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
+const ToastContext = createContext<ToastContextValue | null>(null);
+
 const ToastItemComponent = memo(function ToastItemComponent({ toast, onClose }: ToastItemProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+
+  const startLeaveAnimation = useCallback(() => {
+    setIsLeaving(true);
+    setTimeout(onClose, TOAST.ANIMATION_DURATION);
+  }, [onClose]);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true));
@@ -24,33 +31,27 @@ const ToastItemComponent = memo(function ToastItemComponent({ toast, onClose }: 
 
   useEffect(() => {
     const duration = toast.duration || TOAST.DURATION;
-    const timer = setTimeout(() => {
-      setIsLeaving(true);
-      setTimeout(onClose, 300);
-    }, duration);
+    const timer = setTimeout(startLeaveAnimation, duration);
     return () => clearTimeout(timer);
-  }, [toast.duration, onClose]);
+  }, [toast.duration, startLeaveAnimation]);
 
-  const handleClose = useCallback(() => {
-    setIsLeaving(true);
-    setTimeout(onClose, 300);
-  }, [onClose]);
-
-  const Icon = TOAST_ICONS[toast.type];
+  const { type } = toast;
+  const Icon = TOAST_ICONS[type];
   const visibilityClass = isVisible && !isLeaving ? TOAST.ITEM_VISIBLE : TOAST.ITEM_HIDDEN;
+  const itemDuration = toast.duration || TOAST.DURATION;
 
   return (
-    <div className={`${TOAST.ITEM} ${TOAST_VARIANT[toast.type]} ${visibilityClass}`}>
+    <div className={`${TOAST.ITEM} ${TOAST.VARIANT[type]} ${visibilityClass}`}>
       <div className={TOAST.CONTENT}>
-        <Icon className={`${TOAST.ICON} ${TOAST_ICON_COLOR[toast.type]}`} />
+        <Icon className={`${TOAST.ICON} ${TOAST.ICON_COLOR[type]}`} />
         <p className={TOAST.MESSAGE}>{toast.message}</p>
-        <button onClick={handleClose} className={TOAST.CLOSE_BTN}>
+        <button onClick={startLeaveAnimation} className={TOAST.CLOSE_BTN}>
           <CloseIcon className={TOAST.CLOSE_ICON} />
         </button>
       </div>
       <div
-        className={`${TOAST.PROGRESS} ${TOAST_PROGRESS_COLOR[toast.type]}`}
-        style={{ animation: `shrink ${toast.duration || TOAST.DURATION}ms linear forwards` }}
+        className={`${TOAST.PROGRESS} ${TOAST.PROGRESS_COLOR[type]}`}
+        style={{ animation: `shrink ${itemDuration}ms linear forwards` }}
       />
     </div>
   );
@@ -58,10 +59,9 @@ const ToastItemComponent = memo(function ToastItemComponent({ toast, onClose }: 
 
 const ToastContainer = memo(function ToastContainer() {
   const context = useContext(ToastContext);
-  if (!context) return null;
+  if (!context?.toasts.length) return null;
 
   const { toasts, removeToast } = context;
-  if (toasts.length === 0) return null;
 
   return (
     <div className={TOAST.CONTAINER}>
@@ -75,19 +75,31 @@ const ToastContainer = memo(function ToastContainer() {
 });
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [toastMap, setToastMap] = useState<Map<string, ToastItem>>(new Map());
+
+  const toasts = useMemo(() => Array.from(toastMap.values()), [toastMap]);
 
   const addToast = useCallback((type: ToastType, message: string, duration?: number) => {
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    setToasts(prev => [...prev, { id, type, message, duration }]);
+    const id = generateId();
+    const newToast: ToastItem = { id, type, message, duration };
+    setToastMap(prev => new Map(prev).set(id, newToast));
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToastMap(prev => {
+      const next = new Map(prev);
+      next.delete(id);
+      return next;
+    });
   }, []);
 
+  const contextValue = useMemo<ToastContextValue>(
+    () => ({ toasts, addToast, removeToast }),
+    [toasts, addToast, removeToast]
+  );
+
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       <ToastContainer />
       <style jsx global>{`
@@ -102,18 +114,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 export function useToast() {
   const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
+  if (!context) throw new Error(TOAST.ERROR_MSG);
 
   const { addToast } = context;
 
-  return {
+  return useMemo(() => ({
     success: (message: string, duration?: number) => addToast('success', message, duration),
     error: (message: string, duration?: number) => addToast('error', message, duration),
     warning: (message: string, duration?: number) => addToast('warning', message, duration),
     info: (message: string, duration?: number) => addToast('info', message, duration),
-  };
+  }), [addToast]);
 }
 
 export const Toast = {
