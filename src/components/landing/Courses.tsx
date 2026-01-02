@@ -6,7 +6,6 @@ import { Button, Badge, CardModal } from '@/components/ui';
 import {
   ROUTES,
   COURSES_LABELS,
-  COURSES_IMAGES,
 } from '@/constants';
 import type { Course } from '@/types/course';
 import { courseService } from '@/services';
@@ -76,10 +75,11 @@ function CoursesComponent() {
               tags: Array.isArray(c.courseTags)
                 ? (c.courseTags as { name?: string }[]).map(t => String(t.name || ''))
                 : [],
+              totalStudents: Number(c.totalStudents) || 0,
               createdAt: String(c.createdAt || ''),
             } as Course;
           })
-          .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+          .sort((a, b) => (b.totalStudents || 0) - (a.totalStudents || 0))
           .slice(0, 3);
         setCourses(mapped);
       } catch {
@@ -90,8 +90,8 @@ function CoursesComponent() {
   }, []);
 
   const modalItems = useMemo(() => 
-    courses.map((course, index) => ({
-      image: COURSES_IMAGES[index] || course.thumbnail,
+    courses.map((course) => ({
+      image: course.thumbnail,
       tag: course.tags?.[0] || '',
       title: course.title,
       subtitle: `${COURSES_LABELS.instructorPrefix} ${course.instructorName}`,
@@ -145,7 +145,7 @@ function CoursesComponent() {
               onClick={() => openModal(index)}
             >
               <img
-                src={COURSES_IMAGES[index] || course.thumbnail}
+                src={course.thumbnail}
                 alt={course.title}
                 className={COURSES_CARD_IMAGE}
                 draggable={false}
