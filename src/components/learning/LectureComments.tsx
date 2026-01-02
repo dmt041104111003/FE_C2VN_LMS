@@ -367,7 +367,7 @@ function LectureCommentsComponent({ lectureId, isInstructor = false }: LectureCo
     type: 'like' | 'dislike',
     currentVote: 'LIKE' | 'DISLIKE' | null
   ): LectureQna[] => {
-    const newVote = type === 'like' ? 'LIKE' : 'DISLIKE';
+    const newVote: 'LIKE' | 'DISLIKE' = type === 'like' ? 'LIKE' : 'DISLIKE';
     const isSameVote = currentVote === newVote;
     
     return comments.map((c) => {
