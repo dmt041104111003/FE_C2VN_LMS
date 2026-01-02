@@ -194,13 +194,14 @@ export const getGridContainerClass = (count: number): string => {
   if (count <= 1) return 'grid grid-cols-1 gap-4';
   if (count === 2) return 'grid grid-cols-1 gap-2';
   if (count <= 3) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2';
+  if (count === 4) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-2 sm:gap-2';
   return 'grid grid-cols-1 gap-4 sm:grid-cols-3 sm:grid-rows-[repeat(7,1fr)] sm:gap-2';
 };
 
 export const getCardVariants = (index: number, count: number) => ({
-  featured: index === 0 || (count === 2 && index === 1),
-  tall: count >= 4 && count <= 6 && ((count === 4 && index === 2) || (count >= 5 && index === 3)),
-  wide: (count === 5 && index === 4) || (count === 4 && (index === 1 || index === 3)),
+  featured: count !== 4 && (index === 0 || (count === 2 && index === 1)),
+  tall: count >= 5 && count <= 6 && index === 3,
+  wide: count === 5 && index === 4,
 });
 export const COURSE_DETAIL_CARD_BUTTON = 'block w-full py-3 bg-[var(--accent)] text-white font-medium rounded-full text-center';
 export const COURSE_DETAIL_CARD_BUTTON_SECONDARY = 'w-full py-3 bg-[var(--bg)] text-[var(--text)] font-medium rounded-full text-center border border-[var(--text)]/20';

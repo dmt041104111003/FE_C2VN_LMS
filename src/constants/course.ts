@@ -76,10 +76,10 @@ export const COURSE_GRID = {
     'sm:col-span-2 sm:row-span-2 sm:row-start-5',
   ],
   CLASSES_4: [
-    'sm:col-span-3 sm:row-span-2',
-    'sm:col-span-2 sm:row-span-2 sm:row-start-3',
-    'sm:row-span-4 sm:col-start-3 sm:row-start-3',
-    'sm:col-span-2 sm:row-span-2 sm:row-start-5',
+    '',
+    '',
+    '',
+    '',
   ],
   CLASSES_3: [
     'sm:col-span-2',
