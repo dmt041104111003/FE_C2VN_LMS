@@ -26,7 +26,7 @@ export const Dialog = memo(function Dialog({
     if (!isOpen) return;
 
     const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === ESCAPE_KEY) handleClose();
+      if (e.key === ESCAPE_KEY) handleClose?.();
     };
 
     document.addEventListener('keydown', handleEscapeKey);
