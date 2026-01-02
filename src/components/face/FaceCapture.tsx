@@ -126,7 +126,7 @@ export function FaceCapture({
       )}
 
       {state === 'captured' && (
-        <Button onClick={retake} variant="outline" className="w-full max-w-md">
+        <Button onClick={retake} variant="secondary" className="w-full max-w-md">
           {retakeButtonText}
         </Button>
       )}

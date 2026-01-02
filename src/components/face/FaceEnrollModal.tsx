@@ -168,7 +168,7 @@ export function FaceEnrollModal({
               <Button onClick={handleRetry} className="flex-1">
                 Thử lại
               </Button>
-              <Button onClick={handleClose} variant="outline" className="flex-1">
+              <Button onClick={handleClose} variant="secondary" className="flex-1">
                 Đóng
               </Button>
             </div>
