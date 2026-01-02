@@ -74,6 +74,7 @@ export const JSON_TEMPLATE: CourseFormData = {
   videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   price: 0,
   status: 'draft',
+  receiverAddress: '',
   chapters: [
     {
       id: '1',
