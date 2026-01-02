@@ -7,11 +7,7 @@ import {
   VIDEO_PLAYER_ERROR_TEXT,
   VIDEO_PLAYER_IFRAME,
 } from './ui.styles';
-
-interface VideoPlayerProps {
-  url: string;
-  className?: string;
-}
+import type { VideoPlayerProps } from './ui.types';
 
 export function VideoPlayer({ url, className = '' }: VideoPlayerProps) {
   const videoId = getYouTubeId(url);
