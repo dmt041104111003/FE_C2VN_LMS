@@ -1,5 +1,5 @@
 import type { CourseFormData, Chapter, Quiz } from '@/types/course-create';
-import type { CourseCreationRequest, ChapterRequest, LectureRequest, TestRequest, QuestionRequest, AnswerRequest } from '@/services/course';
+import type { CourseCreationRequest, ChapterRequest, LectureRequest, TestRequest, QuestionRequest, AnswerRequest } from '@/types/course-service.types';
 
 export const generateId = () => Math.random().toString(36).slice(2, 9);
 
