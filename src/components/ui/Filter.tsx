@@ -29,8 +29,10 @@ function FilterComponent({
   ratingFilter,
   onRatingFilterChange,
   ratingOptions,
+  vertical = false,
+  hideSearch = false,
   className = '',
-}: FilterProps) {
+}: FilterProps & { vertical?: boolean; hideSearch?: boolean }) {
   const handleMinPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newMin = Number(e.target.value);
     if (newMin <= priceRange.max) {
@@ -51,17 +53,21 @@ function FilterComponent({
 
   const priceLabel = `Giá: ${priceRange.min}${currency} — ${priceRange.max >= maxPrice ? `${maxPrice}+` : priceRange.max}${currency}`;
 
+  const rowClass = vertical ? 'flex flex-col gap-6' : FILTER_ROW;
+
   return (
     <div className={`${FILTER_WRAPPER} ${className}`}>
-      <SearchInput
-        value={search}
-        onChange={onSearchChange}
-        suggestions={searchSuggestions}
-        placeholder={searchPlaceholder}
-        showIcon
-      />
+      {!hideSearch && (
+        <SearchInput
+          value={search}
+          onChange={onSearchChange}
+          suggestions={searchSuggestions}
+          placeholder={searchPlaceholder}
+          showIcon
+        />
+      )}
 
-      <div className={FILTER_ROW}>
+      <div className={rowClass}>
         <div className={FILTER_COL}>
           <label className={FILTER_LABEL}>Chủ đề</label>
           <select
@@ -93,24 +99,26 @@ function FilterComponent({
         </div>
 
         <div className={FILTER_COL}>
-          <label className={FILTER_LABEL}>{priceLabel}</label>
-          <div className={FILTER_RANGE_WRAPPER}>
+          <label className={FILTER_LABEL}>Khoảng giá ({currency})</label>
+          <div className="flex items-center gap-2 py-2">
             <input
-              type="range"
+              type="number"
               min={0}
               max={maxPrice}
               value={priceRange.min}
               onChange={handleMinPriceChange}
-              className={FILTER_RANGE_INPUT}
+              placeholder="Từ"
+              className="w-full px-3 py-2 bg-transparent text-sm text-[var(--text)] border border-[var(--text)]/10 rounded-lg focus:border-[var(--accent)]/50 focus:outline-none"
             />
-            <span className={FILTER_RANGE_SEPARATOR}>—</span>
+            <span className="text-[var(--text)]/30">—</span>
             <input
-              type="range"
+              type="number"
               min={0}
               max={maxPrice}
               value={priceRange.max}
               onChange={handleMaxPriceChange}
-              className={FILTER_RANGE_INPUT}
+              placeholder="Đến"
+              className="w-full px-3 py-2 bg-transparent text-sm text-[var(--text)] border border-[var(--text)]/10 rounded-lg focus:border-[var(--accent)]/50 focus:outline-none"
             />
           </div>
         </div>

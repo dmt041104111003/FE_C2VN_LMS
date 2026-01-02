@@ -2,107 +2,43 @@ import { Course, CardType, CardConfig } from '@/types/course';
 import { COURSE_PAGE } from '@/constants/course';
 import { formatDate } from '@/constants/config';
 
-export const COURSE_CARD_BASE = 'group block bg-[var(--bg)] rounded-2xl overflow-hidden border border-[var(--text)]/5 hover:border-[var(--accent)]/30 transition-colors';
+export const COURSE_CARD_BASE = 'group block bg-[var(--bg)] overflow-hidden border-b border-[var(--text)]/10 hover:bg-[var(--bg-alt)]/50 transition-colors';
 export const COURSE_CARD_IMAGE_BASE = 'flex-shrink-0 bg-[var(--bg-alt)] relative overflow-hidden';
 export const COURSE_CARD_TITLE_HOVER = 'text-[var(--text)] group-hover:text-[var(--accent)] transition-colors';
 export const COURSE_CARD_DESC = 'text-[var(--text)]/60';
-export const COURSE_CARD_IMAGE_HOVER = 'w-full h-full object-contain object-center';
+export const COURSE_CARD_IMAGE_HOVER = 'w-full h-full object-cover object-center';
 export const COURSE_CARD_PLACEHOLDER = 'flex items-center justify-center';
-export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto pt-2 border-t border-[var(--text)]/5';
+export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto';
+
+const HORIZONTAL_CARD_CONFIG: CardConfig = {
+  containerClass: 'flex flex-col sm:flex-row py-4',
+  imageClass: 'sm:w-[260px] h-[150px] sm:h-[145px] flex-shrink-0',
+  contentClass: 'flex-1 px-4 py-2 sm:py-0 flex flex-col',
+  titleClass: 'text-lg font-bold mb-1 line-clamp-2 text-[#1c1d1f]',
+  descClass: 'text-sm text-[#6a6f73] mb-1 line-clamp-2',
+  showDescription: true,
+  showTags: false,
+  maxTags: 0,
+  showFeatures: true,
+  featureColumns: 1,
+  featureSize: 'xs',
+  userSize: 'xs',
+  ratingSize: 'sm',
+  priceSize: 'lg',
+  showInstructorLabel: false,
+  showRatingCount: true,
+  features: (c: Course) => [
+    `${c.totalLessons} ${COURSE_PAGE.lessonsText}`,
+    `${c.totalStudents} ${COURSE_PAGE.studentsText}`,
+    'Chứng chỉ NFT',
+  ],
+};
 
 export const CARD_CONFIGS: Record<CardType, CardConfig> = {
-  featured: {
-    containerClass: 'flex flex-col sm:flex-row sm:h-[220px]',
-    imageClass: 'sm:w-1/2 h-[120px] sm:h-full',
-    contentClass: 'sm:w-1/2 p-2 flex flex-col',
-    titleClass: 'text-base sm:text-lg font-bold mb-1',
-    descClass: 'text-xs mb-2 line-clamp-2',
-    showDescription: true,
-    showTags: true,
-    maxTags: 3,
-    showFeatures: true,
-    featureColumns: 2,
-    featureSize: 'xs',
-    userSize: 'sm',
-    ratingSize: 'sm',
-    priceSize: 'md',
-    showInstructorLabel: false,
-    showRatingCount: true,
-    features: (c: Course) => [
-      `${c.totalLessons} ${COURSE_PAGE.lessonsText}`,
-      `${c.totalStudents} ${COURSE_PAGE.studentsText}`,
-      'Chứng chỉ NFT',
-      'Truy cập trọn đời',
-    ],
-  },
-  tall: {
-    containerClass: 'flex flex-col h-full',
-    imageClass: 'aspect-video',
-    contentClass: 'p-3 flex flex-col flex-1',
-    titleClass: 'font-semibold mb-1',
-    descClass: 'text-xs mb-3',
-    showDescription: true,
-    showTags: true,
-    maxTags: 3,
-    showFeatures: true,
-    featureColumns: 1,
-    featureSize: 'sm',
-    userSize: 'md',
-    ratingSize: 'sm',
-    priceSize: 'sm',
-    showInstructorLabel: true,
-    showRatingCount: true,
-    features: (c: Course) => [
-      `${c.totalLessons} ${COURSE_PAGE.lessonsText}`,
-      `${c.totalStudents} ${COURSE_PAGE.studentsText} đã đăng ký`,
-      `Cập nhật ${formatDate(c.createdAt)}`,
-      'Chứng chỉ NFT hoàn thành',
-      'Truy cập trọn đời',
-      'Hỗ trợ Q&A trực tiếp',
-    ],
-  },
-  wide: {
-    containerClass: 'flex flex-col sm:flex-row h-full',
-    imageClass: 'sm:w-1/2 h-[120px] sm:h-full',
-    contentClass: 'sm:w-1/2 p-3 flex flex-col',
-    titleClass: 'text-sm font-bold mb-1',
-    descClass: 'text-xs mb-1 line-clamp-2',
-    showDescription: true,
-    showTags: true,
-    maxTags: 2,
-    showFeatures: true,
-    featureColumns: 2,
-    featureSize: 'xs',
-    userSize: 'xs',
-    ratingSize: 'xs',
-    priceSize: 'xs',
-    showInstructorLabel: false,
-    showRatingCount: false,
-    features: (c: Course) => [
-      `${c.totalLessons} ${COURSE_PAGE.lessonsText}`,
-      `${c.totalStudents} ${COURSE_PAGE.studentsText}`,
-      'Chứng chỉ NFT',
-    ],
-  },
-  default: {
-    containerClass: 'flex flex-col',
-    imageClass: 'aspect-[3/1]',
-    contentClass: 'p-3 flex flex-col flex-1',
-    titleClass: 'font-semibold text-sm mb-1 line-clamp-2',
-    descClass: '',
-    showDescription: false,
-    showTags: false,
-    maxTags: 0,
-    showFeatures: false,
-    featureColumns: 1,
-    featureSize: 'xs',
-    userSize: 'xs',
-    ratingSize: 'xs',
-    priceSize: 'xs',
-    showInstructorLabel: false,
-    showRatingCount: false,
-    features: () => [],
-  },
+  featured: HORIZONTAL_CARD_CONFIG,
+  tall: HORIZONTAL_CARD_CONFIG,
+  wide: HORIZONTAL_CARD_CONFIG,
+  default: HORIZONTAL_CARD_CONFIG,
 };
 
 export const COURSE_DETAIL_PAGE = 'min-h-screen bg-[var(--bg)]';
@@ -173,36 +109,18 @@ export const COURSE_DETAIL_CARD_PRICE_ORIGINAL = 'text-lg text-[var(--text)]/50 
 export const COURSE_DETAIL_CARD_PRICE_FREE = 'text-lg font-medium text-[var(--accent)]';
 export const COURSE_DETAIL_CARD_DISCOUNT = 'text-sm text-[var(--accent)] font-medium';
 
-import { COURSE_GRID } from '@/constants/course';
-
-export const GRID_CLASSES_MAP = [
-  COURSE_GRID.CLASSES_1,
-  COURSE_GRID.CLASSES_2,
-  COURSE_GRID.CLASSES_3,
-  COURSE_GRID.CLASSES_4,
-  COURSE_GRID.CLASSES_5,
-  COURSE_GRID.CLASSES_6,
-  COURSE_GRID.CLASSES_7,
-] as const;
-
 export const getGridClasses = (count: number): readonly string[] => {
-  const index = Math.min(Math.max(count - 1, 0), 6);
-  return GRID_CLASSES_MAP[index];
+  return Array(count).fill('');
 };
 
-export const getGridContainerClass = (count: number): string => {
-  if (count <= 1) return 'grid grid-cols-1 gap-4';
-  if (count === 2) return 'grid grid-cols-1 gap-2';
-  if (count <= 3) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2';
-  if (count === 4) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-2 sm:gap-2';
-  if (count <= 6) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-4 sm:gap-2';
-  return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-4 sm:gap-2';
+export const getGridContainerClass = (): string => {
+  return 'flex flex-col';
 };
 
-export const getCardVariants = (index: number, count: number) => ({
-  featured: count <= 3 && (index === 0 || (count === 2 && index === 1)),
+export const getCardVariants = () => ({
+  featured: false,
   tall: false,
-  wide: (count === 5 && index === 4) || (count === 6 && (index === 2 || index === 5)) || (count === 7 && index === 2),
+  wide: false,
 });
 export const COURSE_DETAIL_CARD_BUTTON = 'block w-full py-3 bg-[var(--accent)] text-white font-medium rounded-full text-center';
 export const COURSE_DETAIL_CARD_BUTTON_SECONDARY = 'w-full py-3 bg-[var(--bg)] text-[var(--text)] font-medium rounded-full text-center border border-[var(--text)]/20';

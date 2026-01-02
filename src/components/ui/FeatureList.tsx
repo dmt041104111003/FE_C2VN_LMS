@@ -9,9 +9,19 @@ function FeatureListComponent({
   features,
   size = 'sm',
   columns = 1,
+  inline = false,
   className = '',
-}: FeatureListProps) {
+}: FeatureListProps & { inline?: boolean }) {
   const styles = FEATURE_SIZES[size];
+
+  if (inline) {
+    return (
+      <div className={`${styles.text} text-[#6a6f73] ${className}`}>
+        {features.join(' • ')}
+      </div>
+    );
+  }
+
   const columnClass = columns === 2 ? 'flex flex-wrap gap-x-3 gap-y-0.5' : 'space-y-1';
 
   return (

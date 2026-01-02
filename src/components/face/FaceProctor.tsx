@@ -30,7 +30,7 @@ export function FaceProctor({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isVerifyingRef = useRef(false);
   const mountedRef = useRef(true);
-
+  
   const callbacksRef = useRef({ onVerificationResult, onNoFace, onMultipleFaces, onMismatch });
   callbacksRef.current = { onVerificationResult, onNoFace, onMultipleFaces, onMismatch };
 
@@ -107,7 +107,7 @@ export function FaceProctor({
         if (!navigator.mediaDevices?.getUserMedia) return;
 
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
+          video: { 
             width: { ideal: PROCTOR_CAMERA_CONFIG.width },
             height: { ideal: PROCTOR_CAMERA_CONFIG.height },
             facingMode: PROCTOR_CAMERA_CONFIG.facingMode,

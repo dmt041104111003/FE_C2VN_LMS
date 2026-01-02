@@ -35,9 +35,9 @@ export function FaceCaptureModal({
   const handleCapture = useCallback(() => {
     const imageData = captureFrame();
     if (imageData) {
-      setCapturedImage(imageData);
-      setStep('preview');
-      stopCamera();
+    setCapturedImage(imageData);
+    setStep('preview');
+    stopCamera();
     }
   }, [captureFrame, stopCamera]);
 
@@ -63,7 +63,7 @@ export function FaceCaptureModal({
           {step === 'intro' && FACE_INSTRUCTIONS.TITLE}
           {step === 'camera' && FACE_INSTRUCTIONS.CAPTURE_TITLE}
           {step === 'preview' && FACE_INSTRUCTIONS.PREVIEW_TITLE}
-        </h2>
+          </h2>
 
         <div className="mb-6">
           {step === 'intro' && (

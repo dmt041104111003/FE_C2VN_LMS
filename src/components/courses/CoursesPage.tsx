@@ -2,7 +2,7 @@
 
 import { memo, useState, useMemo, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from '@/components/ui';
+import { Header, Footer, Pagination, Filter, SearchInput, PriceRange, RatingFilterType } from '@/components/ui';
 import { CourseCard } from './CourseCard';
 import { COURSE_PAGE, COURSE_GRID } from '@/constants/course';
 import type { Course } from '@/types/course';
@@ -179,7 +179,7 @@ function CoursesPageInner() {
   }, [filteredCourses, currentPage]);
 
   const gridClasses = getGridClasses(paginatedCourses.length);
-  const containerClass = getGridContainerClass(paginatedCourses.length);
+  const containerClass = getGridContainerClass();
 
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
@@ -229,52 +229,70 @@ function CoursesPageInner() {
             <p className={COURSES_PAGE_SUBTITLE}>{COURSE_PAGE.subtitle}</p>
           </header>
 
-          <Filter
-            search={search}
-            onSearchChange={handleSearchChange}
-            searchPlaceholder={COURSE_PAGE.searchPlaceholder}
-            searchSuggestions={searchSuggestions}
-            priceRange={priceRange}
-            onPriceRangeChange={handlePriceChange}
-            maxPrice={maxPrice}
-            currency={SYSTEM_CONFIG.DEFAULT_CURRENCY}
-            tagFilter={tagFilter}
-            onTagFilterChange={handleTagChange}
-            tagOptions={tagOptions}
-            ratingFilter={ratingFilter}
-            onRatingFilterChange={handleRatingChange}
-            ratingOptions={ratingOptions}
+          <SearchInput
+            value={search}
+            onChange={handleSearchChange}
+            suggestions={searchSuggestions}
+            placeholder={COURSE_PAGE.searchPlaceholder}
+            showIcon
             className="mb-8"
           />
 
-          {paginatedCourses.length === 0 ? (
-            <div className={COURSES_PAGE_EMPTY}>
-              <p className={COURSES_PAGE_EMPTY_TEXT}>{COURSE_PAGE.emptyText}</p>
-            </div>
-          ) : (
-            <>
-              <div className={containerClass}>
-                {paginatedCourses.map((course, index) => {
-                  const variants = getCardVariants(index, paginatedCourses.length);
-                  return (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      {...variants}
-                      className={gridClasses[index] || ''}
-                    />
-                  );
-                })}
+          <div className="flex flex-col lg:flex-row gap-8">
+            <aside className="lg:w-[280px] flex-shrink-0">
+              <div className="lg:sticky lg:top-24">
+                <Filter
+                  search={search}
+                  onSearchChange={handleSearchChange}
+                  searchPlaceholder={COURSE_PAGE.searchPlaceholder}
+                  searchSuggestions={searchSuggestions}
+                  priceRange={priceRange}
+                  onPriceRangeChange={handlePriceChange}
+                  maxPrice={maxPrice}
+                  currency={SYSTEM_CONFIG.DEFAULT_CURRENCY}
+                  tagFilter={tagFilter}
+                  onTagFilterChange={handleTagChange}
+                  tagOptions={tagOptions}
+                  ratingFilter={ratingFilter}
+                  onRatingFilterChange={handleRatingChange}
+                  ratingOptions={ratingOptions}
+                  vertical
+                  hideSearch
+                />
               </div>
+            </aside>
 
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                className="mt-12"
-              />
-            </>
-          )}
+            <main className="flex-1 min-w-0">
+              {paginatedCourses.length === 0 ? (
+                <div className={COURSES_PAGE_EMPTY}>
+                  <p className={COURSES_PAGE_EMPTY_TEXT}>{COURSE_PAGE.emptyText}</p>
+                </div>
+              ) : (
+                <>
+                  <div className={containerClass}>
+                    {paginatedCourses.map((course, index) => {
+                      const variants = getCardVariants();
+                      return (
+                        <CourseCard
+                          key={course.id}
+                          course={course}
+                          {...variants}
+                          className={gridClasses[index] || ''}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    className="mt-12"
+                  />
+                </>
+              )}
+            </main>
+          </div>
         </div>
       </main>
 

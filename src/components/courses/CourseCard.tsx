@@ -3,7 +3,7 @@
 import { memo, useMemo } from 'react';
 import Link from 'next/link';
 import { COURSE_PAGE } from '@/constants/course';
-import { CourseCardProps, CardType, ImageSectionProps } from '@/types/course';
+import { CourseCardProps, CardType } from '@/types/course';
 import { Badge, Rating, User, Tags, PriceDisplay, FeatureList } from '@/components/ui';
 import { TipTapPreview } from '@/components/editor/TipTapPreview';
 import {
@@ -23,11 +23,7 @@ const isDiscountValid = (discount?: number, discountEndTime?: string): boolean =
   return new Date() < new Date(discountEndTime);
 };
 
-interface ImageSectionInternalProps extends ImageSectionProps {
-  hasValidDiscount: boolean;
-}
-
-const ImageSection = memo(function ImageSection({ course, className, isFree, hasValidDiscount }: ImageSectionInternalProps) {
+const ImageSection = memo(function ImageSection({ course, className }: { course: CourseCardProps['course']; className: string }) {
   return (
     <div className={`${COURSE_CARD_IMAGE_BASE} ${className}`}>
       {course.thumbnail ? (
@@ -37,10 +33,6 @@ const ImageSection = memo(function ImageSection({ course, className, isFree, has
           <img src="/loading.png" alt="" className="w-12 h-12 sm:w-16 sm:h-16 opacity-30" />
         </div>
       )}
-      <div className="absolute top-2 left-2 flex gap-1">
-        {isFree && <Badge variant="accent">{COURSE_PAGE.freeText}</Badge>}
-        {hasValidDiscount && <Badge variant="accent">-{course.discount}%</Badge>}
-      </div>
     </div>
   );
 });
@@ -115,19 +107,30 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
             features={config.features(course)}
             size={config.featureSize}
             columns={config.featureColumns}
+            inline={config.featureColumns === 1}
             className="mb-2"
           />
         )}
 
         <div className={COURSE_CARD_FOOTER}>
-          <PriceDisplay
-            price={course.price}
-            currency={course.currency}
-            discount={hasValidDiscount ? course.discount : undefined}
-            discountEndTime={course.discountEndTime}
-            freeText={COURSE_PAGE.freeText}
-            size={config.priceSize}
-          />
+          <div className="flex items-center gap-3">
+            <PriceDisplay
+              price={course.price}
+              currency={course.currency}
+              discount={hasValidDiscount ? course.discount : undefined}
+              discountEndTime={course.discountEndTime}
+              freeText={COURSE_PAGE.freeText}
+              size={config.priceSize}
+            />
+            {hasValidDiscount && (
+              <Badge variant="accent">-{course.discount}%</Badge>
+            )}
+          </div>
+          {hasValidDiscount && course.discountEndTime && (
+            <span className="text-xs text-[var(--text)]/50">
+              Còn đến {new Date(course.discountEndTime).toLocaleDateString('vi-VN')}
+            </span>
+          )}
         </div>
       </div>
     );
@@ -135,7 +138,7 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
 
   return (
     <Link href={`/courses/${course.slug || course.id}`} className={`${COURSE_CARD_BASE} ${config.containerClass} ${className}`}>
-      <ImageSection course={course} className={config.imageClass} isFree={isFree} hasValidDiscount={hasValidDiscount} />
+      <ImageSection course={course} className={config.imageClass} />
       {renderContent()}
     </Link>
   );
