@@ -3,9 +3,11 @@
 import { memo, useMemo } from 'react';
 import Link from 'next/link';
 import { COURSE_PAGE } from '@/constants/course';
-import { CourseCardProps, CardType } from '@/types/course';
+import { CourseCardProps, CardType, Course } from '@/types/course';
 import { Badge, Rating, User, Tags, PriceDisplay, FeatureList } from '@/components/ui';
+import { CheckCircleIcon } from '@/components/ui/icons';
 import { TipTapPreview } from '@/components/editor/TipTapPreview';
+import { formatDate } from '@/constants/config';
 import {
   CARD_CONFIGS,
   COURSE_CARD_BASE,
@@ -22,6 +24,44 @@ const isDiscountValid = (discount?: number, discountEndTime?: string): boolean =
   if (!discountEndTime) return false;
   return new Date() < new Date(discountEndTime);
 };
+
+const COURSE_OBJECTIVES = [
+  'Nắm vững kiến thức nền tảng',
+  'Thực hành với dự án thực tế',
+  'Nhận chứng chỉ NFT khi hoàn thành',
+];
+
+const HoverPopover = memo(function HoverPopover({ course }: { course: Course }) {
+  return (
+    <div className="absolute left-[330px] top-0 w-[340px] bg-[var(--bg)] rounded-xl shadow-2xl border border-[var(--text)]/10 p-5 z-[100] hidden lg:group-hover:block">
+      <div className="absolute -left-2 top-6 w-4 h-4 bg-[var(--bg)] border-l border-b border-[var(--text)]/10 transform rotate-45" />
+      
+      <h3 className="text-lg font-bold text-[var(--text)] mb-2 line-clamp-2">{course.title}</h3>
+      
+      <div className="flex items-center gap-2 text-xs text-[var(--text)]/60 mb-2">
+        <span className="text-[var(--accent)] font-medium">Đã cập nhật</span>
+        <span>{formatDate(course.createdAt)}</span>
+      </div>
+      
+      <div className="text-xs text-[var(--text)]/60 mb-3">
+        {course.totalLessons} bài giảng • {course.totalStudents} học viên
+      </div>
+      
+      <div className="text-sm text-[var(--text)] mb-4 line-clamp-3">
+        <TipTapPreview content={course.description} compact />
+      </div>
+      
+      <ul className="space-y-2">
+        {COURSE_OBJECTIVES.map((obj, i) => (
+          <li key={i} className="flex items-start gap-2 text-sm text-[var(--text)]">
+            <CheckCircleIcon className="w-4 h-4 text-[var(--accent)] mt-0.5 flex-shrink-0" />
+            <span>{obj}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+});
 
 const ImageSection = memo(function ImageSection({ course, className }: { course: CourseCardProps['course']; className: string }) {
   return (
@@ -137,10 +177,13 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
   };
 
   return (
-    <Link href={`/courses/${course.slug || course.id}`} className={`${COURSE_CARD_BASE} ${config.containerClass} ${className}`}>
-      <ImageSection course={course} className={config.imageClass} />
-      {renderContent()}
-    </Link>
+    <div className="relative group z-0 hover:z-50">
+      <Link href={`/courses/${course.slug || course.id}`} className={`${COURSE_CARD_BASE} ${config.containerClass} ${className}`}>
+        <ImageSection course={course} className={config.imageClass} />
+        {renderContent()}
+      </Link>
+      <HoverPopover course={course} />
+    </div>
   );
 }
 

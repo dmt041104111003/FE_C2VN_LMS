@@ -239,7 +239,7 @@ function CoursesPageInner() {
           />
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <aside className="lg:w-[280px] flex-shrink-0">
+            <aside className="lg:w-[320px] flex-shrink-0">
               <div className="lg:sticky lg:top-24">
                 <Filter
                   search={search}

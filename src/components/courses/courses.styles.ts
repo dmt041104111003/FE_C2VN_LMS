@@ -12,7 +12,7 @@ export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto';
 
 const HORIZONTAL_CARD_CONFIG: CardConfig = {
   containerClass: 'flex flex-col sm:flex-row py-4',
-  imageClass: 'sm:w-[260px] h-[150px] sm:h-[145px] flex-shrink-0',
+  imageClass: 'sm:w-[320px] h-[150px] sm:h-[180px] flex-shrink-0',
   contentClass: 'flex-1 px-4 py-2 sm:py-0 flex flex-col',
   titleClass: 'text-lg font-bold mb-1 line-clamp-2 text-[#1c1d1f]',
   descClass: 'text-sm text-[#6a6f73] mb-1 line-clamp-2',
@@ -114,7 +114,7 @@ export const getGridClasses = (count: number): readonly string[] => {
 };
 
 export const getGridContainerClass = (): string => {
-  return 'flex flex-col';
+  return 'flex flex-col overflow-visible';
 };
 
 export const getCardVariants = () => ({
