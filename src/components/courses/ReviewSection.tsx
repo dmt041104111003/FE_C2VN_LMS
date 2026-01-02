@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { ReviewSectionProps } from '@/types/review';
+import type { ReviewSectionProps } from '@/types/review';
 import { ReviewStats } from './ReviewStats';
 import { ReviewForm } from './ReviewForm';
 import { ReviewList } from './ReviewList';
@@ -12,12 +12,18 @@ function ReviewSectionComponent({
   stats,
   reviews,
   canReview = true,
+  currentUserId,
+  instructorId,
   onSubmitReview,
   onVote,
   onReport,
+  onReply,
+  onDelete,
   isSubmitting = false,
   className = '',
 }: ReviewSectionProps) {
+  const showReviewForm = canReview && Boolean(onSubmitReview);
+
   return (
     <section className={`${REVIEW_SECTION.CONTAINER} ${className}`}>
       <div className={REVIEW_SECTION.HEADER}>
@@ -26,19 +32,26 @@ function ReviewSectionComponent({
 
       <ReviewStats stats={stats} />
 
-      {canReview && onSubmitReview && (
+      {showReviewForm && (
         <>
           <div className={REVIEW_SECTION.DIVIDER} />
-          <ReviewForm onSubmit={onSubmitReview} isSubmitting={isSubmitting} />
+          <ReviewForm onSubmit={onSubmitReview!} isSubmitting={isSubmitting} />
         </>
       )}
 
       <div className={REVIEW_SECTION.DIVIDER} />
 
-      <ReviewList reviews={reviews} onVote={onVote} onReport={onReport} />
+      <ReviewList
+        reviews={reviews}
+        currentUserId={currentUserId}
+        instructorId={instructorId}
+        onVote={onVote}
+        onReport={onReport}
+        onReply={onReply}
+        onDelete={onDelete}
+      />
     </section>
   );
 }
 
 export const ReviewSection = memo(ReviewSectionComponent);
-

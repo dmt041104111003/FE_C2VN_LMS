@@ -28,6 +28,9 @@ export function QuizCard({ quiz, chapters }: QuizCardProps) {
           {linkedChapterTitle && (
             <p className={S.quiz.count}>Thuộc chương: {linkedChapterTitle}</p>
           )}
+          <p className="text-xs text-[var(--text)]/60 mt-1">
+            Điểm đạt: <span className="font-medium text-[var(--accent)]">{quiz.passScore ?? 0}%</span>
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <span className={S.quiz.count}>{quiz.questions.length} {LABELS.fields.questions}</span>
@@ -79,11 +82,14 @@ function QuestionItem({ question, index }: QuestionItemProps) {
         {question.options.map((option, oIdx) => {
           const isCorrect = question.correctIndexes.includes(oIdx);
           return (
-            <div key={oIdx} className={S.quiz.option}>
+            <div 
+              key={oIdx} 
+              className={`${S.quiz.option} ${isCorrect ? 'bg-[var(--correct)]/10 border border-[var(--correct)]/40 rounded-lg -mx-2 px-2' : ''}`}
+            >
               <span className={isCorrect ? S.quiz.optionCorrect : S.quiz.optionIndex}>
                 {OPTION_LABELS[oIdx]}
               </span>
-              <span className={S.quiz.optionText}>
+              <span className={`${S.quiz.optionText} ${isCorrect ? 'font-medium text-[var(--correct)]' : ''}`}>
                 {option || <span className="text-[var(--text)]/40 italic">Chưa có nội dung</span>}
               </span>
             </div>

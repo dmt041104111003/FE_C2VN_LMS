@@ -28,12 +28,12 @@ export const CourseRow = memo(function CourseRow({ index, course, onViewDetails,
   }, [course.id, isPublished, onToggleStatus]);
 
   const handleViewStudents = useCallback(() => {
-    onViewStudents(course.id);
-  }, [course.id, onViewStudents]);
+    onViewStudents(course.slug);
+  }, [course.slug, onViewStudents]);
 
   const handleViewDetails = useCallback(() => {
-    onViewDetails(course.id);
-  }, [course.id, onViewDetails]);
+    onViewDetails(course.slug);
+  }, [course.slug, onViewDetails]);
 
   const dropdownItems = [
     {

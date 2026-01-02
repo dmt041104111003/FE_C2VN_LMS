@@ -2,7 +2,6 @@ import type {
   StudentStatus,
   StudentModalType,
   StudentModalState,
-  EditStudentModalState,
   StudentFormData,
   CertificateStatus,
 } from '@/types/course-students';
@@ -18,12 +17,6 @@ export const INITIAL_STUDENT_FORM: StudentFormData = {
 export const INITIAL_STUDENT_MODAL: StudentModalState = {
   type: null,
   studentId: null,
-};
-
-export const INITIAL_EDIT_STUDENT_MODAL: EditStudentModalState = {
-  isOpen: false,
-  studentId: null,
-  initialData: INITIAL_STUDENT_FORM,
 };
 
 export const STUDENTS_LABELS = {

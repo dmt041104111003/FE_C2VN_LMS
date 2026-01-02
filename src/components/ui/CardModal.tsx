@@ -101,6 +101,7 @@ function CardModalComponent({
                 price={currentItem.price}
                 currency={currentItem.currency}
                 discount={currentItem.discount}
+                discountEndTime={currentItem.discountEndTime}
                 size="md"
               />
             </div>

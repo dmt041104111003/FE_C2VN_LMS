@@ -3,7 +3,7 @@
 import { memo, useMemo, useState, useCallback } from 'react';
 import { UserProps } from './ui.types';
 import { USER_AVATAR_SIZES } from './ui.styles';
-import { getAvatarFromName } from '@/utils';
+import { getUserAvatar } from '@/utils';
 
 const DEFAULT_MAX_DESC_LENGTH = 150;
 const SHOW_MORE_BTN = 'text-[var(--accent)] hover:underline cursor-pointer ml-1';
@@ -21,7 +21,7 @@ function UserComponent({
   const styles = USER_AVATAR_SIZES[size];
   
   const avatarSrc = useMemo(() => {
-    return avatar || getAvatarFromName(name);
+    return avatar || getUserAvatar({ fullName: name });
   }, [avatar, name]);
 
   const { truncatedDesc, needsTruncation } = useMemo(() => {

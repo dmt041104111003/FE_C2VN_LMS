@@ -1,16 +1,55 @@
 import { Review } from './review';
 
+export interface ApiLecture {
+  id?: number;
+  title?: string;
+  time?: number;
+  previewFree?: boolean;
+  orderIndex?: number;
+  videoUrl?: string;
+}
+
+export interface ApiTest {
+  id?: number;
+  title?: string;
+  durationMinutes?: number;
+  passScore?: number;
+  questions?: unknown[];
+}
+
+export interface ApiChapter {
+  id?: number;
+  title?: string;
+  orderIndex?: number;
+  lectures?: ApiLecture[];
+  tests?: ApiTest[];
+}
+
+export interface CoursePaymentMethod {
+  id: string;
+  paymentMethod: {
+    name: string;
+  };
+  receiverAddress: string;
+}
+
 export interface Course {
   id: string;
+  slug?: string;
   title: string;
   description: string;
   thumbnail?: string;
+  videoUrl?: string;
   price: number;
   currency: string;
   discount?: number;
+  discountEndTime?: string;
+  instructorId?: string;
   instructorName: string;
-  instructorAvatar?: string;
   instructorBio?: string;
+  instructorEmail?: string;
+  instructorWalletAddress?: string;
+  instructorAvatar?: string;
   totalLessons: number;
   totalStudents: number;
   totalDuration?: number;
@@ -23,6 +62,16 @@ export interface Course {
   objectives?: string[];
   requirements?: string[];
   chapters?: Chapter[];
+  courseTests?: CourseTest[];
+  coursePaymentMethods?: CoursePaymentMethod[];
+}
+
+export interface CourseTest {
+  id: number;
+  title: string;
+  durationMinutes?: number;
+  passScore?: number;
+  questionCount: number;
 }
 
 export interface Chapter {
@@ -30,6 +79,7 @@ export interface Chapter {
   title: string;
   orderIndex: number;
   lectures: Lecture[];
+  tests?: CourseTest[];
 }
 
 export interface Lecture {
@@ -120,8 +170,4 @@ export interface ChapterItemProps {
   isExpanded: boolean;
   onToggle: () => void;
   onPreview: (id: string) => void;
-}
-
-export interface ReviewItemProps {
-  review: Review;
 }

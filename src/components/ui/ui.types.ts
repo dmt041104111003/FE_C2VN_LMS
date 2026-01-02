@@ -100,6 +100,7 @@ export interface CardModalItem {
   price?: number;
   currency?: string;
   discount?: number;
+  discountEndTime?: string;
   buttonText?: string;
   buttonHref?: string;
 }
@@ -155,6 +156,7 @@ export interface FormModalProps<T extends Record<string, unknown>> {
   isValid: (data: T) => boolean;
   onClose: () => void;
   onSubmit: (data: T) => void;
+  disabled?: boolean;
 }
 
 export type InputVariant = 'default' | 'search' | 'rounded' | 'minimal';
@@ -182,6 +184,7 @@ export interface TextareaProps {
   className?: string;
   rows?: number;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export interface FormField {
@@ -202,6 +205,7 @@ export interface FormProps {
   onSubmit?: (data: Record<string, string>) => void;
   className?: string;
   footer?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export interface WalletItem {
@@ -254,6 +258,7 @@ export interface SearchInputProps {
 }
 
 export type RatingSize = 'xs' | 'sm' | 'md';
+export type RatingVariant = 'default' | 'light';
 
 export interface RatingProps {
   value: number;
@@ -261,6 +266,7 @@ export interface RatingProps {
   showValue?: boolean;
   showCount?: boolean;
   size?: RatingSize;
+  variant?: RatingVariant;
   className?: string;
 }
 
@@ -286,6 +292,7 @@ export interface PriceDisplayProps {
   price: number;
   currency?: string;
   discount?: number;
+  discountEndTime?: string;
   freeText?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
@@ -323,9 +330,43 @@ export interface FilterProps {
 
 export interface VideoPlayerProps {
   url: string;
-  title?: string;
   className?: string;
+  startTime?: number;
   onDurationChange?: (minutes: number) => void;
+  onTimeUpdate?: (currentTime: number, duration: number) => void;
+  onComplete?: () => void;
+  onPlay?: () => void;
+  onPause?: () => void;
+}
+
+export interface YTPlayer {
+  destroy: () => void;
+  getDuration: () => number;
+  getCurrentTime: () => number;
+  seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+  playVideo: () => void;
+  pauseVideo: () => void;
+  getPlayerState: () => number;
+}
+
+export interface YTPlayerConfig {
+  videoId: string;
+  playerVars?: Record<string, number | undefined>;
+  events?: {
+    onReady?: (event: { target: YTPlayer }) => void;
+    onStateChange?: (event: { data: number; target: YTPlayer }) => void;
+  };
+}
+
+export interface YouTubePlayerProps {
+  videoId: string;
+  className: string;
+  startTime?: number;
+  onDurationChange?: (duration: number) => void;
+  onTimeUpdate?: (currentTime: number, duration: number) => void;
+  onComplete?: () => void;
+  onPlay?: () => void;
+  onPause?: () => void;
 }
 
 export interface VideoModalProps {

@@ -4,10 +4,10 @@ import type { NextRequest } from 'next/server';
 const ALLOWED_SEARCH_ENGINES = [
   'Googlebot',
   'Bingbot',
-  'Slurp',           // Yahoo
+  'Slurp',           
   'DuckDuckBot',
   'Yandex',
-  'facebookexternalhit', // Facebook sharing
+  'facebookexternalhit', 
   'Twitterbot',
   'LinkedInBot',
   'WhatsApp',

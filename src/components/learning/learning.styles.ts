@@ -128,7 +128,7 @@ export const QUESTION = {
   CHECKBOX_CHECK: 'w-2.5 h-2.5 text-white',
   OPTION_TEXT: 'flex-1 text-sm text-[var(--text)]/70',
   OPTION_LABEL: 'w-6 h-6 flex items-center justify-center text-xs font-medium bg-[var(--text)]/5 rounded text-[var(--text)]/50',
-  TEXT_INPUT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors',
+  TEXT_INPUT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
   EXPLANATION: 'p-4 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg',
   EXPLANATION_TITLE: 'text-xs uppercase tracking-[0.15em] text-[var(--text)]/40 mb-2',
   EXPLANATION_TEXT: 'text-sm text-[var(--text)]/60 leading-relaxed',

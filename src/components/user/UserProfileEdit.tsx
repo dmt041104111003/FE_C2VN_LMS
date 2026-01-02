@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback, useMemo, useRef } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import { Input, Button } from '@/components/ui';
 import { TipTapEditor } from '@/components/editor';
 import { USER_LABELS } from '@/constants/user';
@@ -17,24 +17,26 @@ const FormSection = memo(function FormSection({ label, children }: FormSectionPr
   );
 });
 
-const ActionButtons = memo(function ActionButtons({ onCancel, onSave }: ActionButtonsProps) {
+interface ActionButtonsPropsWithDisabled extends ActionButtonsProps {
+  disabled?: boolean;
+}
+
+const ActionButtons = memo(function ActionButtons({ onCancel, onSave, disabled }: ActionButtonsPropsWithDisabled) {
   return (
     <div className={S.USER_EDIT.ACTIONS}>
-      <Button variant="ghost" size="md" onClick={onCancel}>
+      <Button variant="ghost" size="md" onClick={onCancel} disabled={disabled}>
         {USER_LABELS.cancel}
       </Button>
-      <Button variant="primary" size="md" onClick={onSave}>
+      <Button variant="primary" size="md" onClick={onSave} disabled={disabled}>
         {USER_LABELS.saveChanges}
       </Button>
     </div>
   );
 });
 
-function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditProps) {
+function UserProfileEditComponent({ user, onSave, onCancel, disabled }: UserProfileEditProps) {
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [avatar, setAvatar] = useState(user?.avatar);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const avatarSrc = useMemo(
     () => getUserAvatar({
@@ -45,25 +47,15 @@ function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditPro
     [user?.walletAddress, fullName, user?.fullName, user?.email]
   );
 
-  const handleAvatarClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setAvatar(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
   const handleSave = useCallback(() => {
-    onSave?.({ fullName, bio, avatar });
-  }, [fullName, bio, avatar, onSave]);
+    if (disabled) return;
+    onSave?.({ fullName, bio });
+  }, [fullName, bio, onSave, disabled]);
 
-  const handleCancel = useCallback(() => onCancel?.(), [onCancel]);
+  const handleCancel = useCallback(() => {
+    if (disabled) return;
+    onCancel?.();
+  }, [onCancel, disabled]);
 
   return (
     <div className={S.USER_EDIT.CONTAINER}>
@@ -76,16 +68,6 @@ function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditPro
         <FormSection label={USER_LABELS.avatarLabel}>
           <div className={S.USER_EDIT.AVATAR_SECTION}>
             <img src={avatarSrc} alt="" className={S.USER_EDIT.AVATAR} />
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <Button variant="ghost" size="sm" onClick={handleAvatarClick}>
-              {USER_LABELS.changeAvatar}
-            </Button>
           </div>
         </FormSection>
 
@@ -96,6 +78,7 @@ function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditPro
             placeholder={USER_LABELS.fullNamePlaceholder}
             variant="minimal"
             size="lg"
+            disabled={disabled}
           />
         </FormSection>
 
@@ -105,10 +88,11 @@ function UserProfileEditComponent({ user, onSave, onCancel }: UserProfileEditPro
             onChange={setBio}
             placeholder={USER_LABELS.bioPlaceholder}
             minHeight="150px"
+            disabled={disabled}
           />
         </FormSection>
 
-        <ActionButtons onCancel={handleCancel} onSave={handleSave} />
+        <ActionButtons onCancel={handleCancel} onSave={handleSave} disabled={disabled} />
       </div>
     </div>
   );

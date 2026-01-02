@@ -20,7 +20,7 @@ export default function VerifyEmailPage() {
           <div className="lg:hidden mb-8">
             <Logo layout="inline" size="md" href="/" />
           </div>
-          <Suspense fallback={<div className="text-center text-[var(--text)]/50">Đang tải...</div>}>
+          <Suspense fallback={<div className="h-64" />}>
             <VerifyEmailForm />
           </Suspense>
         </div>

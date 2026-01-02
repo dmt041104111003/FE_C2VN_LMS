@@ -49,12 +49,14 @@ export interface TipTapEditorProps {
   placeholder?: string;
   minHeight?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export interface TipTapPreviewProps {
   content: string;
   className?: string;
   compact?: boolean;
+  inheritColor?: boolean;
 }
 
 export interface MenuBarProps {

@@ -30,7 +30,6 @@ function ForgotPasswordFormComponent() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,22 +72,10 @@ function ForgotPasswordFormComponent() {
   }, [router, email]);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.replace(ROUTES.HOME);
-      } else {
-        setIsCheckingAuth(false);
-      }
+    if (!isLoading && isAuthenticated) {
+      router.replace(ROUTES.HOME);
     }
   }, [isAuthenticated, isLoading, router]);
-
-  if (isCheckingAuth) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" />
-      </div>
-    );
-  }
 
   if (sent) {
     return (
@@ -118,7 +105,7 @@ function ForgotPasswordFormComponent() {
               className={AUTH_RESEND_BTN}
               disabled={isLoading}
             >
-              {isLoading ? 'Đang gửi...' : 'Gửi lại mã'}
+              Gửi lại mã
             </Button>
           </div>
         </div>
@@ -162,7 +149,7 @@ function ForgotPasswordFormComponent() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {isLoading ? 'Đang xử lý...' : FORGOT_PASSWORD.submitText}
+          {FORGOT_PASSWORD.submitText}
         </Button>
       </form>
 

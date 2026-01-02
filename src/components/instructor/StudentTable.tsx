@@ -23,7 +23,6 @@ export const StudentTable = memo(function StudentTable({
   onKeywordChange,
   onStatusChange,
   onPageChange,
-  onEdit,
   onRemove,
   onIssueCertificate,
   onIssueAllCertificates,
@@ -65,7 +64,6 @@ export const StudentTable = memo(function StudentTable({
               key={student.id}
               index={startIndex + idx + 1}
               student={student}
-              onEdit={onEdit}
               onRemove={onRemove}
               onIssueCertificate={onIssueCertificate}
             />

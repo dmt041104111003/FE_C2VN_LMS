@@ -6,6 +6,8 @@ import {
   TEXTAREA_SIZES,
 } from './ui.styles';
 
+const TEXTAREA_DISABLED = 'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--bg-alt)]';
+
 function TextareaComponent({
   placeholder,
   value,
@@ -15,8 +17,9 @@ function TextareaComponent({
   className = '',
   rows = 4,
   required,
+  disabled,
 }: TextareaProps) {
-  const textareaClass = `${TEXTAREA_BASE} ${TEXTAREA_VARIANTS[variant]} ${TEXTAREA_SIZES[size]} ${className}`;
+  const textareaClass = `${TEXTAREA_BASE} ${TEXTAREA_VARIANTS[variant]} ${TEXTAREA_SIZES[size]} ${TEXTAREA_DISABLED} ${className}`;
 
   return (
     <textarea
@@ -26,9 +29,9 @@ function TextareaComponent({
       className={textareaClass}
       rows={rows}
       required={required}
+      disabled={disabled}
     />
   );
 }
 
 export const Textarea = memo(TextareaComponent);
-

@@ -64,7 +64,7 @@ function LectureItem({ lecture, index }: LectureItemProps) {
       )}
       {lecture.content && (
         <div className="text-sm">
-          <TipTapPreview content={lecture.content} />
+          <TipTapPreview content={lecture.content} compact />
         </div>
       )}
     </div>

@@ -2,9 +2,9 @@
 
 import { memo, useState, useCallback } from 'react';
 import { StarIcon, StarOutlineIcon } from './icons';
-import { RatingInputProps } from '@/types/review';
-import { RATING_INPUT_SIZES, RATING_INPUT } from '@/components/courses/review.styles';
-import { REVIEW_CONFIG } from '@/constants/review';
+import type { RatingInputProps } from '@/types/review';
+import { RATING_INPUT } from '@/components/courses/review.styles';
+import { REVIEW_CONFIG, RATING_SIZE_MAP } from '@/constants/review';
 
 function RatingInputComponent({
   value,
@@ -28,7 +28,7 @@ function RatingInputComponent({
   }, [disabled, onChange]);
 
   const displayValue = hoverValue ?? value;
-  const sizeClass = RATING_INPUT_SIZES[size];
+  const sizeClass = RATING_SIZE_MAP[size];
 
   const getStarClass = (star: number): string => {
     const isFilled = star <= displayValue;
@@ -50,13 +50,17 @@ function RatingInputComponent({
           <button
             key={star}
             type="button"
-            onClick={() => handleClick(star)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClick(star);
+            }}
             onMouseEnter={() => handleMouseEnter(star)}
             className={starClass}
             disabled={disabled}
             aria-label={`${star} sao`}
           >
-            <StarComponent className={sizeClass} />
+            <StarComponent className={`${sizeClass} pointer-events-none`} />
           </button>
         );
       })}

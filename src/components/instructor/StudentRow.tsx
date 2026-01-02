@@ -8,7 +8,6 @@ import {
   ActionDropdown,
   ActionsCell,
   CopyableText,
-  EditIcon,
   TrashIcon,
   CertificateIcon,
 } from '@/components/ui';
@@ -32,11 +31,9 @@ const HEADERS = STUDENT_TABLE_HEADERS;
 export const StudentRow = memo(function StudentRow({
   index,
   student,
-  onEdit,
   onRemove,
   onIssueCertificate,
 }: StudentRowProps) {
-  const handleEdit = useCallback(() => onEdit(student.id), [student.id, onEdit]);
   const handleRemove = useCallback(() => onRemove(student.id), [student.id, onRemove]);
   const handleIssueCertificate = useCallback(() => onIssueCertificate(student.id), [student.id, onIssueCertificate]);
 
@@ -45,13 +42,7 @@ export const StudentRow = memo(function StudentRow({
   const canIssueCertificate = isCompleted && !hasCertificate;
 
   const dropdownItems = useMemo((): DropdownItem[] => {
-    const items: DropdownItem[] = [
-      {
-        label: ACTIONS.edit,
-        icon: <EditIcon className={ICON_SM} />,
-        onClick: handleEdit,
-      },
-    ];
+    const items: DropdownItem[] = [];
 
     if (canIssueCertificate) {
       items.push({
@@ -69,7 +60,7 @@ export const StudentRow = memo(function StudentRow({
     });
 
     return items;
-  }, [handleEdit, handleRemove, handleIssueCertificate, canIssueCertificate]);
+  }, [handleRemove, handleIssueCertificate, canIssueCertificate]);
 
   const contactValue = student.walletAddress || student.email;
 

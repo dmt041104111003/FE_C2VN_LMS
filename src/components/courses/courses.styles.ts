@@ -12,9 +12,9 @@ export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto pt-
 
 export const CARD_CONFIGS: Record<CardType, CardConfig> = {
   featured: {
-    containerClass: 'flex flex-col sm:flex-row h-full sm:min-h-[200px]',
-    imageClass: 'sm:w-1/2 h-[140px] sm:h-full',
-    contentClass: 'sm:w-1/2 p-3 sm:p-4 flex flex-col',
+    containerClass: 'flex flex-col sm:flex-row h-full sm:min-h-[160px]',
+    imageClass: 'sm:w-1/2 h-[120px] sm:h-full',
+    contentClass: 'sm:w-1/2 p-2 flex flex-col',
     titleClass: 'text-base sm:text-lg font-bold mb-1',
     descClass: 'text-xs mb-2 line-clamp-2',
     showDescription: true,
@@ -172,6 +172,36 @@ export const COURSE_DETAIL_CARD_PRICE_CURRENT = 'text-3xl font-bold text-[var(--
 export const COURSE_DETAIL_CARD_PRICE_ORIGINAL = 'text-lg text-[var(--text)]/50 line-through';
 export const COURSE_DETAIL_CARD_PRICE_FREE = 'text-lg font-medium text-[var(--accent)]';
 export const COURSE_DETAIL_CARD_DISCOUNT = 'text-sm text-[var(--accent)] font-medium';
+
+import { COURSE_GRID } from '@/constants/course';
+
+export const GRID_CLASSES_MAP = [
+  COURSE_GRID.CLASSES_1,
+  COURSE_GRID.CLASSES_2,
+  COURSE_GRID.CLASSES_3,
+  COURSE_GRID.CLASSES_4,
+  COURSE_GRID.CLASSES_5,
+  COURSE_GRID.CLASSES_6,
+  COURSE_GRID.CLASSES_7,
+] as const;
+
+export const getGridClasses = (count: number): readonly string[] => {
+  const index = Math.min(Math.max(count - 1, 0), 6);
+  return GRID_CLASSES_MAP[index];
+};
+
+export const getGridContainerClass = (count: number): string => {
+  if (count <= 1) return 'grid grid-cols-1 gap-4';
+  if (count === 2) return 'grid grid-cols-1 gap-2';
+  if (count <= 3) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2';
+  return 'grid grid-cols-1 gap-4 sm:grid-cols-3 sm:grid-rows-[repeat(7,1fr)] sm:gap-2';
+};
+
+export const getCardVariants = (index: number, count: number) => ({
+  featured: index === 0 || (count === 2 && index === 1),
+  tall: count >= 4 && count <= 6 && ((count === 4 && index === 2) || (count >= 5 && index === 3)),
+  wide: (count === 5 && index === 4) || (count === 4 && (index === 1 || index === 3)),
+});
 export const COURSE_DETAIL_CARD_BUTTON = 'block w-full py-3 bg-[var(--accent)] text-white font-medium rounded-full text-center';
 export const COURSE_DETAIL_CARD_BUTTON_SECONDARY = 'w-full py-3 bg-[var(--bg)] text-[var(--text)] font-medium rounded-full text-center border border-[var(--text)]/20';
 export const COURSE_DETAIL_CARD_FEATURES = 'space-y-3 pt-4 border-t border-[var(--text)]/10';

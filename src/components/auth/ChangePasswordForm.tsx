@@ -121,7 +121,7 @@ function ChangePasswordFormComponent() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {isLoading ? 'Đang xử lý...' : CHANGE_PASSWORD.submitText}
+          {CHANGE_PASSWORD.submitText}
         </Button>
       </form>
     </>

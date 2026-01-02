@@ -22,6 +22,7 @@ function FormComponent({
   onSubmit,
   className = '',
   footer,
+  disabled,
 }: FormProps) {
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -49,7 +50,7 @@ function FormComponent({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isValid) return;
+    if (!isValid || disabled) return;
 
     const data = {
       ...values,
@@ -88,6 +89,7 @@ function FormComponent({
               size="lg"
               value={values[field.name] || ''}
               onChange={(e) => handleFieldChange(field.name, field.type, e.target.value)}
+              disabled={disabled}
             />
           </div>
         ))}
@@ -100,6 +102,7 @@ function FormComponent({
           size="lg"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          disabled={disabled}
         />
       )}
 
@@ -111,7 +114,7 @@ function FormComponent({
           variant="primary"
           size="lg"
           className="w-full mt-4"
-          disabled={!isValid}
+          disabled={!isValid || disabled}
         >
           {submitText}
         </Button>

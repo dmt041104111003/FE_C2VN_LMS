@@ -13,7 +13,11 @@ export const COURSE_CREATE_LABELS = {
     pricePlaceholder: '0.00',
     description: 'Mô tả khóa học',
     descriptionPlaceholder: 'Nhập mô tả chi tiết về khóa học...',
+    videoUrl: 'Video giới thiệu',
+    videoPlaceholder: 'https://youtube.com/watch?v=...',
     status: 'Trạng thái',
+    receiverAddress: 'Địa chỉ ví nhận thanh toán',
+    receiverAddressPlaceholder: 'addr1qx... (địa chỉ ví Cardano)',
   },
   chapters: {
     title: 'Nội dung khóa học',
@@ -35,6 +39,8 @@ export const COURSE_CREATE_LABELS = {
     contentPlaceholder: 'Nhập nội dung bài giảng...',
     removeLecture: 'Xóa bài giảng',
     prefix: 'Bài',
+    previewFree: 'Xem trước miễn phí',
+    previewFreeHint: 'Cho phép xem trước bài giảng này mà không cần mua khóa học',
   },
   quizzes: {
     title: 'Bài kiểm tra',
@@ -88,6 +94,9 @@ export const COURSE_CREATE_LABELS = {
     titleRequired: 'Vui lòng nhập tên khóa học',
     priceRequired: 'Vui lòng nhập giá khóa học (≥ 0)',
     priceInvalid: 'Giá khóa học không hợp lệ',
+    priceMinUtxo: 'Giá khóa học phải là 0 (miễn phí) hoặc từ 1 ADA trở lên (quy định của Cardano)',
+    discountedPriceMinUtxo: 'Giá sau giảm phải ≥ 1 ADA (quy định của Cardano)',
+    receiverAddressRequired: 'Vui lòng nhập địa chỉ ví nhận thanh toán cho khóa học có phí',
     chapterRequired: 'Vui lòng thêm ít nhất 1 chương',
     chapterTitleRequired: 'Vui lòng nhập tên cho tất cả các chương',
     lectureRequired: 'Mỗi chương cần có ít nhất 1 bài giảng',
@@ -104,16 +113,18 @@ export const COURSE_STATUS_OPTIONS: { value: CourseStatus; label: string }[] = [
   { value: 'published', label: 'Xuất bản' },
 ];
 
-export const QUIZ_TYPE_OPTIONS: { value: QuizType; label: string }[] = [
-  { value: 'final', label: 'Bài kiểm tra cuối khóa' },
-  { value: 'chapter', label: 'Bài kiểm tra theo chương' },
-  { value: 'lecture', label: 'Bài kiểm tra theo bài giảng' },
-];
+
+export { 
+  QUIZ_TYPE_OPTIONS, 
+  createEmptyQuestion, 
+  createEmptyQuiz,
+  getOptionLetter,
+} from './quiz.constants';
 
 export const QUIZ_TYPE_LABELS: Record<QuizType, string> = {
   final: 'Cuối khóa',
   chapter: 'Theo chương',
-  lecture: 'Theo bài',
+  lecture: 'Theo bài giảng',
 };
 
 export const createEmptyLecture = (): Lecture => ({
@@ -121,6 +132,7 @@ export const createEmptyLecture = (): Lecture => ({
   title: '',
   content: '',
   videoUrl: '',
+  previewFree: false,
 });
 
 export const createEmptyChapter = (): Chapter => ({
@@ -129,26 +141,15 @@ export const createEmptyChapter = (): Chapter => ({
   lectures: [createEmptyLecture()],
 });
 
-export const createEmptyQuestion = (): QuizQuestion => ({
-  id: `question-${Date.now()}`,
-  question: '',
-  options: ['', '', '', ''],
-  correctIndexes: [],
-  explanation: '',
-});
-
-export const createEmptyQuiz = (): Quiz => ({
-  id: `quiz-${Date.now()}`,
-  title: '',
-  type: 'final',
-  questions: [createEmptyQuestion()],
-});
-
 export const INITIAL_COURSE_FORM: CourseFormData = {
   title: '',
   description: '',
+  videoUrl: '',
   price: 0,
   status: 'draft',
+  receiverAddress: '',
+  discount: undefined,
+  discountEndTime: undefined,
   chapters: [createEmptyChapter()],
   quizzes: [],
 };
@@ -165,12 +166,12 @@ export const COURSE_CREATE_STYLES = {
   FORM_GROUP: 'space-y-2 min-w-0',
   LABEL: 'block text-sm font-medium text-[var(--text)]',
   LABEL_SM: 'text-xs font-medium text-[var(--text)]/70',
-  INPUT: 'w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors',
+  INPUT: 'w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--bg-alt)]',
   INPUT_GROUP: 'flex items-center border border-[var(--border)] rounded-lg overflow-hidden focus-within:border-[var(--accent)] transition-colors',
   INPUT_PREFIX: 'px-3 sm:px-4 py-2 sm:py-2.5 bg-[var(--bg-alt)]/50 text-sm text-[var(--text)]/70 border-r border-[var(--border)] select-none',
-  INPUT_NO_BORDER: 'flex-1 px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none bg-transparent',
-  SELECT: 'w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors bg-white',
-  TEXTAREA: 'w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors resize-none',
+  INPUT_NO_BORDER: 'flex-1 px-3 sm:px-4 py-2 sm:py-2.5 text-sm focus:outline-none bg-transparent disabled:opacity-50 disabled:cursor-not-allowed',
+  SELECT: 'w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--bg-alt)]',
+  TEXTAREA: 'w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--bg-alt)]',
   CHAPTER_CARD: 'bg-[var(--bg-alt)]/30 border border-[var(--border)] rounded-xl p-4 sm:p-5 space-y-4 min-w-0 overflow-hidden',
   LECTURE_CARD: 'bg-white border border-[var(--border)] rounded-lg p-3 sm:p-4 space-y-4 min-w-0 overflow-hidden',
   QUIZ_CARD: 'bg-[var(--bg-alt)]/30 border border-[var(--border)] rounded-xl p-4 sm:p-5 space-y-4 min-w-0 overflow-hidden',
@@ -199,16 +200,26 @@ export const COURSE_CREATE_STYLES = {
   EMPTY_STATE: 'text-sm text-[var(--text)]/50 text-center py-8',
 } as const;
 
-export const OPTION_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-export const getOptionLetter = (index: number): string => OPTION_LETTERS[index] || String(index + 1);
-
 export const BLOCKED_PRICE_KEYS = new Set(['-', 'e', 'E']);
+export const MIN_PAID_PRICE_ADA = 1;
 
 export const isPriceKeyBlocked = (key: string): boolean => BLOCKED_PRICE_KEYS.has(key);
 
 export const sanitizePrice = (value: string): number => Math.max(0, Number(value) || 0);
 
+export const isValidPrice = (price: number): boolean => price === 0 || price >= MIN_PAID_PRICE_ADA;
+
 export const COURSE_DRAFT_KEY = 'course_create_draft';
 export const COURSE_EDIT_DRAFT_KEY_PREFIX = 'course_edit_draft_';
+
+export const COURSE_CREATE_TAB_ITEMS = {
+  create: [
+    { key: 'form', label: 'Tạo khóa học' },
+    { key: 'json', label: 'Parse JSON' },
+  ],
+  edit: [
+    { key: 'form', label: 'Chỉnh sửa khóa học' },
+    { key: 'json', label: 'Parse JSON' },
+  ],
+};
 

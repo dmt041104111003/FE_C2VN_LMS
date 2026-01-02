@@ -1,5 +1,5 @@
 import type { CourseFormData, Chapter, Quiz, QuizQuestion } from '@/types/course-create';
-import { COURSE_CREATE_LABELS } from '@/constants/course-create';
+import { COURSE_CREATE_LABELS, isValidPrice } from '@/constants/course-create';
 
 const LABELS = COURSE_CREATE_LABELS.validation;
 
@@ -10,6 +10,14 @@ const hasEmptyTitle = (item: { title: string }): boolean => !item.title.trim();
 const validateBasicInfo = (form: CourseFormData): ValidationResult => {
   if (!form.title.trim()) return LABELS.titleRequired;
   if (form.price < 0 || isNaN(form.price)) return LABELS.priceInvalid;
+  if (!isValidPrice(form.price)) return LABELS.priceMinUtxo;
+  if (form.price > 0 && !form.receiverAddress.trim()) return LABELS.receiverAddressRequired;
+  
+  if (form.price > 0 && form.discount && form.discount > 0 && form.discountEndTime) {
+    const discountedPrice = form.price * (1 - form.discount / 100);
+    if (!isValidPrice(discountedPrice)) return LABELS.discountedPriceMinUtxo;
+  }
+  
   return null;
 };
 

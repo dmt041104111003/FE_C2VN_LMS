@@ -1,83 +1,138 @@
 export {
-  ROUTES,
-  NAV_ITEMS,
-  FOOTER_RESOURCES,
-  FOOTER_SUPPORT,
-  SOCIAL_LINKS,
-  AUTH_TEXT,
-  APP_DOWNLOAD,
-  FOOTER_LABELS,
-} from './navigation';
-export { HERO } from './hero';
-export {
+  HERO,
   FEATURES,
   FEATURES_SECTION_TITLE,
   FEATURES_IMAGES,
-} from './features';
-export { CTA } from './cta';
-export { DEMO } from './demo';
-export {
+  CTA,
+  DEMO,
   COURSES_LABELS,
   COURSES_IMAGES,
-  formatPrice,
-} from './courses';
-export {
   SEARCH_PLACEHOLDER,
   SEARCH_LABELS,
-  SEARCH_SUGGESTIONS,
-} from './search';
+  formatPrice,
+} from './landing.constants';
+
 export {
-  validateByType,
-  filterByType,
-  validateEmail,
-} from './validation';
-export { FEEDBACK_FIELDS } from './feedback';
-export { LOGIN, LOGIN_FIELDS, FORGOT_PASSWORD, RESET_PASSWORD, VERIFY_EMAIL, CHANGE_PASSWORD } from './login';
-export {
+  ROUTES,
+  NAV_ITEMS,
+  FOOTER_CONFIG,
+  FOOTER_RESOURCES,
+  FOOTER_SUPPORT,
+  SOCIAL_LINKS,
+  FOOTER_LABELS,
+  AUTH_TEXT,
+  APP_DOWNLOAD,
   SYSTEM_CONFIG,
   DATE_FORMAT,
-  formatCurrency,
-  formatDuration,
-  formatCountdown,
+  DEFAULT_PAGE_SIZE,
   formatDate,
   formatTime,
   formatDateTime,
   formatFullDate,
   getRelativeTime,
+  formatCurrency,
+  formatDuration,
+  formatCountdown,
   getInitials,
+  formatCode,
   getYouTubeId,
   VIDEO_UNAVAILABLE_TEXT,
   obfuscateVideoUrl,
   deobfuscateVideoUrl,
   isObfuscated,
   YOUTUBE_PLAYER_VARS,
-  DEFAULT_PAGE_SIZE,
-  formatCode,
-} from './config';
-export {
+  VIDEO_SEEK_TOLERANCE_SECONDS,
+  VIDEO_CHECK_INTERVAL_MS,
+  API_BASE_URL,
+  API_ENDPOINTS,
+  API_ERROR_MESSAGES,
   IS_PROTECTION_ENABLED,
   BLOCKED_CTRL_KEYS,
   BLOCKED_CTRL_SHIFT_KEYS,
   BLOCKED_KEYS,
   EDITABLE_TAGS,
   DEVTOOLS_THRESHOLD,
-} from './protection';
+} from './app.constants';
+
+export {
+  ROLE,
+  hasRole,
+  ERROR_MESSAGES,
+  translateError,
+  LOGIN_METHOD,
+  LOGIN,
+  REGISTER,
+  FORGOT_PASSWORD,
+  RESET_PASSWORD,
+  VERIFY_EMAIL,
+  CHANGE_PASSWORD,
+  LOGIN_FIELDS,
+  VALIDATION_REGEX,
+  VALIDATION_CONFIG,
+  NAME_REGEX,
+  PHONE_REGEX,
+  EMAIL_REGEX,
+  NAME_FILTER_REGEX,
+  PHONE_FILTER_REGEX,
+  MIN_PHONE_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  validateName,
+  validatePhone,
+  validateEmail,
+  validatePassword,
+  validateByType,
+  filterName,
+  filterPhone,
+  filterByType,
+} from './auth.constants';
+
+export type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, LoginMethodType } from './auth.constants';
+
+export {
+  USER_LABELS,
+  USER_CONFIG,
+  DEFAULT_USER_STATS,
+  STATS_ITEMS,
+  ROLE_LABELS,
+  LOGIN_METHOD_ICONS,
+  LOGIN_METHOD_LABELS,
+  STATUS_LABELS,
+  ROLE_BADGE_VARIANT,
+  STATUS_BADGE_VARIANT,
+  COURSE_STATUS_LABELS,
+  COURSE_STATUS_VARIANT,
+  truncateWalletAddress,
+  mapAuthUserToProfile,
+  USER_CODE_PREFIX,
+  ADMIN_LABELS,
+  ROLE_OPTIONS,
+  STATUS_OPTIONS,
+  TABLE_HEADERS,
+  ADMIN_SIDEBAR_ITEMS,
+  ADMIN_MODAL_CONFIG,
+  ADD_USER_DRAFT_KEY,
+  ADD_USER_INITIAL_DATA,
+  ADD_USER_FIELDS,
+  ADD_USER_LABELS,
+  COURSE_CODE_PREFIX,
+  INSTRUCTOR_LABELS,
+  COURSE_STATUS_OPTIONS,
+  INSTRUCTOR_SIDEBAR_ITEMS,
+  COURSE_TABLE,
+  COURSE_MODAL_CONFIG,
+  INITIAL_ADD_STUDENT_MODAL,
+  ADD_STUDENT_DRAFT_KEY,
+  ADD_STUDENT_INITIAL_DATA,
+  ADD_STUDENT_FIELDS,
+  ADD_STUDENT_LABELS,
+} from './user.constants';
+
+export { FEEDBACK_FIELDS } from './feedback';
 export {
   REVIEW_LABELS,
   RATING_LABELS,
   REVIEW_CONFIG,
 } from './review';
-export {
-  USER_LABELS,
-  USER_CONFIG,
-  ROLE_LABELS,
-  LOGIN_METHOD_ICONS,
-  LOGIN_METHOD_LABELS,
-  STATS_ITEMS,
-  truncateWalletAddress,
-  DEFAULT_USER_STATS,
-  mapAuthUserToProfile,
-} from './user';
 export {
   EDITOR_LABELS,
   TOOLBAR_TITLES,
@@ -97,7 +152,6 @@ export {
 } from './editor';
 export {
   LEARNING_LABELS,
-  LEARNING_CONFIG,
   LESSON_TYPE_ICONS,
   LESSON_STATUS_ICONS,
   checkAnswer,
@@ -105,25 +159,7 @@ export {
   createCorrectAnswersMap,
 } from './learning';
 export {
-  ADMIN_LABELS,
-  ROLE_OPTIONS,
-  STATUS_OPTIONS,
-  STATUS_LABELS,
-  ADMIN_MODAL_CONFIG,
-} from './admin';
-export {
-  INSTRUCTOR_LABELS,
-  INSTRUCTOR_SIDEBAR_ITEMS,
-  COURSE_STATUS_LABELS,
-  COURSE_STATUS_VARIANT,
-  COURSE_MODAL_CONFIG,
-} from './instructor';
-export {
-  API_BASE_URL,
-  API_ENDPOINTS,
-  API_ERROR_MESSAGES,
-} from './api';
-export {
-  ROLE,
-  hasRole,
-} from './auth';
+  FACE_MESSAGES,
+  getFaceMessage,
+  FACE_CONFIG,
+} from './face';

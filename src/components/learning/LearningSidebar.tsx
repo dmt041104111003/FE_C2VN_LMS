@@ -1,7 +1,7 @@
 'use client';
 
-import { memo, useMemo } from 'react';
-import { Sidebar, ProgressBar } from '@/components/ui';
+import { memo, useMemo, useState } from 'react';
+import { Sidebar, ProgressBar, Dialog, Button } from '@/components/ui';
 import { LEARNING_LABELS, LESSON_TYPE_ICONS, LESSON_STATUS_ICONS } from '@/constants/learning';
 import type { LearningSidebarProps, LessonStatus } from '@/types/learning';
 import type { SidebarSection, SidebarItem } from '@/components/ui';
@@ -9,7 +9,55 @@ import { PlayIcon } from '@/components/ui/icons';
 
 const DEFAULT_LESSON_ICON = PlayIcon;
 
-function LearningSidebarComponent({ chapters, currentLessonId, progress, onSelectLesson }: LearningSidebarProps) {
+function UpgradeButton({ 
+  hasNewVersion, 
+  onUpgrade, 
+  isUpgrading 
+}: { 
+  hasNewVersion: boolean; 
+  onUpgrade: () => void; 
+  isUpgrading: boolean;
+}) {
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  if (!hasNewVersion) return null;
+
+  return (
+    <>
+      <Button
+        variant="primary"
+        onClick={() => setShowConfirm(true)}
+        className="w-full mt-4"
+      >
+        Có phiên bản mới
+      </Button>
+
+      <Dialog
+        isOpen={showConfirm}
+        onSecondary={() => setShowConfirm(false)}
+        title="Nâng cấp khóa học"
+        message="Giảng viên đã cập nhật nội dung khóa học. Bạn có muốn nâng cấp lên phiên bản mới không? Lưu ý: Tiến độ học tập hiện tại sẽ bị đặt lại về 0%."
+        primaryText={isUpgrading ? "Đang nâng cấp..." : "Nâng cấp"}
+        secondaryText="Để sau"
+        danger
+        onPrimary={() => {
+          onUpgrade();
+          setShowConfirm(false);
+        }}
+      />
+    </>
+  );
+}
+
+function LearningSidebarComponent({ 
+  chapters, 
+  currentLessonId, 
+  progress, 
+  onSelectLesson,
+  upgradeInfo,
+  onUpgrade,
+  isUpgrading = false
+}: LearningSidebarProps) {
   const { completed, total, progressPercent, sections } = useMemo(() => {
     let completed = 0;
     let total = 0;
@@ -61,6 +109,14 @@ function LearningSidebarComponent({ chapters, currentLessonId, progress, onSelec
           <div className="text-xs text-[var(--text)]/30 mt-2">
             {completed}/{total} · {progressPercent}%
           </div>
+          
+          {upgradeInfo?.hasNewVersion && onUpgrade && (
+            <UpgradeButton 
+              hasNewVersion={upgradeInfo.hasNewVersion} 
+              onUpgrade={onUpgrade}
+              isUpgrading={isUpgrading}
+            />
+          )}
         </>
       }
     />

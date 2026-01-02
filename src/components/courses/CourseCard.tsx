@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { COURSE_PAGE } from '@/constants/course';
 import { CourseCardProps, CardType, ImageSectionProps } from '@/types/course';
 import { Badge, Rating, User, Tags, PriceDisplay, FeatureList } from '@/components/ui';
+import { TipTapPreview } from '@/components/editor/TipTapPreview';
 import {
   CARD_CONFIGS,
   COURSE_CARD_BASE,
@@ -16,7 +17,17 @@ import {
   COURSE_CARD_FOOTER,
 } from './courses.styles';
 
-const ImageSection = memo(function ImageSection({ course, className, isFree }: ImageSectionProps) {
+const isDiscountValid = (discount?: number, discountEndTime?: string): boolean => {
+  if (!discount || discount <= 0) return false;
+  if (!discountEndTime) return false;
+  return new Date() < new Date(discountEndTime);
+};
+
+interface ImageSectionInternalProps extends ImageSectionProps {
+  hasValidDiscount: boolean;
+}
+
+const ImageSection = memo(function ImageSection({ course, className, isFree, hasValidDiscount }: ImageSectionInternalProps) {
   return (
     <div className={`${COURSE_CARD_IMAGE_BASE} ${className}`}>
       {course.thumbnail ? (
@@ -28,7 +39,7 @@ const ImageSection = memo(function ImageSection({ course, className, isFree }: I
       )}
       <div className="absolute top-2 left-2 flex gap-1">
         {isFree && <Badge variant="accent">{COURSE_PAGE.freeText}</Badge>}
-        {course.discount && <Badge variant="accent">-{course.discount}%</Badge>}
+        {hasValidDiscount && <Badge variant="accent">-{course.discount}%</Badge>}
       </div>
     </div>
   );
@@ -44,6 +55,7 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
 
   const config = CARD_CONFIGS[cardType];
   const isFree = course.price === 0;
+  const hasValidDiscount = isDiscountValid(course.discount, course.discountEndTime);
 
   const renderContent = () => {
     if (cardType === 'default') {
@@ -56,7 +68,8 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
             <PriceDisplay
               price={course.price}
               currency={course.currency}
-              discount={course.discount}
+              discount={hasValidDiscount ? course.discount : undefined}
+              discountEndTime={course.discountEndTime}
               freeText={COURSE_PAGE.freeText}
               size="xs"
             />
@@ -67,14 +80,16 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
 
     return (
       <div className={config.contentClass}>
-        {config.showTags && course.tags?.length && (
+        {config.showTags && course.tags && course.tags.length > 0 && (
           <Tags tags={course.tags} max={config.maxTags} className="mb-1" />
         )}
 
         <h3 className={`${config.titleClass} ${COURSE_CARD_TITLE_HOVER}`}>{course.title}</h3>
 
         {config.showDescription && (
-          <p className={`${config.descClass} ${COURSE_CARD_DESC}`}>{course.description}</p>
+          <div className={`${config.descClass} ${COURSE_CARD_DESC}`}>
+            <TipTapPreview content={course.description} compact />
+          </div>
         )}
 
         <User
@@ -85,7 +100,7 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
           className={`mb-${config.showInstructorLabel ? '2 pb-2 border-b border-[var(--text)]/5' : '1'}`}
         />
 
-        {course.rating && (
+        {course.rating != null && course.rating > 0 && (
           <Rating
             value={course.rating}
             count={config.showRatingCount ? course.totalStudents : undefined}
@@ -108,7 +123,8 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
           <PriceDisplay
             price={course.price}
             currency={course.currency}
-            discount={course.discount}
+            discount={hasValidDiscount ? course.discount : undefined}
+            discountEndTime={course.discountEndTime}
             freeText={COURSE_PAGE.freeText}
             size={config.priceSize}
           />
@@ -118,8 +134,8 @@ function CourseCardComponent({ course, featured = false, tall = false, wide = fa
   };
 
   return (
-    <Link href={`/courses/${course.id}`} className={`${COURSE_CARD_BASE} ${config.containerClass} ${className}`}>
-      <ImageSection course={course} className={config.imageClass} isFree={isFree} />
+    <Link href={`/courses/${course.slug || course.id}`} className={`${COURSE_CARD_BASE} ${config.containerClass} ${className}`}>
+      <ImageSection course={course} className={config.imageClass} isFree={isFree} hasValidDiscount={hasValidDiscount} />
       {renderContent()}
     </Link>
   );

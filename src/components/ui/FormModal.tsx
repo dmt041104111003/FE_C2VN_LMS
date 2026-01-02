@@ -21,6 +21,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
   isValid,
   onClose,
   onSubmit,
+  disabled,
 }: FormModalProps<T>) {
   const {
     formData,
@@ -42,7 +43,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
     if (!isOpen) return;
 
     const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === ESCAPE_KEY && !showResumeDialog) onClose();
+      if (e.key === ESCAPE_KEY && !showResumeDialog && !disabled) onClose();
     };
 
     document.addEventListener('keydown', handleEscapeKey);
@@ -52,7 +53,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
       document.removeEventListener('keydown', handleEscapeKey);
       document.body.style.overflow = '';
     };
-  }, [isOpen, onClose, showResumeDialog]);
+  }, [isOpen, onClose, showResumeDialog, disabled]);
 
   const handleChange = useCallback((fieldName: string, value: string) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
@@ -60,30 +61,32 @@ function FormModalComponent<T extends Record<string, unknown>>({
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValid(formData)) return;
+    if (!isValid(formData) || disabled) return;
     onSubmit(formData);
     clearDraftStorage();
     setFormData(initialData);
-  }, [formData, isValid, onSubmit, clearDraftStorage, setFormData, initialData]);
+  }, [formData, isValid, onSubmit, clearDraftStorage, setFormData, initialData, disabled]);
 
   const handleOverlayClick = useCallback(() => {
-    onClose();
-  }, [onClose]);
+    if (!disabled) onClose();
+  }, [onClose, disabled]);
 
   const handleContentClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
 
   const handleCancel = useCallback(() => {
+    if (disabled) return;
     clearDraftStorage();
     setFormData(initialData);
     onClose();
-  }, [clearDraftStorage, setFormData, initialData, onClose]);
+  }, [clearDraftStorage, setFormData, initialData, onClose, disabled]);
 
   const handleClearForm = useCallback(() => {
+    if (disabled) return;
     clearDraftStorage();
     clearForm();
-  }, [clearDraftStorage, clearForm]);
+  }, [clearDraftStorage, clearForm, disabled]);
 
   const renderField = useCallback((field: FormFieldConfig) => {
     const value = formData[field.name] as string || '';
@@ -94,6 +97,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
           className={FORM_MODAL.SELECT}
           value={value}
           onChange={(e) => handleChange(field.name, e.target.value)}
+          disabled={disabled}
         >
           {field.options.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -112,6 +116,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
           value={value}
           onChange={(e) => handleChange(field.name, e.target.value)}
           rows={4}
+          disabled={disabled}
         />
       );
     }
@@ -124,9 +129,10 @@ function FormModalComponent<T extends Record<string, unknown>>({
         value={value}
         onChange={(e) => handleChange(field.name, e.target.value)}
         autoFocus={field.autoFocus}
+        disabled={disabled}
       />
     );
-  }, [formData, handleChange]);
+  }, [formData, handleChange, disabled]);
 
   if (!isOpen) return null;
 
@@ -145,7 +151,7 @@ function FormModalComponent<T extends Record<string, unknown>>({
       />
 
       <div className={FORM_MODAL.OVERLAY} onClick={handleOverlayClick}>
-        <button className={FORM_MODAL.CLOSE} onClick={onClose}>
+        <button className={FORM_MODAL.CLOSE} onClick={onClose} disabled={disabled}>
           <CloseIcon className={FORM_MODAL.CLOSE_ICON} />
         </button>
 
@@ -174,14 +180,14 @@ function FormModalComponent<T extends Record<string, unknown>>({
 
             <div className={FORM_MODAL.FOOTER}>
               {hasFormData && (
-                <Button type="button" variant="ghost" onClick={handleClearForm} className="mr-auto text-[var(--incorrect)]">
+                <Button type="button" variant="ghost" onClick={handleClearForm} className="mr-auto text-[var(--incorrect)]" disabled={disabled}>
                   {labels.clearForm}
                 </Button>
               )}
-              <Button type="button" variant="ghost" onClick={handleCancel}>
+              <Button type="button" variant="ghost" onClick={handleCancel} disabled={disabled}>
                 {labels.cancel}
               </Button>
-              <Button type="submit" variant="primary" disabled={!valid}>
+              <Button type="submit" variant="primary" disabled={!valid || disabled}>
                 {labels.submit}
               </Button>
             </div>
@@ -195,4 +201,3 @@ function FormModalComponent<T extends Record<string, unknown>>({
 export const FormModal = memo(FormModalComponent) as <T extends Record<string, unknown>>(
   props: FormModalProps<T>
 ) => React.ReactElement | null;
-

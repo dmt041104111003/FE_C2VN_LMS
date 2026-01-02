@@ -25,7 +25,6 @@ interface UserAvatarInput {
 export const getUserAvatar = (user: UserAvatarInput | null | undefined): string => {
   if (!user) return generateBlockieAvatar(DEFAULT_SEED);
   
-  // Priority: walletAddress → email → fullName
   const seed = user.walletAddress || user.email || user.fullName || DEFAULT_SEED;
   return generateBlockieAvatar(seed);
 };

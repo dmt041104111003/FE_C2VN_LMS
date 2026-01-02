@@ -1,6 +1,6 @@
 export const EDITOR_LABELS = {
   placeholder: 'Bắt đầu viết nội dung...',
-  loading: 'Đang tải editor...',
+  loading: '',
   addLink: 'Thêm Link',
   addImage: 'Thêm Ảnh',
   addTooltip: 'Thêm Tooltip',

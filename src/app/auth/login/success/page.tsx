@@ -1,32 +1,33 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts';
+import { useToast } from '@/components/ui/Toast';
 import { ROUTES } from '@/constants/navigation';
 
 export default function LoginSuccessPage() {
   const router = useRouter();
   const { refreshUser } = useAuth();
+  const toast = useToast();
+  const hasRun = useRef(false);
 
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     const handleOAuthSuccess = async () => {
       try {
         await refreshUser();
-      } catch {}
+        toast.success('Đăng nhập thành công!');
+      } catch {
+        toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+      }
       router.replace(ROUTES.HOME);
     };
 
     handleOAuthSuccess();
-  }, [refreshUser, router]);
+  }, [refreshUser, router, toast]);
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="text-center">
-        <div className="w-16 h-16 mx-auto mb-4 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent" />
-      </div>
-    </div>
-  );
+  return null;
 }
-
-

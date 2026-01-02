@@ -79,6 +79,7 @@ function TipTapEditorComponent({
   placeholder = EDITOR_LABELS.placeholder,
   minHeight = EDITOR_CONFIG.minHeight,
   className = '',
+  disabled,
 }: TipTapEditorProps) {
   const [isClient, setIsClient] = useState(false);
   const lastContentRef = useRef(content);
@@ -95,6 +96,7 @@ function TipTapEditorComponent({
     extensions: createExtensions(placeholder),
     content,
     immediatelyRender: false,
+    editable: !disabled,
     editorProps: {
       attributes: {
         class: 'focus:outline-none',
@@ -112,11 +114,20 @@ function TipTapEditorComponent({
     }
   }, [content, editor]);
 
+  useEffect(() => {
+    if (editor) {
+      editor.setEditable(!disabled);
+    }
+  }, [editor, disabled]);
+
   if (!isClient) return <EditorSkeleton />;
 
   return (
-    <div className={`${S.EDITOR.CONTAINER} ${className}`} suppressHydrationWarning>
-      <MenuBar editor={editor} />
+    <div 
+      className={`${S.EDITOR.CONTAINER} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} 
+      suppressHydrationWarning
+    >
+      {!disabled && <MenuBar editor={editor} />}
       <EditorContent editor={editor} className={S.EDITOR.CONTENT} />
       <style jsx global>{`${S.PROSEMIRROR_STYLES}`}</style>
     </div>

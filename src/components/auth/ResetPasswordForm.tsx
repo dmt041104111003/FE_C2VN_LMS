@@ -33,7 +33,6 @@ function ResetPasswordFormInner() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,22 +90,10 @@ function ResetPasswordFormInner() {
   }, [email, forgotPassword, toast]);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.replace(ROUTES.HOME);
-      } else {
-        setIsCheckingAuth(false);
-      }
+    if (!isLoading && isAuthenticated) {
+      router.replace(ROUTES.HOME);
     }
   }, [isAuthenticated, isLoading, router]);
-
-  if (isCheckingAuth) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -163,7 +150,7 @@ function ResetPasswordFormInner() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {isLoading ? 'Đang xử lý...' : RESET_PASSWORD.submitText}
+          {RESET_PASSWORD.submitText}
         </Button>
       </form>
 

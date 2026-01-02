@@ -113,7 +113,8 @@ export function ActivityHistory({ activities }: ActivityHistoryProps) {
   if (activities.length === 0) {
     return (
       <div className={S.empty}>
-        <p>{LABELS.activity.empty}</p>
+        <p className="font-medium mb-1">{LABELS.activity.empty}</p>
+        <p className="text-sm opacity-70">{LABELS.activity.emptyDescription}</p>
       </div>
     );
   }
@@ -150,13 +151,7 @@ export function ActivityHistory({ activities }: ActivityHistoryProps) {
             </div>
           ))}
 
-          {hasMore && (
-            <div ref={loaderRef} className={S.activity.loader}>
-              {isLoading && (
-                <div className="animate-spin w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full" />
-              )}
-            </div>
-          )}
+          {hasMore && <div ref={loaderRef} className={S.activity.loader} />}
 
           {!hasMore && filteredActivities.length > ACTIVITY_ITEMS_PER_PAGE && (
             <p className={S.activity.loadMore}>{LABELS.activity.noMore}</p>
@@ -180,4 +175,3 @@ function ActivityItem({ activity }: ActivityItemProps) {
     </div>
   );
 }
-

@@ -128,9 +128,10 @@ function QuizQuestionComponent({
 
   const selectedSet = useMemo(() => {
     if (!selectedAnswer) return new Set<string>();
-    if (isMultiple) return new Set(selectedAnswer as string[]);
-    return new Set([selectedAnswer as string]);
-  }, [isMultiple, selectedAnswer]);
+    
+    if (Array.isArray(selectedAnswer)) return new Set(selectedAnswer);
+    return new Set([selectedAnswer]);
+  }, [selectedAnswer]);
 
   const handleOptionClick = useCallback((optionId: string) => {
     if (showResult) return;

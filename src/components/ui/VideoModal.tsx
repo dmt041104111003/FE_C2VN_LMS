@@ -49,7 +49,7 @@ function VideoModalComponent({ isOpen, videoUrl, title, subtitle, onClose, onDur
         )}
 
         <div className={VIDEO_MODAL_VIDEO}>
-          <VideoPlayer url={videoUrl} title={title} onDurationChange={onDurationChange} />
+          <VideoPlayer url={videoUrl} />
         </div>
       </div>
     </div>

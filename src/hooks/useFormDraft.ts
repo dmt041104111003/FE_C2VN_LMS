@@ -10,8 +10,8 @@ export function useFormDraft<T>({
   const [formData, setFormData] = useState<T>(initialData);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<T | null>(null);
-  const prevStorageKey = useRef(storageKey);
-  const prevEnabled = useRef(enabled);
+  const prevStorageKey = useRef<string | null>(null);
+  const prevEnabled = useRef<boolean | null>(null);
   const isInitialized = useRef(false);
 
   const loadDraft = useCallback((): T | null => {
@@ -40,15 +40,17 @@ export function useFormDraft<T>({
   }, [storageKey]);
 
   useEffect(() => {
+    const isFirstRun = prevStorageKey.current === null;
     const storageKeyChanged = prevStorageKey.current !== storageKey;
-    const justEnabled = enabled && !prevEnabled.current;
+    const justEnabled = enabled && prevEnabled.current === false;
 
     prevStorageKey.current = storageKey;
     prevEnabled.current = enabled;
 
     if (!enabled) return;
 
-    if (storageKeyChanged || justEnabled) {
+    
+    if (isFirstRun || storageKeyChanged || justEnabled) {
       isInitialized.current = true;
       const draft = loadDraft();
       if (draft && !isEmpty(draft)) {
@@ -106,4 +108,3 @@ export function useFormDraft<T>({
     clearDraftStorage,
   };
 }
-

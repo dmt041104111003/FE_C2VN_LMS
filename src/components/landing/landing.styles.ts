@@ -27,11 +27,20 @@ export const COURSES_SECTION = 'min-h-screen flex items-center py-12 md:py-16 px
 export const COURSES_CONTAINER = 'max-w-6xl mx-auto w-full';
 export const COURSES_HEADER = 'flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 md:mb-8 gap-3 md:gap-4';
 export const COURSES_HEADER_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold';
-export const COURSES_GRID = 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:grid-rows-2';
+
+export const COURSES_GRID_3 = 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:grid-rows-2';
+
+export const COURSES_GRID_2 = 'grid grid-cols-1 grid-rows-2 gap-2';
+
+export const COURSES_GRID_1 = 'grid grid-cols-1 gap-2';
+
 export const COURSES_CARD_BASE = 'relative rounded-xl sm:rounded-2xl overflow-hidden min-h-[200px] sm:min-h-[280px]';
+
 export const COURSES_CARD_1 = 'sm:col-span-2';
 export const COURSES_CARD_2 = 'sm:row-start-2';
 export const COURSES_CARD_3 = 'sm:row-start-2';
+
+export const COURSES_CARD_2_LAYOUT = '';
 export const COURSES_CARD_IMAGE = 'absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none';
 export const COURSES_CARD_GRADIENT = 'absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent';
 export const COURSES_CARD_CONTENT = 'relative z-10 h-full p-5 md:p-6 flex flex-col justify-end';

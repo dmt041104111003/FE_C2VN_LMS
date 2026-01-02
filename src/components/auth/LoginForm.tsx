@@ -42,15 +42,10 @@ function LoginFormComponent() {
   const [wallets, setWallets] = useState<CardanoWallet[]>([]);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [error, setError] = useState('');
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.replace(ROUTES.HOME);
-      } else {
-        setIsCheckingAuth(false);
-      }
+    if (!isLoading && isAuthenticated) {
+      router.replace(ROUTES.HOME);
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -100,14 +95,6 @@ function LoginFormComponent() {
   const openWalletModal = useCallback(() => setShowWalletModal(true), []);
   const closeWalletModal = useCallback(() => setShowWalletModal(false), []);
 
-  if (isCheckingAuth) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" />
-      </div>
-    );
-  }
-
   return (
     <>
       <div className={AUTH_FORM_HEADER}>
@@ -155,7 +142,7 @@ function LoginFormComponent() {
           className="w-full mt-2"
           disabled={isLoading}
         >
-          {isLoading ? 'Đang xử lý...' : LOGIN.submitText}
+          {LOGIN.submitText}
         </Button>
       </form>
 

@@ -5,9 +5,20 @@ import type { QuestionListProps, QuestionDisplayStatus } from '@/types/learning'
 import { LEARNING_LABELS, computeQuestionItems } from '@/constants/learning';
 import { QUIZ, QUESTION_LIST_STATUS } from '../learning.styles';
 
-const getItemClass = (isCurrent: boolean, status: QuestionDisplayStatus): string => {
-  if (isCurrent) return `${QUIZ.QUESTION_LIST_ITEM} ${QUIZ.QUESTION_LIST_CURRENT}`;
-  return `${QUIZ.QUESTION_LIST_ITEM} ${QUESTION_LIST_STATUS[status]}`;
+const getItemClass = (isCurrent: boolean, status: QuestionDisplayStatus, showResults?: boolean): string => {
+  const baseClass = QUIZ.QUESTION_LIST_ITEM;
+  
+  
+  if (showResults && (status === 'correct' || status === 'incorrect')) {
+    const statusClass = QUESTION_LIST_STATUS[status];
+    
+    return isCurrent 
+      ? `${baseClass} ${statusClass} ring-2 ring-offset-2 ring-[var(--text)]/30`
+      : `${baseClass} ${statusClass}`;
+  }
+  
+  if (isCurrent) return `${baseClass} ${QUIZ.QUESTION_LIST_CURRENT}`;
+  return `${baseClass} ${QUESTION_LIST_STATUS[status]}`;
 };
 
 const isAnsweredStatus = (status: QuestionDisplayStatus): boolean => {
@@ -52,7 +63,7 @@ function QuestionListComponent({
               key={index}
               type="button"
               onClick={handleClick(index)}
-              className={`${getItemClass(isCurrent, status)} relative`}
+              className={`${getItemClass(isCurrent, status, showResults)} relative`}
               aria-label={`Câu ${index + 1}`}
               aria-current={isCurrent ? 'step' : undefined}
             >

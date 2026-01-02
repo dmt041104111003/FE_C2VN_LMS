@@ -65,14 +65,15 @@ export interface UserResponse {
   id: string;
   email?: string;
   fullName?: string;
+  bio?: string;
   walletAddress?: string;
-  imageUrl?: string;
   role?: {
     name: string;
   };
   loginMethod?: {
     name: string;
   };
+  hasPassword?: boolean;
   createdAt?: string;
 }
 
@@ -88,10 +89,11 @@ export interface User {
   id: string;
   email?: string;
   fullName?: string;
+  bio?: string;
   walletAddress?: string;
-  imageUrl?: string;
   role?: string;
   loginMethod?: string;
+  hasPassword?: boolean;
   createdAt?: string;
 }
 

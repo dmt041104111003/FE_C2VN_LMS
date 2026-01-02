@@ -6,9 +6,9 @@ import { Header, Footer, Pagination, Filter, PriceRange, RatingFilterType } from
 import { CourseCard } from './CourseCard';
 import { COURSE_PAGE, COURSE_GRID } from '@/constants/course';
 import type { Course } from '@/types/course';
-
-const COURSES: Course[] = [];
+import { courseService } from '@/services/course';
 import { SYSTEM_CONFIG } from '@/constants/config';
+import { getUserAvatar } from '@/utils/avatar';
 import {
   COURSES_PAGE,
   COURSES_PAGE_MAIN,
@@ -18,34 +18,10 @@ import {
   COURSES_PAGE_SUBTITLE,
   COURSES_PAGE_EMPTY,
   COURSES_PAGE_EMPTY_TEXT,
+  getGridClasses,
+  getGridContainerClass,
+  getCardVariants,
 } from './courses.styles';
-
-const GRID_CLASSES_MAP = [
-  COURSE_GRID.CLASSES_1,
-  COURSE_GRID.CLASSES_2,
-  COURSE_GRID.CLASSES_3,
-  COURSE_GRID.CLASSES_4,
-  COURSE_GRID.CLASSES_5,
-  COURSE_GRID.CLASSES_6,
-  COURSE_GRID.CLASSES_7,
-] as const;
-
-const getGridClasses = (count: number): readonly string[] => {
-  const index = Math.min(Math.max(count - 1, 0), 6);
-  return GRID_CLASSES_MAP[index];
-};
-
-const getGridContainerClass = (count: number): string => {
-  if (count <= 1) return 'grid grid-cols-1 gap-4';
-  if (count <= 3) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2';
-  return 'grid grid-cols-1 gap-4 sm:grid-cols-3 sm:grid-rows-[repeat(7,1fr)] sm:gap-2';
-};
-
-const getCardVariants = (index: number, count: number) => ({
-  featured: index === 0 || (count === 2 && index === 1),
-  tall: count >= 4 && count <= 6 && ((count === 4 && index === 2) || (count >= 5 && index === 3)),
-  wide: (count === 5 && index === 4) || (count === 4 && (index === 1 || index === 3)),
-});
 
 function CoursesPageInner() {
   const router = useRouter();
@@ -53,12 +29,56 @@ function CoursesPageInner() {
   const searchParams = useSearchParams();
   const priceParam = searchParams.get('price');
 
+  const [courses, setCourses] = useState<Course[]>([]);
   const [search, setSearch] = useState('');
   const [tagFilter, setTagFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState<RatingFilterType>(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const maxPrice = useMemo(() => Math.max(...COURSES.map(c => c.price)), []);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await courseService.getPublishedCourses();
+        const mapped: Course[] = ((data || []) as Record<string, unknown>[]).map(c => {
+          const instructorEmail = c.instructorEmail ? String(c.instructorEmail) : undefined;
+          const instructorWalletAddress = c.instructorWalletAddress ? String(c.instructorWalletAddress) : undefined;
+          const instructorName = String(c.instructorName || '');
+          
+          const instructorAvatar = (instructorWalletAddress || instructorEmail || instructorName)
+            ? getUserAvatar({ walletAddress: instructorWalletAddress, email: instructorEmail, fullName: instructorName })
+            : '/loading.png';
+
+          return {
+            id: String(c.id || c.slug || ''),
+            slug: String(c.slug || ''),
+            title: String(c.title || ''),
+            description: String(c.shortDescription || c.description || ''),
+            thumbnail: c.imageUrl ? String(c.imageUrl) : undefined,
+            price: Number(c.price) || 0,
+            currency: 'ADA',
+            discount: c.discount != null ? Number(c.discount) : undefined,
+            discountEndTime: c.discountEndTime ? String(c.discountEndTime) : undefined,
+            instructorName,
+            instructorAvatar,
+            totalLessons: Number(c.numOfLessons) || 0,
+            totalStudents: Number(c.numOfStudents) || 0,
+            rating: c.rating != null ? Number(c.rating) : undefined,
+            tags: Array.isArray(c.courseTags) 
+              ? (c.courseTags as { name?: string }[]).map(t => String(t.name || ''))
+              : [],
+            status: c.draft ? 'DRAFT' : 'PUBLISHED',
+            createdAt: String(c.createdAt || ''),
+          };
+        });
+        setCourses(mapped);
+      } catch {
+        setCourses([]);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const maxPrice = useMemo(() => Math.max(...courses.map(c => c.price), 0), [courses]);
 
   const parsePriceParam = useCallback((param: string | null, max: number): PriceRange => {
     if (param === 'free') return { min: 0, max: 0 };
@@ -87,17 +107,17 @@ function CoursesPageInner() {
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
-    for (const course of COURSES) {
+    for (const course of courses) {
       course.tags?.forEach(tag => tags.add(tag));
     }
     return Array.from(tags).sort();
-  }, []);
+  }, [courses]);
 
   const searchSuggestions = useMemo(() => {
     const seen = new Set<string>();
     const suggestions: { text: string; type: 'course' | 'instructor' | 'tag' }[] = [];
 
-    for (const course of COURSES) {
+    for (const course of courses) {
       if (!seen.has(course.title)) {
         suggestions.push({ text: course.title, type: 'course' });
         seen.add(course.title);
@@ -116,15 +136,16 @@ function CoursesPageInner() {
     }
 
     return suggestions;
-  }, [allTags]);
+  }, [courses, allTags]);
 
   const filteredCourses = useMemo(() => {
     const searchLower = search.toLowerCase();
     
-    return COURSES.filter(course => {
+    return courses.filter(course => {
       const matchSearch = !search || 
         course.title.toLowerCase().includes(searchLower) ||
-        course.instructorName.toLowerCase().includes(searchLower);
+        course.instructorName.toLowerCase().includes(searchLower) ||
+        course.tags?.some(tag => tag.toLowerCase().includes(searchLower));
       
       const matchPrice = course.price >= priceRange.min && course.price <= priceRange.max;
       const matchTag = tagFilter === 'all' || course.tags?.includes(tagFilter);
@@ -132,7 +153,7 @@ function CoursesPageInner() {
       
       return matchSearch && matchPrice && matchTag && matchRating;
     });
-  }, [search, priceRange, tagFilter, ratingFilter]);
+  }, [courses, search, priceRange, tagFilter, ratingFilter]);
 
   const { paginatedCourses, totalPages } = useMemo(() => {
     const total = filteredCourses.length;

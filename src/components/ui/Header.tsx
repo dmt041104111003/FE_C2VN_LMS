@@ -1,10 +1,11 @@
 'use client';
 
-import { memo, useState, useCallback, Suspense } from 'react';
+import { memo, useState, useCallback, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from './Logo';
 import { SearchModal } from './SearchModal';
+import { api } from '@/services/api';
 import {
   ChevronDownIcon,
   MenuIcon,
@@ -16,8 +17,8 @@ import {
   LogoutIcon,
   UserIcon,
   UsersIcon,
+  LockIcon,
 } from './icons';
-import { Badge } from './Badge';
 import {
   ROUTES,
   NAV_ITEMS,
@@ -64,8 +65,21 @@ function HeaderInner() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const userAvatar = getUserAvatar(user);
+
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setUnreadCount(0);
+      return;
+    }
+    
+    api.get<number>('/api/feedbacks/inbox/count')
+      .then(count => setUnreadCount(count || 0))
+      .catch(() => setUnreadCount(0));
+  }, [isAuthenticated]);
 
   const roleInfo = user?.role ? {
     label: ROLE_LABELS[user.role as keyof typeof ROLE_LABELS] || user.role,
@@ -143,6 +157,11 @@ function HeaderInner() {
               <>
                 <Link href={ROUTES.PROFILE_INBOX} className={`${HEADER_ICON_BTN} relative`}>
                   <MailIcon />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-xs font-medium rounded-full flex items-center justify-center">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
                 </Link>
 
                 <div className="relative">
@@ -199,6 +218,20 @@ function HeaderInner() {
                         <UserIcon className="w-4 h-4" />
                         Hồ sơ
                       </Link>
+                      {user.hasPassword && (
+                        <Link 
+                          href={ROUTES.CHANGE_PASSWORD} 
+                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
+                            isActive(ROUTES.CHANGE_PASSWORD) 
+                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                              : 'text-[var(--text)]/70'
+                          }`}
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <LockIcon className="w-4 h-4" />
+                          Đổi mật khẩu
+                        </Link>
+                      )}
                       <button 
                         onClick={() => { setIsUserMenuOpen(false); logout(); }}
                         className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:bg-[var(--text)]/5"

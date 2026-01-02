@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { DataTable, Dialog, Pagination, Panel, useToast } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
@@ -15,10 +15,30 @@ import type { InstructorCourse, InstructorModalType, InstructorModalState, Cours
 import { InstructorLayout } from './InstructorLayout';
 import { CourseFilters } from './CourseFilters';
 import { CourseRow } from './CourseRow';
+import { courseService, type CourseShortInfo } from '@/services/course';
+import { translateError } from '@/constants/auth';
 
 const LABELS = INSTRUCTOR_LABELS.courses;
 const TOAST = LABELS.toast;
 const INITIAL_MODAL: InstructorModalState = { type: null, courseId: null };
+
+const calculateRevenue = (price: number, discount: number | undefined, enrollmentCount: number): number => {
+  const effectivePrice = discount && discount > 0 ? price * (1 - discount / 100) : price;
+  return effectivePrice * enrollmentCount;
+};
+
+const mapApiCourseToInstructorCourse = (course: CourseShortInfo): InstructorCourse => ({
+  id: course.id,
+  slug: course.slug || course.id,
+  title: course.title,
+  students: course.enrollmentCount || 0,
+  revenue: calculateRevenue(course.price || 0, course.discount, course.enrollmentCount || 0),
+  status: course.draft ? 'draft' : 'published',
+  completedCount: 0,
+  pendingCertificateCount: 0,
+  createdAt: course.createdAt || new Date().toISOString(),
+  updatedAt: course.updatedAt || new Date().toISOString(),
+});
 
 export function InstructorPage() {
   const router = useRouter();
@@ -28,6 +48,19 @@ export function InstructorPage() {
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<InstructorModalState>(INITIAL_MODAL);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await courseService.getMyCourses(0, 100);
+        setCourses(response.content.map(mapApiCourseToInstructorCourse));
+      } catch (err) {
+        const errorMsg = err instanceof Error ? translateError(err.message) : 'Không thể tải danh sách khóa học';
+        toast.error(errorMsg);
+      }
+    };
+    fetchCourses();
+  }, [toast]);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -63,24 +96,38 @@ export function InstructorPage() {
     setModal(INITIAL_MODAL);
   }, []);
 
-  const handlePublish = useCallback((courseId: string) => {
-    setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'published' as const } : c));
-    closeModal();
-    toast.success(TOAST.publishSuccess);
+  const handlePublish = useCallback(async (courseId: string) => {
+    try {
+      await courseService.publishCourse(courseId);
+      setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'published' as const } : c));
+      toast.success(TOAST.publishSuccess);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? translateError(err.message) : 'Xuất bản thất bại';
+      toast.error(errorMsg);
+    } finally {
+      closeModal();
+    }
   }, [closeModal, toast]);
 
-  const handleUnpublish = useCallback((courseId: string) => {
-    setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'draft' as const } : c));
-    closeModal();
-    toast.success(TOAST.unpublishSuccess);
+  const handleUnpublish = useCallback(async (courseId: string) => {
+    try {
+      await courseService.unpublishCourse(courseId);
+      setCourses(prev => prev.map(c => c.id === courseId ? { ...c, status: 'draft' as const } : c));
+      toast.success(TOAST.unpublishSuccess);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? translateError(err.message) : 'Gỡ xuất bản thất bại';
+      toast.error(errorMsg);
+    } finally {
+      closeModal();
+    }
   }, [closeModal, toast]);
 
-  const handleViewStudents = useCallback((courseId: string) => {
-    router.push(`/instructor/courses/${courseId}/students`);
+  const handleViewStudents = useCallback((slug: string) => {
+    router.push(`/instructor/courses/${slug}/students`);
   }, [router]);
 
-  const handleViewDetails = useCallback((courseId: string) => {
-    router.push(`/instructor/courses/${courseId}`);
+  const handleViewDetails = useCallback((slug: string) => {
+    router.push(`/instructor/courses/${slug}`);
   }, [router]);
 
   const handleCreate = useCallback(() => {
@@ -91,13 +138,13 @@ export function InstructorPage() {
     openModal(isPublished ? 'unpublish' : 'publish', courseId);
   }, [openModal]);
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!modal.courseId) return;
-    const actions: Record<NonNullable<InstructorModalType>, () => void> = {
-      publish: () => handlePublish(modal.courseId!),
-      unpublish: () => handleUnpublish(modal.courseId!),
-    };
-    modal.type && actions[modal.type]?.();
+    if (modal.type === 'publish') {
+      await handlePublish(modal.courseId);
+    } else if (modal.type === 'unpublish') {
+      await handleUnpublish(modal.courseId);
+    }
   }, [modal, handlePublish, handleUnpublish]);
 
   const modalConfig = modal.type ? COURSE_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;

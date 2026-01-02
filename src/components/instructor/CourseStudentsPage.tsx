@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, useToast, FormModal } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
@@ -9,61 +9,80 @@ import {
   STUDENTS_LABELS,
   STUDENT_MODAL_CONFIG,
   INITIAL_STUDENT_MODAL,
-  INITIAL_EDIT_STUDENT_MODAL,
 } from '@/constants/course-students';
 import {
   ADD_STUDENT_FIELDS,
   ADD_STUDENT_LABELS,
   ADD_STUDENT_INITIAL_DATA,
   ADD_STUDENT_DRAFT_KEY,
-  EDIT_STUDENT_LABELS,
-  EDIT_STUDENT_DRAFT_KEY,
 } from '@/constants/instructor';
 import { DEFAULT_MODAL_CONFIG } from '@/types/common';
 import type {
   CourseStudent,
   StudentStatus,
   StudentModalState,
-  EditStudentModalState,
   CourseStudentsPageProps,
   SearchSuggestion,
 } from '@/types/course-students';
 import { InstructorLayout } from './InstructorLayout';
 import { StudentTable } from './StudentTable';
+import { getEnrolledStudents, courseService, addStudentToCourse } from '@/services/course';
 
 const LABELS = STUDENTS_LABELS;
 const TOAST = LABELS.toast;
 
 const isFormEmpty = (data: Record<string, unknown>): boolean => {
-  const fullName = ((data.fullName as string) || '').trim();
   const contactValue = ((data.contactValue as string) || '').trim();
-  return !fullName && !contactValue;
+  return !contactValue;
 };
 
 const isFormValid = (data: Record<string, unknown>): boolean => {
-  const fullName = ((data.fullName as string) || '').trim();
   const contactValue = ((data.contactValue as string) || '').trim();
-  return Boolean(fullName && contactValue);
+  return Boolean(contactValue);
 };
 
 export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
   const router = useRouter();
   const toast = useToast();
 
-  const course = useMemo(() => null, [courseId]);
-
+  const [courseInfo, setCourseInfo] = useState<{ title: string; id: string } | null>(null);
   const [students, setStudents] = useState<CourseStudent[]>([]);
+
+  const fetchStudents = useCallback(async () => {
+    try {
+      const courseData = await courseService.getCourseBySlug(courseId) as { id: string; title: string };
+      const realCourseId = courseData.id;
+      
+      const data = await getEnrolledStudents(realCourseId);
+      setCourseInfo({ title: data.courseName || courseData.title, id: realCourseId });
+      setStudents(data.enrolled.map(e => ({
+        id: String(e.enrolledId),
+        fullName: e.userName || 'Chưa cập nhật',
+        email: e.email || '',
+        walletAddress: e.walletAddress,
+        enrolledAt: e.enrollAt,
+        status: e.courseCompleted ? 'completed' : 'active',
+        progress: e.lectureProgressPercent || 0,
+        lecturesCompleted: e.lecturesCompleted || 0,
+        totalLectures: e.totalLectures || 0,
+        testsCompleted: e.testsCompleted || 0,
+        totalTests: e.totalTests || 0,
+        allLecturesCompleted: e.allLecturesCompleted || false,
+        allTestsCompleted: e.allTestsCompleted || false,
+      } as CourseStudent)));
+    } catch {
+      toast.error('Không thể tải danh sách học viên');
+    }
+  }, [courseId, toast]);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<StudentStatus | ''>('');
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<StudentModalState>(INITIAL_STUDENT_MODAL);
-  const [editModal, setEditModal] = useState<EditStudentModalState>(INITIAL_EDIT_STUDENT_MODAL);
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const studentsMap = useMemo(
-    () => new Map(students.map(s => [s.id, s])),
-    [students]
-  );
 
   const filteredStudents = useMemo(() => {
     if (!keyword && !statusFilter) return students;
@@ -105,22 +124,6 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
 
   const closeModal = useCallback(() => setModal(INITIAL_STUDENT_MODAL), []);
 
-  const handleEdit = useCallback((studentId: string) => {
-    const student = studentsMap.get(studentId);
-    if (!student) return;
-
-    const hasWallet = Boolean(student.walletAddress);
-    setEditModal({
-      isOpen: true,
-      studentId,
-      initialData: {
-        fullName: student.fullName,
-        contactType: hasWallet ? 'wallet' : 'email',
-        contactValue: hasWallet ? (student.walletAddress || '') : student.email,
-      },
-    });
-  }, [studentsMap]);
-
   const handleRemoveClick = useCallback((studentId: string) => {
     setModal({ type: 'remove', studentId });
   }, []);
@@ -161,60 +164,31 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
 
   const handleAddStudentClick = useCallback(() => setShowAddModal(true), []);
   const handleCloseAddModal = useCallback(() => setShowAddModal(false), []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddStudentSubmit = useCallback((data: Record<string, unknown>) => {
-    const fullName = data.fullName as string;
-    const contactType = data.contactType as string;
-    const contactValue = data.contactValue as string;
-    const isEmail = contactType === 'email';
+  const handleAddStudentSubmit = useCallback(async (data: Record<string, unknown>) => {
+    if (!courseInfo?.id) return;
+    
+    const contactType = data.contactType as 'email' | 'wallet';
+    const contactValue = (data.contactValue as string).trim();
 
-    const newStudent: CourseStudent = {
-      id: `new-${Date.now()}`,
-      fullName,
-      email: isEmail ? contactValue : '',
-      walletAddress: isEmail ? undefined : contactValue,
-      enrolledAt: new Date().toISOString(),
-      status: 'active',
-    };
-
-    setStudents(prev => [newStudent, ...prev]);
-    setShowAddModal(false);
-    toast.success(TOAST.addSuccess);
-  }, [toast]);
-
-  const handleCloseEditModal = useCallback(() => {
-    setEditModal(INITIAL_EDIT_STUDENT_MODAL);
-  }, []);
-
-  const handleEditSubmit = useCallback((data: Record<string, unknown>) => {
-    const { studentId } = editModal;
-    if (!studentId) return;
-
-    const fullName = data.fullName as string;
-    const contactType = data.contactType as string;
-    const contactValue = data.contactValue as string;
-    const isEmail = contactType === 'email';
-
-    setStudents(prev => prev.map(s =>
-      s.id === studentId
-        ? {
-            ...s,
-            fullName,
-            email: isEmail ? contactValue : s.email,
-            walletAddress: isEmail ? s.walletAddress : contactValue,
-          }
-        : s
-    ));
-
-    setEditModal(INITIAL_EDIT_STUDENT_MODAL);
-    toast.success(TOAST.editSuccess);
-  }, [editModal, toast]);
+    setIsSubmitting(true);
+    try {
+      await addStudentToCourse(courseInfo.id, { contactType, contactValue });
+      toast.success(TOAST.addSuccess);
+      setShowAddModal(false);
+      
+      await fetchStudents();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Không thể thêm học viên';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [courseInfo?.id, toast, fetchStudents]);
 
   const modalConfig = modal.type ? STUDENT_MODAL_CONFIG[modal.type] : DEFAULT_MODAL_CONFIG;
-  const pageTitle = course ? `${LABELS.title} - ${course.title}` : LABELS.title;
-  const editStorageKey = editModal.studentId
-    ? `${EDIT_STUDENT_DRAFT_KEY}_${editModal.studentId}`
-    : EDIT_STUDENT_DRAFT_KEY;
+  const pageTitle = courseInfo ? `${LABELS.title} - ${courseInfo.title}` : LABELS.title;
 
   return (
     <InstructorLayout activeId="courses" title={pageTitle}>
@@ -228,12 +202,11 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           keyword={keyword}
           statusFilter={statusFilter}
           searchSuggestions={searchSuggestions}
-          courseTitle={course?.title || LABELS.title}
+          courseTitle={courseInfo?.title || LABELS.title}
           pendingCertificateCount={pendingCertificateCount}
           onKeywordChange={setKeyword}
           onStatusChange={setStatusFilter}
           onPageChange={setPage}
-          onEdit={handleEdit}
           onRemove={handleRemoveClick}
           onIssueCertificate={handleIssueCertificateClick}
           onIssueAllCertificates={handleIssueAllCertificatesClick}
@@ -254,7 +227,7 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           isOpen={showAddModal}
           labels={{
             ...ADD_STUDENT_LABELS,
-            subtitle: course?.title,
+            subtitle: courseInfo?.title,
           }}
           fields={ADD_STUDENT_FIELDS}
           storageKey={`${ADD_STUDENT_DRAFT_KEY}_${courseId}`}
@@ -263,18 +236,7 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           isValid={isFormValid}
           onClose={handleCloseAddModal}
           onSubmit={handleAddStudentSubmit}
-        />
-
-        <FormModal
-          isOpen={editModal.isOpen}
-          labels={EDIT_STUDENT_LABELS}
-          fields={ADD_STUDENT_FIELDS}
-          storageKey={editStorageKey}
-          initialData={editModal.initialData}
-          isEmpty={isFormEmpty}
-          isValid={isFormValid}
-          onClose={handleCloseEditModal}
-          onSubmit={handleEditSubmit}
+          disabled={isSubmitting}
         />
       </div>
     </InstructorLayout>

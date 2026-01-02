@@ -240,6 +240,20 @@ export const PROSEMIRROR_STYLES = `
     background-color: var(--accent);
     color: var(--bg);
   }
+
+  .ProseMirror.prose-inherit,
+  .ProseMirror.prose-inherit p,
+  .ProseMirror.prose-inherit h1,
+  .ProseMirror.prose-inherit h2,
+  .ProseMirror.prose-inherit h3,
+  .ProseMirror.prose-inherit h4,
+  .ProseMirror.prose-inherit h5,
+  .ProseMirror.prose-inherit h6,
+  .ProseMirror.prose-inherit li,
+  .ProseMirror.prose-inherit strong,
+  .ProseMirror.prose-inherit blockquote {
+    color: inherit;
+  }
 `;
 
 export const TOOLTIP_STYLES = `

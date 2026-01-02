@@ -10,3 +10,7 @@ export interface AsyncIdPageProps {
   params: Promise<{ id: string }>;
 }
 
+export interface SlugPageProps {
+  params: { slug: string };
+}
+

@@ -33,7 +33,7 @@ const PreviewSkeleton = memo(function PreviewSkeleton({ className }: { className
   );
 });
 
-function TipTapPreviewComponent({ content, className = '', compact = false }: TipTapPreviewProps) {
+function TipTapPreviewComponent({ content, className = '', compact = false, inheritColor = false }: TipTapPreviewProps) {
   const [isClient, setIsClient] = useState(false);
   const proseRef = useRef<HTMLDivElement>(null);
   const copyTimeoutRef = useRef<Map<HTMLElement, NodeJS.Timeout>>(new Map());
@@ -95,11 +95,13 @@ function TipTapPreviewComponent({ content, className = '', compact = false }: Ti
 
   if (!isClient) return <PreviewSkeleton className={className} />;
 
+  const baseClasses = `ProseMirror ${compact ? '' : S.PREVIEW.CONTAINER} ${inheritColor ? 'prose-inherit' : ''} ${className}`;
+  
   return (
     <>
       <div
         ref={proseRef}
-        className={`ProseMirror ${compact ? '' : S.PREVIEW.CONTAINER} ${className}`}
+        className={baseClasses}
         style={compact ? { minHeight: 'auto', padding: 0 } : undefined}
         dangerouslySetInnerHTML={{ __html: processedContent }}
       />

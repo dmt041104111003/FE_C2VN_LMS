@@ -11,6 +11,7 @@ export const EditorCardHeader = memo(function EditorCardHeader({
   onRemove,
   removeTitle,
   titleClassName = S.CARD_TITLE,
+  disabled,
 }: EditorCardHeaderProps) {
   return (
     <div className={S.CARD_HEADER}>
@@ -20,10 +21,10 @@ export const EditorCardHeader = memo(function EditorCardHeader({
         onClick={onRemove}
         className={S.REMOVE_BTN}
         title={removeTitle}
+        disabled={disabled}
       >
         <TrashIcon className={ICON_SM} />
       </button>
     </div>
   );
 });
-

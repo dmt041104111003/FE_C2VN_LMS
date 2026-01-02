@@ -11,8 +11,9 @@ function PasswordInputComponent(props: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = useCallback(() => {
+    if (props.disabled) return;
     setShowPassword(prev => !prev);
-  }, []);
+  }, [props.disabled]);
 
   return (
     <div className="relative">
@@ -24,7 +25,8 @@ function PasswordInputComponent(props: PasswordInputProps) {
       <button
         type="button"
         onClick={togglePassword}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)]/40 hover:text-[var(--text)]/60 transition-colors"
+        disabled={props.disabled}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)]/40 hover:text-[var(--text)]/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         tabIndex={-1}
       >
         {showPassword ? (
@@ -38,4 +40,3 @@ function PasswordInputComponent(props: PasswordInputProps) {
 }
 
 export const PasswordInput = memo(PasswordInputComponent);
-

@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from 'react';
+
 export type QuestionType = 'single' | 'multiple' | 'text';
 export type LessonType = 'video' | 'quiz' | 'reading';
 export type LessonStatus = 'locked' | 'available' | 'in_progress' | 'completed';
@@ -15,6 +17,8 @@ export interface Question {
 export interface QuestionOption {
   id: string;
   content: string;
+  selected?: boolean;
+  correct?: boolean;
 }
 
 export interface Quiz {
@@ -41,6 +45,8 @@ export interface LessonProgress {
   lessonId: string;
   status: LessonStatus;
   progress: number;
+  score?: number;
+  attempts?: number;
   completedAt?: string;
   quizAttempts?: QuizAttempt[];
 }
@@ -50,6 +56,7 @@ export interface CourseProgress {
   lessonProgress: Record<string, LessonProgress>;
   currentLessonId: string;
   completionRate: number;
+  isCompleted: boolean;
   lastAccessedAt: string;
 }
 
@@ -72,24 +79,49 @@ export interface LearningChapter {
   lessons: LearningLesson[];
 }
 
+export interface CourseUpgradeInfo {
+  courseId: string;
+  hasNewVersion: boolean;
+  currentSnapshotVersion: number;
+  snapshotCreatedAt: string | null;
+  courseUpdatedAt: string | null;
+  message?: string;
+}
+
 export interface LearningSidebarProps {
   chapters: LearningChapter[];
   currentLessonId: string;
   progress: Record<string, LessonProgress>;
   onSelectLesson: (lessonId: string) => void;
+  courseId?: string;
+  upgradeInfo?: CourseUpgradeInfo;
+  onUpgrade?: () => void;
+  isUpgrading?: boolean;
 }
 
-export interface VideoLessonProps {
-  lesson: LearningLesson;
-  onComplete: () => void;
-  onProgress: (progress: number) => void;
+export interface ServerQuestionResult {
+  questionId: number;
+  correctAnswerIds: number[];
+  selectedAnswerIds: number[];
+  isCorrect: boolean;
+  explanation?: string;
+}
+
+export interface ServerQuizResult {
+  testId: number;
+  score: number;
+  passed: boolean;
+  questionResults: ServerQuestionResult[];
 }
 
 export interface QuizSectionProps {
   quiz: Quiz;
-  onSubmit: (answers: Record<string, string | string[]>) => void;
+  courseId: string;
+  userId: string;
+  isAlreadyPassed?: boolean;
   onComplete: (passed: boolean, score: number) => void;
-  attempt?: QuizAttempt;
+  enrollmentId?: number;
+  enableFaceProctor?: boolean;
 }
 
 export interface QuizQuestionProps {
@@ -111,38 +143,14 @@ export interface QuizResultProps {
 
 export interface LearningPageProps {
   courseId: string;
+  userId: string;
   chapters: LearningChapter[];
   progress: CourseProgress;
-}
-
-export interface VideoLessonContentProps {
-  lesson: LearningLesson;
-  isCompleted: boolean;
-  onComplete: () => void;
-  onNext: () => void;
-  hasNext: boolean;
-}
-
-export interface ReadingLessonContentProps {
-  lesson: LearningLesson;
-  isCompleted: boolean;
-  onComplete: () => void;
-  onNext: () => void;
-  hasNext: boolean;
-}
-
-export interface LearningChapterItemProps {
-  chapter: LearningChapter;
-  currentLessonId: string;
-  progress: Record<string, LessonProgress>;
-  onSelectLesson: (id: string) => void;
-}
-
-export interface LessonItemProps {
-  lesson: LearningLesson;
-  isCurrent: boolean;
-  status: LessonStatus;
-  onSelect: (id: string) => void;
+  upgradeInfo?: CourseUpgradeInfo | null;
+  isUpgrading?: boolean;
+  onUpgrade?: () => Promise<void>;
+  enrollmentId?: number;
+  enableFaceProctor?: boolean;
 }
 
 export interface QuizIntroProps {
@@ -203,3 +211,75 @@ export interface QuizExplanationProps {
   explanation?: string;
 }
 
+export type ProgressState = CourseProgress & {
+  currentLessonId: string;
+  lessonProgress: Record<string, LessonProgress>;
+};
+
+export interface LessonWithChapter {
+  lesson: LearningLesson;
+  chapterTitle: string;
+}
+
+export interface UseLectureProgressParams {
+  userId: string;
+  courseId: string;
+  currentLesson: LearningLesson | undefined;
+  isCompleted: boolean;
+  isLocked: boolean;
+  allLessons: LessonWithChapter[];
+  setProgress: Dispatch<SetStateAction<ProgressState>>;
+}
+
+export interface UseCompleteLessonParams {
+  userId: string;
+  courseId: string;
+  currentLesson: LearningLesson | undefined;
+  currentLessonIndex: number;
+  allLessons: LessonWithChapter[];
+  setProgress: Dispatch<SetStateAction<ProgressState>>;
+}
+
+export interface LessonContentProps {
+  lesson: LearningLesson;
+  isCompleted: boolean;
+  onComplete: () => void;
+  onNext: () => void;
+  hasNext: boolean;
+}
+
+
+export interface LectureQnaReply {
+  id: number;
+  content: string;
+  createdAt: string;
+  userId: string;
+  userName: string;
+  userEmail?: string;
+  userWalletAddress?: string;
+  likeCount?: number;
+  dislikeCount?: number;
+  userVote?: 'LIKE' | 'DISLIKE' | null;
+  visible?: boolean;
+  replies?: LectureQnaReply[];
+}
+
+export interface LectureQna {
+  id: number;
+  content: string;
+  createdAt: string;
+  userId: string;
+  userName: string;
+  userEmail?: string;
+  userWalletAddress?: string;
+  likeCount: number;
+  dislikeCount: number;
+  userVote?: 'LIKE' | 'DISLIKE' | null;
+  visible: boolean;
+  replies: LectureQnaReply[];
+}
+
+export interface LectureCommentsProps {
+  lectureId: string;
+  isInstructor?: boolean; 
+}

@@ -97,12 +97,12 @@ export interface UserProfileEditProps {
   user: UserProfile;
   onSave?: (data: UserProfileEditData) => void;
   onCancel?: () => void;
+  disabled?: boolean;
 }
 
 export interface UserProfileEditData {
   fullName: string;
   bio: string;
-  avatar?: string;
 }
 
 export interface FormSectionProps {

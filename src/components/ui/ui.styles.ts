@@ -476,9 +476,9 @@ export const FILTERS = {
   BAR: 'flex flex-col sm:flex-row gap-4 mb-6',
   SEARCH_WRAPPER: 'flex-1 relative',
   SEARCH_ICON: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text)]/30',
-  SEARCH_INPUT: 'w-full pl-10 pr-4 py-2.5 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors',
+  SEARCH_INPUT: 'w-full pl-10 pr-4 py-2.5 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
   SELECT_WRAPPER: 'relative',
-  SELECT: 'appearance-none px-4 py-2.5 pr-10 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer min-w-[140px]',
+  SELECT: 'appearance-none px-4 py-2.5 pr-10 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed',
   SELECT_ICON: 'absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text)]/30 pointer-events-none',
 } as const;
 
@@ -529,7 +529,7 @@ export const SIDEBAR_LAYOUT = {
 
 export const TOAST = {
   CONTAINER: 'fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none',
-  ITEM: 'relative overflow-hidden w-80 max-w-[calc(100vw-2rem)] bg-white border border-[var(--border)] border-l-4 rounded-lg shadow-lg transition-all duration-300 ease-out',
+  ITEM: 'relative overflow-hidden w-80 max-w-[calc(100vw-2rem)] bg-white border border-[var(--border)] rounded-lg shadow-lg transition-all duration-300 ease-out',
   ITEM_VISIBLE: 'translate-x-0 opacity-100',
   ITEM_HIDDEN: 'translate-x-full opacity-0',
   CONTENT: 'flex items-start gap-3 p-4',
@@ -543,10 +543,10 @@ export const TOAST = {
   ANIMATION_DURATION: 300,
   ERROR_MSG: 'useToast phải được sử dụng trong ToastProvider',
   VARIANT: {
-    success: 'border-l-[var(--correct)] bg-[var(--correct)]/10',
-    error: 'border-l-[var(--incorrect)] bg-[var(--incorrect)]/10',
-    warning: 'border-l-[var(--warning)] bg-[var(--warning)]/10',
-    info: 'border-l-[var(--accent)] bg-[var(--accent)]/10',
+    success: 'bg-[var(--correct)]/10',
+    error: 'bg-[var(--incorrect)]/10',
+    warning: 'bg-[var(--warning)]/10',
+    info: 'bg-[var(--accent)]/10',
   },
   ICON_COLOR: {
     success: 'text-[var(--correct)]',
@@ -599,9 +599,9 @@ export const FORM_MODAL = {
   BODY: 'p-6 space-y-4',
   FIELD: 'space-y-2',
   LABEL: 'text-sm font-medium text-[var(--text)]/70',
-  INPUT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors',
-  SELECT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer',
-  TEXTAREA: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors resize-none',
+  INPUT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+  SELECT: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--accent)] focus:outline-none transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
+  TEXTAREA: 'w-full px-4 py-3 bg-[var(--bg-alt)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:border-[var(--accent)] focus:outline-none transition-colors resize-none disabled:opacity-50 disabled:cursor-not-allowed',
   FOOTER: 'flex items-center justify-end gap-3 p-4 bg-[var(--bg-alt)]/30 border-t border-[var(--border)]',
 } as const;
 

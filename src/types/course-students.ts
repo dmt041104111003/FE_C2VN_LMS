@@ -12,6 +12,13 @@ export interface CourseStudent {
   enrolledAt: string;
   status: StudentStatus;
   certificateStatus?: CertificateStatus;
+  progress?: number;
+  lecturesCompleted?: number;
+  totalLectures?: number;
+  testsCompleted?: number;
+  totalTests?: number;
+  allLecturesCompleted?: boolean;
+  allTestsCompleted?: boolean;
 }
 
 export interface StudentFormData {
@@ -26,12 +33,6 @@ export interface StudentModalState {
   studentId: string | null;
 }
 
-export interface EditStudentModalState {
-  isOpen: boolean;
-  studentId: string | null;
-  initialData: StudentFormData;
-}
-
 export interface SearchSuggestion {
   text: string;
   type: SearchSuggestionType;
@@ -40,7 +41,6 @@ export interface SearchSuggestion {
 export interface StudentRowProps {
   index: number;
   student: CourseStudent;
-  onEdit: (studentId: string) => void;
   onRemove: (studentId: string) => void;
   onIssueCertificate: (studentId: string) => void;
 }
@@ -74,7 +74,6 @@ export interface StudentTableProps {
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: StudentStatus | '') => void;
   onPageChange: (page: number) => void;
-  onEdit: (studentId: string) => void;
   onRemove: (studentId: string) => void;
   onIssueCertificate: (studentId: string) => void;
   onIssueAllCertificates: () => void;

@@ -1,27 +1,15 @@
 import { api } from './api';
 import { API_ENDPOINTS } from '@/constants/api';
-import type { AdminUser, UserRole, UserStatus, LoginMethod } from '@/types/admin';
+import type { AdminUser, UserRole } from '@/types/admin';
+import type { 
+  UserSearchParams, 
+  UserListResponse, 
+  UpdateProfileData,
+  ApiUserResponse 
+} from '@/types/service.types';
+import { mapApiUserToAdminUser } from '@/types/service.types';
 
-export interface UserSearchParams {
-  keyword?: string;
-  role?: UserRole | '';
-  status?: UserStatus | '';
-  page?: number;
-  size?: number;
-}
-
-interface ApiUserResponse {
-  id: string;
-  email?: string;
-  fullName?: string;
-  imageUrl?: string;
-  walletAddress?: string;
-  role?: { name: string };
-  loginMethod?: { name: string };
-  status?: string;
-  createdAt?: string;
-  lastLogin?: string;
-}
+export type { UserSearchParams, UserListResponse, UpdateProfileData };
 
 interface ApiUserListResponse {
   content: ApiUserResponse[];
@@ -31,64 +19,42 @@ interface ApiUserListResponse {
   size: number;
 }
 
-export interface UserListResponse {
-  content: AdminUser[];
-  totalElements: number;
-  totalPages: number;
-  number: number;
-  size: number;
-}
+const buildQueryParams = (params: UserSearchParams): Record<string, string> => {
+  const query: Record<string, string> = {};
+  if (params.keyword) query.keyword = params.keyword;
+  if (params.role) query.role = params.role;
+  if (params.status) query.status = params.status;
+  if (params.page !== undefined) query.page = String(params.page);
+  if (params.size !== undefined) query.size = String(params.size);
+  return query;
+};
 
-const mapApiUserToAdminUser = (user: ApiUserResponse): AdminUser => ({
-  id: user.id,
-  email: user.email || '',
-  fullName: user.fullName || '',
-  avatar: user.imageUrl,
-  role: (user.role?.name as UserRole) || 'USER',
-  status: (user.status as UserStatus) || 'ACTIVE',
-  loginMethod: (user.loginMethod?.name as LoginMethod) || 'EMAIL_PASSWORD',
-  createdAt: user.createdAt || '',
-  lastLogin: user.lastLogin,
-});
+export const getUsers = async (params: UserSearchParams = {}): Promise<UserListResponse> => {
+  const response = await api.get<ApiUserListResponse>(API_ENDPOINTS.USERS.BASE, { 
+    params: buildQueryParams(params) 
+  });
+  return { ...response, content: response.content.map(mapApiUserToAdminUser) };
+};
 
-export async function getUsers(params: UserSearchParams = {}): Promise<UserListResponse> {
-  const queryParams: Record<string, string> = {};
-  
-  if (params.keyword) queryParams.keyword = params.keyword;
-  if (params.role) queryParams.role = params.role;
-  if (params.status) queryParams.status = params.status;
-  if (params.page !== undefined) queryParams.page = String(params.page);
-  if (params.size !== undefined) queryParams.size = String(params.size);
+export const getUserById = (userId: string): Promise<AdminUser> =>
+  api.get<AdminUser>(API_ENDPOINTS.USERS.BY_ID(userId));
 
-  const response = await api.get<ApiUserListResponse>(API_ENDPOINTS.USERS.BASE, { params: queryParams });
-  
-  return {
-    ...response,
-    content: response.content.map(mapApiUserToAdminUser),
-  };
-}
+export const getUserByEmail = (email: string): Promise<AdminUser> =>
+  api.get<AdminUser>(API_ENDPOINTS.USERS.BY_EMAIL, { params: { email } });
 
-export async function getUserById(userId: string): Promise<AdminUser> {
-  return api.get<AdminUser>(API_ENDPOINTS.USERS.BY_ID(userId));
-}
+export const banUser = (userId: string): Promise<void> =>
+  api.put<void>(API_ENDPOINTS.USERS.BAN(userId));
 
-export async function getUserByEmail(email: string): Promise<AdminUser> {
-  return api.get<AdminUser>(API_ENDPOINTS.USERS.BY_EMAIL, { params: { email } });
-}
+export const unbanUser = (userId: string): Promise<void> =>
+  api.put<void>(API_ENDPOINTS.USERS.UNBAN(userId));
 
-export async function banUser(userId: string): Promise<void> {
-  return api.put<void>(API_ENDPOINTS.USERS.BAN(userId));
-}
+export const updateUserRole = (userId: string, role: UserRole): Promise<void> =>
+  api.put<void>(API_ENDPOINTS.USERS.UPDATE_ROLE(userId), { role });
 
-export async function unbanUser(userId: string): Promise<void> {
-  return api.put<void>(API_ENDPOINTS.USERS.UNBAN(userId));
-}
+export const deleteUser = (userId: string): Promise<void> =>
+  api.delete<void>(API_ENDPOINTS.USERS.DELETE(userId));
 
-export async function updateUserRole(userId: string, role: UserRole): Promise<void> {
-  return api.put<void>(API_ENDPOINTS.USERS.UPDATE_ROLE(userId), { role });
-}
-
-export async function deleteUser(userId: string): Promise<void> {
-  return api.delete<void>(API_ENDPOINTS.USERS.DELETE(userId));
-}
-
+export const updateProfile = async (data: UpdateProfileData): Promise<AdminUser> => {
+  const response = await api.put<ApiUserResponse>(API_ENDPOINTS.USERS.UPDATE_PROFILE, data);
+  return mapApiUserToAdminUser(response);
+};

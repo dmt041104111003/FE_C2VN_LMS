@@ -5,6 +5,37 @@ export interface CourseDetailPageProps {
   courseId: string;
 }
 
+export interface CourseTag {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface CoursePaymentMethod {
+  id: number;
+  paymentMethod: {
+    name: string;
+    currency: string;
+    description?: string;
+  };
+  receiverAddress: string;
+}
+
+export interface CourseData {
+  id: string;
+  title: string;
+  description?: string;
+  videoUrl?: string;
+  price: number;
+  status: 'draft' | 'published';
+  chapters: Chapter[];
+  quizzes: Quiz[];
+  courseTags?: CourseTag[];
+  coursePaymentMethods?: CoursePaymentMethod[];
+  discount?: number;
+  discountEndTime?: string;
+}
+
 export interface CourseStats {
   chapters: number;
   lectures: number;
@@ -100,6 +131,7 @@ export interface HeaderProps {
 export interface CourseContentProps {
   course: {
     description?: string;
+    videoUrl?: string;
     chapters: Chapter[];
     quizzes: Quiz[];
   };

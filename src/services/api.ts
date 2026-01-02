@@ -33,6 +33,7 @@ async function request<T>(
     method,
     headers,
     credentials: options.withCredentials !== false ? 'include' : 'omit',
+    cache: 'no-store',
   };
 
   if (data && method !== 'GET') {

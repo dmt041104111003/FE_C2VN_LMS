@@ -22,7 +22,6 @@ export function AdminPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
   const [statusFilter, setStatusFilter] = useState<UserStatus | ''>('');
@@ -31,7 +30,6 @@ export function AdminPage() {
   const isInitialMount = useRef(true);
 
   const fetchUsers = useCallback(async () => {
-    setIsLoading(true);
     try {
       const response = await userService.getUsers({
         keyword: keyword || undefined,
@@ -45,8 +43,6 @@ export function AdminPage() {
       setTotalPages(response.totalPages);
     } catch {
       toastRef.current.error('Không thể tải danh sách người dùng');
-    } finally {
-      setIsLoading(false);
     }
   }, [keyword, roleFilter, statusFilter, page]);
 

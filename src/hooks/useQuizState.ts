@@ -1,38 +1,74 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import type { Quiz, QuizAttempt, QuizState } from '@/types/learning';
-import type { UseQuizStateReturn } from '@/types/hooks';
-import { 
-  calculateQuizScore, 
-  createCorrectAnswersMap, 
-  createInitialQuizState,
-  toSeconds,
-  QUIZ_CONSTANTS 
-} from '@/constants/learning';
+import type { QuizAttempt, QuizState, ServerQuizResult } from '@/types/learning';
+import type { UseQuizStateReturn, UseQuizStateParams } from '@/types/hooks';
+import { createInitialQuizState, toSeconds, QUIZ_CONSTANTS } from '@/constants/learning';
+import { submitQuiz } from '@/services/course';
 
 const { TIMER_INTERVAL_MS, WARNING_THRESHOLD_SECONDS } = QUIZ_CONSTANTS;
 
-export function useQuizState(
-  quiz: Quiz, 
-  onSubmit: (answers: Record<string, string | string[]>) => void
-): UseQuizStateReturn {
-  const [state, setState] = useState<QuizState>(() => createInitialQuizState(quiz.timeLimit));
+type AnswerMaps = {
+  correctAnswersMap: Map<string, Set<string>>;
+  explanationsMap: Map<string, string>;
+};
+
+const EMPTY_MAPS: AnswerMaps = {
+  correctAnswersMap: new Map(),
+  explanationsMap: new Map(),
+};
+
+const buildAnswerMaps = (result: ServerQuizResult | null): AnswerMaps => {
+  if (!result?.questionResults) return EMPTY_MAPS;
+  
+  const correctMap = new Map<string, Set<string>>();
+  const explainMap = new Map<string, string>();
+  
+  for (const { questionId, correctAnswerIds, explanation } of result.questionResults) {
+    const id = String(questionId);
+    correctMap.set(id, new Set(correctAnswerIds.map(String)));
+    if (explanation) explainMap.set(id, explanation);
+  }
+  
+  return { correctAnswersMap: correctMap, explanationsMap: explainMap };
+};
+
+const formatAnswersForSubmission = (answers: Map<string, string | string[]>) =>
+  Array.from(answers.entries()).map(([questionId, value]) => ({
+    questionId: Number(questionId),
+    answerId: Array.isArray(value) ? value.map(Number) : value ? [Number(value)] : [],
+  }));
+
+const createAttempt = (quizId: string, answers: Map<string, string | string[]>, result: ServerQuizResult): QuizAttempt => ({
+  id: Date.now().toString(),
+  quizId,
+  answers: Object.fromEntries(answers),
+  score: result.score,
+  passed: result.passed,
+  startedAt: new Date().toISOString(),
+  completedAt: new Date().toISOString(),
+});
+
+export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): UseQuizStateReturn {
+  const { questions, timeLimit, id: quizId } = quiz;
+  const totalQuestions = questions.length;
+
+  const [state, setState] = useState<QuizState>(() => createInitialQuizState(timeLimit));
+  const [serverResult, setServerResult] = useState<ServerQuizResult | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const timerRef = useRef<NodeJS.Timeout>();
 
-  const correctAnswersMap = useMemo(
-    () => createCorrectAnswersMap(quiz.questions),
-    [quiz.questions]
+  const { correctAnswersMap, explanationsMap } = useMemo(
+    () => buildAnswerMaps(serverResult),
+    [serverResult]
   );
 
-  const { questions, passingScore, timeLimit, id: quizId } = quiz;
-  const { currentIndex, started, showResults, timeLeft, answers, attempt } = state;
-  
-  const totalQuestions = questions.length;
+  const { currentIndex, started, timeLeft, answers, attempt } = state;
+  const hasResults = state.showResults && correctAnswersMap.size > 0;
+  const isQuizInProgress = started && !state.showResults;
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / totalQuestions) * 100;
   const isTimeWarning = timeLeft > 0 && timeLeft < WARNING_THRESHOLD_SECONDS;
-  const isQuizInProgress = started && !showResults;
 
   const clearTimer = useCallback(() => {
     if (timerRef.current) {
@@ -59,28 +95,37 @@ export function useQuizState(
     }
   }, [totalQuestions]);
 
-  const submit = useCallback(() => {
-    clearTimer();
+  const submit = useCallback(async () => {
+    if (isSubmitting) return;
     
-    const score = calculateQuizScore(questions, answers);
-    const answersObject = Object.fromEntries(answers);
-    const now = new Date().toISOString();
+    clearTimer();
+    setIsSubmitting(true);
 
-    const newAttempt: QuizAttempt = {
-      id: Date.now().toString(),
-      quizId,
-      answers: answersObject,
-      score,
-      passed: score >= passingScore,
-      startedAt: now,
-      completedAt: now,
-    };
+    try {
+      const result = await submitQuiz(courseId, Number(quizId), {
+        userId,
+        answers: formatAnswersForSubmission(answers),
+      });
 
-    setState(prev => ({ ...prev, currentIndex: 0, showResults: true, attempt: newAttempt }));
-    onSubmit(answersObject);
-  }, [questions, answers, quizId, passingScore, onSubmit, clearTimer]);
+      if (!result || typeof result.score === 'undefined') {
+        return;
+      }
+
+      setServerResult(result);
+      setState(prev => ({
+        ...prev,
+        currentIndex: 0,
+        showResults: true,
+        attempt: createAttempt(quizId, answers, result),
+      }));
+    } catch {
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [answers, courseId, quizId, userId, clearTimer, isSubmitting]);
 
   const retry = useCallback(() => {
+    setServerResult(null);
     setState({ ...createInitialQuizState(timeLimit), started: true });
   }, [timeLimit]);
 
@@ -107,8 +152,8 @@ export function useQuizState(
   }, [timeLeft, isQuizInProgress, timeLimit, submit]);
 
   return {
-    state,
+    state: { ...state, showResults: hasResults },
     actions: { start, answer, goTo, submit, retry, getAttempt },
-    computed: { currentQuestion, totalQuestions, progress, isTimeWarning, correctAnswersMap },
+    computed: { currentQuestion, totalQuestions, progress, isTimeWarning, correctAnswersMap, explanationsMap, isSubmitting },
   };
 }

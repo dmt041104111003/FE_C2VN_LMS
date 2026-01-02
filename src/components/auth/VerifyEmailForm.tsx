@@ -110,7 +110,7 @@ function VerifyEmailFormInner() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {isLoading ? 'Đang xử lý...' : VERIFY_EMAIL.submitText}
+          {VERIFY_EMAIL.submitText}
         </Button>
       </form>
 

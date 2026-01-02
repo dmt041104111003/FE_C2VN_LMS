@@ -12,6 +12,7 @@ export const QUIZ_TYPE_VARIANT: Record<QuizType, 'warning' | 'info'> = {
 
 export const COURSE_DETAIL_TABS: TabItem[] = [
   { key: 'content', label: 'Nội dung khóa học' },
+  { key: 'qna', label: 'Hỏi - Đáp' },
   { key: 'history', label: 'Lịch sử hoạt động' },
 ];
 
@@ -87,9 +88,10 @@ export const COURSE_DETAIL_LABELS = {
     deleteSuccess: 'Đã xóa khóa học thành công',
   },
   activity: {
-    empty: 'Chưa có hoạt động nào',
+    empty: 'Chưa có lịch sử hoạt động',
+    emptyDescription: 'Các hoạt động như tạo, cập nhật, thêm học viên sẽ được ghi lại tại đây.',
     by: 'bởi',
-    loadMore: 'Đang tải thêm...',
+    loadMore: '',
     noMore: 'Đã hiển thị tất cả hoạt động',
   },
   periodFilter: 'Thời gian',
@@ -98,7 +100,7 @@ export const COURSE_DETAIL_LABELS = {
 export const COURSE_DETAIL_STYLES = {
   header: 'flex items-center justify-between mb-6',
   content: 'space-y-8',
-  infoGrid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4',
+  infoGrid: 'grid grid-cols-1 md:grid-cols-2 grid-rows-auto gap-2',
   section: {
     title: 'text-lg font-semibold text-[var(--text)] mb-4',
   },

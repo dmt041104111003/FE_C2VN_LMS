@@ -1,21 +1,6 @@
-export type QuizType = 'final' | 'chapter' | 'lecture';
 
-export interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correctIndexes: number[];
-  explanation: string;
-}
-
-export interface Quiz {
-  id: string;
-  title: string;
-  type: QuizType;
-  chapterId?: string;
-  lectureId?: string;
-  questions: QuizQuestion[];
-}
+export type { QuizType, QuizQuestion, Quiz, QuizEditorProps, QuestionEditorProps, ChapterSelectProps } from './quiz.types';
+import type { Quiz } from './quiz.types';
 
 export interface Lecture {
   id: string;
@@ -23,6 +8,7 @@ export interface Lecture {
   content: string;
   videoUrl: string;
   duration?: number;
+  previewFree: boolean;
 }
 
 export interface Chapter {
@@ -36,8 +22,12 @@ export type CourseStatus = 'draft' | 'published';
 export interface CourseFormData {
   title: string;
   description: string;
+  videoUrl: string;
   price: number;
   status: CourseStatus;
+  receiverAddress: string;
+  discount?: number;
+  discountEndTime?: string;
   chapters: Chapter[];
   quizzes: Quiz[];
 }
@@ -48,6 +38,7 @@ export interface LectureEditorProps {
   lectureIndex: number;
   onUpdate: (chapterIndex: number, lectureIndex: number, lecture: Lecture) => void;
   onRemove: (chapterIndex: number, lectureIndex: number) => void;
+  disabled?: boolean;
 }
 
 export interface ChapterEditorProps {
@@ -58,38 +49,27 @@ export interface ChapterEditorProps {
   onAddLecture: (chapterIndex: number) => void;
   onUpdateLecture: (chapterIndex: number, lectureIndex: number, lecture: Lecture) => void;
   onRemoveLecture: (chapterIndex: number, lectureIndex: number) => void;
-}
-
-export interface QuizEditorProps {
-  quiz: Quiz;
-  quizIndex: number;
-  chapters: Chapter[];
-  onUpdate: (index: number, quiz: Quiz) => void;
-  onRemove: (index: number) => void;
+  disabled?: boolean;
 }
 
 export interface CourseBasicInfoProps {
   title: string;
   price: number;
   description: string;
+  videoUrl: string;
   status: CourseStatus;
+  receiverAddress: string;
+  discount?: number;
+  discountEndTime?: string;
   onTitleChange: (value: string) => void;
   onPriceChange: (value: number) => void;
   onDescriptionChange: (value: string) => void;
+  onVideoUrlChange: (value: string) => void;
   onStatusChange: (value: CourseStatus) => void;
-}
-
-export interface QuestionEditorProps {
-  question: QuizQuestion;
-  questionIndex: number;
-  onUpdate: (index: number, question: QuizQuestion) => void;
-  onRemove: (index: number) => void;
-}
-
-export interface ChapterSelectProps {
-  value: string;
-  chapters: Chapter[];
-  onChange: (chapterId: string) => void;
+  onReceiverAddressChange: (value: string) => void;
+  onDiscountChange?: (value: number | undefined) => void;
+  onDiscountEndTimeChange?: (value: string | undefined) => void;
+  disabled?: boolean;
 }
 
 export interface EditorCardHeaderProps {
@@ -97,6 +77,34 @@ export interface EditorCardHeaderProps {
   onRemove: () => void;
   removeTitle: string;
   titleClassName?: string;
+  disabled?: boolean;
 }
 
+export interface CourseCreatePageProps {
+  courseId?: string;
+}
+
+export interface ImageUploaderProps {
+  imageFile: File | null;
+  existingImageUrl: string | null;
+  onImageChange: (file: File) => void;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+export interface TagSelectorProps {
+  tags: { id: number; name: string }[];
+  selectedIds: number[];
+  onToggle: (id: number) => void;
+  disabled?: boolean;
+}
+
+export interface JsonEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  onParsed: (data: CourseFormData) => void;
+  disabled?: boolean;
+}
+
+export type SetFormData = React.Dispatch<React.SetStateAction<CourseFormData>>;
 

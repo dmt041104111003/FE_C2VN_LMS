@@ -16,6 +16,7 @@ export const ChapterEditor = memo(function ChapterEditor({
   onAddLecture,
   onUpdateLecture,
   onRemoveLecture,
+  disabled,
 }: ChapterEditorProps) {
   const handleTitleChange = useCallback((title: string) => {
     onUpdate(chapterIndex, { ...chapter, title });
@@ -31,6 +32,7 @@ export const ChapterEditor = memo(function ChapterEditor({
         title={`${LABELS.chapters.prefix} ${chapterIndex + 1}`}
         onRemove={handleRemove}
         removeTitle={LABELS.chapters.removeChapter}
+        disabled={disabled}
       />
 
       <div className={S.FORM_GROUP}>
@@ -41,6 +43,7 @@ export const ChapterEditor = memo(function ChapterEditor({
           onChange={e => handleTitleChange(e.target.value)}
           placeholder={LABELS.chapters.chapterPlaceholder}
           className={S.INPUT}
+          disabled={disabled}
         />
       </div>
 
@@ -51,6 +54,7 @@ export const ChapterEditor = memo(function ChapterEditor({
             type="button"
             onClick={() => onAddLecture(chapterIndex)}
             className={S.ADD_BTN}
+            disabled={disabled}
           >
             <PlusIcon className={ICON_SM} />
             {LABELS.lectures.addLecture}
@@ -65,10 +69,10 @@ export const ChapterEditor = memo(function ChapterEditor({
             lectureIndex={lectureIndex}
             onUpdate={onUpdateLecture}
             onRemove={onRemoveLecture}
+            disabled={disabled}
           />
         ))}
       </div>
     </div>
   );
 });
-

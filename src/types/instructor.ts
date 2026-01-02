@@ -4,6 +4,7 @@ export type CourseStatus = 'draft' | 'published' | 'archived';
 
 export interface InstructorCourse {
   id: string;
+  slug: string;
   title: string;
   students: number;
   revenue: number;
@@ -18,15 +19,14 @@ export interface InstructorLayoutProps {
   children: ReactNode;
   activeId: string;
   title?: string;
-  inboxUnreadCount?: number;
 }
 
 export interface CourseRowProps {
   index: number;
   course: InstructorCourse;
-  onViewDetails: (courseId: string) => void;
+  onViewDetails: (slug: string) => void;
   onToggleStatus: (courseId: string, isPublished: boolean) => void;
-  onViewStudents: (courseId: string) => void;
+  onViewStudents: (slug: string) => void;
 }
 
 export type InstructorModalType = 'publish' | 'unpublish' | null;

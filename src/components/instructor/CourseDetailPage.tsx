@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button, StatusBadge, ChevronLeftIcon, Dialog, useToast, Tabs, TabPanel } from '@/components/ui';
-import { ICON_SM } from '@/components/ui/ui.styles';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Button, StatusBadge, ChevronLeftIcon, Dialog, useToast, Tabs, TabPanel, VideoPlayer, ShowMore } from '@/components/ui';
+import { ICON_SM, PAGE } from '@/components/ui/ui.styles';
 import { TipTapPreview } from '@/components/editor/TipTapPreview';
-import { PAGE } from '@/components/ui/ui.styles';
 import { formatCurrency } from '@/constants/config';
 import { 
   COURSE_DETAIL_LABELS, 
@@ -13,30 +12,83 @@ import {
   COURSE_DETAIL_TABS,
 } from '@/constants/course-detail';
 import { COURSE_STATUS_LABELS, COURSE_STATUS_VARIANT } from '@/constants/instructor';
-import { ActivityHistory, ChapterCard, QuizCard } from './course-detail';
-import type { CourseDetailPageProps, CourseStats, SectionProps, InfoCardProps, EmptyStateProps, HeaderProps, CourseContentProps } from '@/types/course-detail';
+import { ActivityHistory, ChapterCard, QuizCard, CourseQna } from './course-detail';
+import type { CourseDetailPageProps, CourseStats, SectionProps, InfoCardProps, EmptyStateProps, HeaderProps, CourseContentProps, CourseActivity, CourseData } from '@/types/course-detail';
 import { InstructorLayout } from './InstructorLayout';
+import { courseService, mapApiToCourseData, type CourseActivityResponse } from '@/services/course';
+import { translateError } from '@/constants/auth';
+import { useAuth } from '@/hooks';
 
 const LABELS = COURSE_DETAIL_LABELS;
 const S = COURSE_DETAIL_STYLES;
 
+const mapActivityResponse = (data: CourseActivityResponse): CourseActivity => ({
+  id: String(data.id),
+  type: data.type as CourseActivity['type'],
+  description: data.description,
+  user: data.userName,
+  timestamp: data.timestamp,
+});
+
 export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const toast = useToast();
-  const course = useMemo(() => null, [courseId]);
-  const activities = useMemo(() => [], [courseId]);
+  const { user } = useAuth();
+  const [course, setCourse] = useState<CourseData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [activities, setActivities] = useState<CourseActivity[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState('content');
+  const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'content');
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      setError(null);
+      try {
+        const data = await courseService.getCourseById(courseId, user?.id);
+        const mapped = mapApiToCourseData(data as Record<string, unknown>);
+        setCourse(mapped);
+      } catch (err) {
+        const msg = err instanceof Error ? translateError(err.message) : LABELS.notFound;
+        setError(msg);
+      }
+    };
+
+    if (courseId) {
+      fetchCourse();
+    }
+  }, [courseId, user?.id]);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      if (!course?.id) return;
+      try {
+        const data = await courseService.getCourseActivities(course.id);
+        setActivities(data.map(mapActivityResponse));
+      } catch {
+        
+      }
+    };
+
+    fetchActivities();
+  }, [course?.id]);
 
   const handleBack = useCallback(() => router.push('/instructor'), [router]);
   const handleEdit = useCallback(() => router.push(`/instructor/courses/edit/${courseId}`), [router, courseId]);
   const openDeleteDialog = useCallback(() => setShowDeleteDialog(true), []);
   const closeDeleteDialog = useCallback(() => setShowDeleteDialog(false), []);
   
-  const handleConfirmDelete = useCallback(() => {
-    toast.success(LABELS.toast.deleteSuccess);
-    router.push('/instructor');
-  }, [toast, router]);
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      await courseService.deleteCourse(courseId);
+      toast.success(LABELS.toast.deleteSuccess);
+      router.push('/instructor');
+    } catch (err) {
+      const msg = err instanceof Error ? translateError(err.message) : 'Xóa khóa học thất bại';
+      toast.error(msg);
+    }
+    closeDeleteDialog();
+  }, [courseId, toast, router, closeDeleteDialog]);
 
   const stats = useMemo((): CourseStats | null => {
     if (!course) return null;
@@ -48,11 +100,17 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
     };
   }, [course]);
 
-  if (!course) {
+  if (error || !course) {
     return (
       <InstructorLayout activeId="courses" title={LABELS.title}>
         <div className={PAGE.CONTAINER}>
-          <p className="text-center text-[var(--text)]/50">{LABELS.notFound}</p>
+          <div className="mb-6">
+            <Button variant="ghost" size="sm" onClick={handleBack} className="gap-1.5">
+              <ChevronLeftIcon className={ICON_SM} />
+              {LABELS.back}
+            </Button>
+          </div>
+          <p className="text-center text-[var(--text)]/50">{error || LABELS.notFound}</p>
         </div>
       </InstructorLayout>
     );
@@ -76,14 +134,66 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
         <Section title={LABELS.sections.info}>
           <div className={S.infoGrid}>
             <InfoCard label={LABELS.fields.title} value={course.title} />
-            <InfoCard label={LABELS.fields.price} value={formatCurrency(course.price)} />
+            <InfoCard label={LABELS.fields.price}>
+              {course.discount && course.discount > 0 && course.discountEndTime && new Date() < new Date(course.discountEndTime) ? (
+                <p>
+                  <span className="font-bold text-[var(--accent)]">{formatCurrency(course.price * (1 - course.discount / 100))}</span>
+                  <span className="text-sm text-[var(--text)]/50 line-through ml-2">{formatCurrency(course.price)}</span>
+                </p>
+              ) : (
+                <p className="font-bold">{formatCurrency(course.price)}</p>
+              )}
+            </InfoCard>
             <InfoCard label={LABELS.fields.status}>
               <StatusBadge variant={COURSE_STATUS_VARIANT[course.status]}>
                 {COURSE_STATUS_LABELS[course.status]}
               </StatusBadge>
             </InfoCard>
             <InfoCard label={LABELS.stats} value={statsText} />
+            {course.price > 0 && course.discount && course.discount > 0 && (
+              <InfoCard label="Giảm giá">
+                <p className="font-bold">
+                  <span className="text-[var(--accent)]">-{course.discount}%</span>
+                  {course.discountEndTime ? (
+                    new Date() < new Date(course.discountEndTime) ? (
+                      <span className="text-xs text-[var(--correct)] ml-2">
+                        (đến {new Date(course.discountEndTime).toLocaleString('vi-VN')})
+                      </span>
+                    ) : (
+                      <span className="text-xs text-[var(--incorrect)] ml-2">
+                        (đã hết hạn)
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-xs text-[var(--incorrect)] ml-2">
+                      (chưa đặt thời hạn)
+                    </span>
+                  )}
+                </p>
+              </InfoCard>
+            )}
+            {course.price > 0 && course.coursePaymentMethods?.[0]?.receiverAddress && course.coursePaymentMethods[0].receiverAddress !== 'N/A' && (
+              <WalletAddressCard 
+                address={course.coursePaymentMethods[0].receiverAddress} 
+                onCopy={() => toast.success('Đã sao chép địa chỉ ví')}
+              />
+            )}
           </div>
+          {course.courseTags && course.courseTags.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm text-[var(--text)]/70 mb-2">Thẻ:</p>
+              <div className="flex flex-wrap gap-2">
+                {course.courseTags.map(tag => (
+                  <span
+                    key={tag.id}
+                    className="px-3 py-1 rounded-full text-xs bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </Section>
 
         <div className="mt-6">
@@ -97,6 +207,10 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
 
         <TabPanel isActive={activeTab === 'content'}>
           <CourseContent course={course} />
+        </TabPanel>
+
+        <TabPanel isActive={activeTab === 'qna'}>
+          <CourseQna courseTitle={course.title} chapters={course.chapters} />
         </TabPanel>
 
         <TabPanel isActive={activeTab === 'history'}>
@@ -148,13 +262,51 @@ function EmptyState({ message }: EmptyStateProps) {
   );
 }
 
+function WalletAddressCard({ address, onCopy }: { address: string; onCopy: () => void }) {
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      onCopy();
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = address;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      onCopy();
+    }
+  }, [address, onCopy]);
+
+  return (
+    <div 
+      className={`${S.card.base} ${S.card.padding} md:col-span-2 cursor-pointer hover:border-[var(--accent)] transition-colors group`}
+      onClick={handleCopy}
+      title="Click để sao chép"
+    >
+      <p className={S.infoCard.label}>Địa chỉ ví nhận thanh toán</p>
+      <p className={`${S.infoCard.value} font-mono text-sm break-all group-hover:text-[var(--accent)]`}>
+        {address}
+      </p>
+    </div>
+  );
+}
+
 function CourseContent({ course }: CourseContentProps) {
   return (
     <div className={S.content}>
+      {course.videoUrl && (
+        <Section title="Video giới thiệu">
+          <div className={`${S.card.base} ${S.card.padding}`}>
+            <VideoPlayer url={course.videoUrl} />
+          </div>
+        </Section>
+      )}
+
       <Section title={LABELS.sections.description}>
         {course.description ? (
-          <div className={`${S.card.base} ${S.card.paddingXl}`}>
-            <TipTapPreview content={course.description} />
+          <div className={`${S.card.base} ${S.card.padding}`}>
+            <TipTapPreview content={course.description} compact />
           </div>
         ) : (
           <EmptyState message={LABELS.empty.description} />

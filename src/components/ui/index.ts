@@ -129,6 +129,7 @@ export {
   SendIcon,
   WalletIcon,
   MailIcon,
+  MailOpenIcon,
   TextIcon,
   ListIcon,
   QuoteIcon,

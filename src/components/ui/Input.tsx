@@ -6,6 +6,8 @@ import {
   INPUT_SIZES,
 } from './ui.styles';
 
+const INPUT_DISABLED = 'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--bg-alt)]';
+
 function InputComponent({
   type = 'text',
   placeholder,
@@ -18,7 +20,7 @@ function InputComponent({
   required,
   disabled,
 }: InputProps) {
-  const inputClass = `${INPUT_BASE} ${INPUT_VARIANTS[variant]} ${INPUT_SIZES[size]} ${className}`;
+  const inputClass = `${INPUT_BASE} ${INPUT_VARIANTS[variant]} ${INPUT_SIZES[size]} ${INPUT_DISABLED} ${className}`;
 
   return (
     <input
@@ -35,4 +37,3 @@ function InputComponent({
 }
 
 export const Input = memo(InputComponent);
-

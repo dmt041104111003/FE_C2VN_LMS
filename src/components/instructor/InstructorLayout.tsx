@@ -1,25 +1,17 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import Link from 'next/link';
 import { Sidebar, SidebarLayout, ChevronLeftIcon } from '@/components/ui';
-import type { SidebarItem } from '@/components/ui';
 import { SIDEBAR } from '@/components/ui/ui.styles';
 import { INSTRUCTOR_LABELS, INSTRUCTOR_SIDEBAR_ITEMS } from '@/constants/instructor';
 import { ROUTES } from '@/constants/navigation';
 import type { InstructorLayoutProps } from '@/types/instructor';
 
-export const InstructorLayout = memo(function InstructorLayout({ children, activeId, title, inboxUnreadCount }: InstructorLayoutProps) {
-  const sidebarItems = useMemo((): SidebarItem[] => {
-    return INSTRUCTOR_SIDEBAR_ITEMS.map(item => ({
-      ...item,
-      badge: item.id === 'inbox' ? inboxUnreadCount : undefined,
-    }));
-  }, [inboxUnreadCount]);
-
+export const InstructorLayout = memo(function InstructorLayout({ children, activeId, title }: InstructorLayoutProps) {
   const sidebar = (
     <Sidebar
-      items={sidebarItems}
+      items={INSTRUCTOR_SIDEBAR_ITEMS as unknown as { id: string; title: string; href: string }[]}
       activeId={activeId}
       header={<div className={SIDEBAR.TITLE}>{INSTRUCTOR_LABELS.title}</div>}
       footer={

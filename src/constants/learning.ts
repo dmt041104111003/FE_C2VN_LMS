@@ -22,8 +22,14 @@ const checkMultipleAnswer = (answer: string[] | undefined, correctSet: Set<strin
 const checkTextAnswer = (answer: string | undefined, correctSet: Set<string>): boolean =>
   correctSet.has(normalizeTextAnswer(answer));
 
-const checkSingleAnswer = (answer: string | undefined, correctSet: Set<string>): boolean =>
-  correctSet.has(answer as string);
+
+const checkSingleAnswer = (answer: string | string[] | undefined, correctSet: Set<string>): boolean => {
+  if (Array.isArray(answer)) {
+    
+    return answer.length === 1 && correctSet.has(answer[0]);
+  }
+  return correctSet.has(answer as string);
+};
 
 export const checkAnswer = (
   question: Question, 
@@ -35,13 +41,21 @@ export const checkAnswer = (
   let isCorrect: boolean;
   switch (question.type) {
     case 'multiple':
-      isCorrect = checkMultipleAnswer(answer as string[], correctAnswerSet);
+      
+      isCorrect = checkMultipleAnswer(
+        Array.isArray(answer) ? answer : (answer ? [answer] : []), 
+        correctAnswerSet
+      );
       break;
     case 'text':
-      isCorrect = checkTextAnswer(answer as string, correctAnswerSet);
+      isCorrect = checkTextAnswer(
+        Array.isArray(answer) ? answer[0] : answer, 
+        correctAnswerSet
+      );
       break;
     default:
-      isCorrect = checkSingleAnswer(answer as string, correctAnswerSet);
+      
+      isCorrect = checkSingleAnswer(answer, correctAnswerSet);
   }
 
   return { isCorrect, correctAnswerSet };
@@ -164,13 +178,6 @@ export const LEARNING_LABELS = {
     certificate: 'Nhận chứng chỉ',
     certificateMessage: 'Hoàn thành khóa học để nhận chứng chỉ NFT',
   },
-} as const;
-
-export const LEARNING_CONFIG = {
-  autoPlayNext: true,
-  showProgressBar: true,
-  minVideoProgress: 90,
-  defaultQuizTimeLimit: 30,
 } as const;
 
 export const QUIZ_CONSTANTS = {

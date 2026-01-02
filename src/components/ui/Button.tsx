@@ -15,10 +15,12 @@ function ButtonComponent({
   disabled = false,
   type = 'button',
 }: ButtonProps) {
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90 transition-opacity';
   const combined = [
     BUTTON_BASE,
     BUTTON_VARIANTS[variant],
     BUTTON_SIZES[size],
+    disabledClass,
     className,
   ].join(' ');
 

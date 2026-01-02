@@ -87,8 +87,8 @@ export const COURSE_GRID = {
     '',
   ],
   CLASSES_2: [
-    'sm:col-span-2',
-    'sm:col-span-2',
+    '',
+    '',
   ],
   CLASSES_1: [
     '',

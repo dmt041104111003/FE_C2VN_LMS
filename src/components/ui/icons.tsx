@@ -348,6 +348,15 @@ function MailIconComponent({ className = 'w-5 h-5' }: IconProps) {
   );
 }
 
+function MailOpenIconComponent({ className = 'w-5 h-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z" />
+      <path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10" />
+    </svg>
+  );
+}
+
 function TextIconComponent({ className = 'w-4 h-4' }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -595,6 +604,7 @@ export const FlagIcon = memo(FlagIconComponent);
 export const SendIcon = memo(SendIconComponent);
 export const WalletIcon = memo(WalletIconComponent);
 export const MailIcon = memo(MailIconComponent);
+export const MailOpenIcon = memo(MailOpenIconComponent);
 export const TextIcon = memo(TextIconComponent);
 export const ListIcon = memo(ListIconComponent);
 export const QuoteIcon = memo(QuoteIconComponent);
