@@ -12,7 +12,7 @@ export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto pt-
 
 export const CARD_CONFIGS: Record<CardType, CardConfig> = {
   featured: {
-    containerClass: 'flex flex-col sm:flex-row h-full sm:min-h-[160px]',
+    containerClass: 'flex flex-col sm:flex-row sm:h-[200px]',
     imageClass: 'sm:w-1/2 h-[120px] sm:h-full',
     contentClass: 'sm:w-1/2 p-2 flex flex-col',
     titleClass: 'text-base sm:text-lg font-bold mb-1',
@@ -86,7 +86,7 @@ export const CARD_CONFIGS: Record<CardType, CardConfig> = {
   },
   default: {
     containerClass: 'flex flex-col',
-    imageClass: 'aspect-[5/2]',
+    imageClass: 'aspect-[3/1]',
     contentClass: 'p-3 flex flex-col flex-1',
     titleClass: 'font-semibold text-sm mb-1 line-clamp-2',
     descClass: '',
@@ -195,13 +195,14 @@ export const getGridContainerClass = (count: number): string => {
   if (count === 2) return 'grid grid-cols-1 gap-2';
   if (count <= 3) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2';
   if (count === 4) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-2 sm:gap-2';
-  return 'grid grid-cols-1 gap-4 sm:grid-cols-3 sm:grid-rows-[repeat(7,1fr)] sm:gap-2';
+  if (count <= 6) return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-4 sm:gap-2';
+  return 'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:grid-rows-4 sm:gap-2';
 };
 
 export const getCardVariants = (index: number, count: number) => ({
-  featured: count !== 4 && (index === 0 || (count === 2 && index === 1)),
-  tall: count >= 5 && count <= 6 && index === 3,
-  wide: count === 5 && index === 4,
+  featured: count <= 3 && (index === 0 || (count === 2 && index === 1)),
+  tall: false,
+  wide: (count === 5 && index === 4) || (count === 6 && (index === 2 || index === 5)) || (count === 7 && index === 2),
 });
 export const COURSE_DETAIL_CARD_BUTTON = 'block w-full py-3 bg-[var(--accent)] text-white font-medium rounded-full text-center';
 export const COURSE_DETAIL_CARD_BUTTON_SECONDARY = 'w-full py-3 bg-[var(--bg)] text-[var(--text)] font-medium rounded-full text-center border border-[var(--text)]/20';
