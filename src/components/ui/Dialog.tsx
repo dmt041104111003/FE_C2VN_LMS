@@ -10,6 +10,8 @@ const ESCAPE_KEY = 'Escape';
 
 export const Dialog = memo(function Dialog({
   isOpen,
+  onClose,
+  children,
   title,
   message,
   primaryText = DIALOG.DEFAULT_PRIMARY_TEXT,
@@ -18,11 +20,13 @@ export const Dialog = memo(function Dialog({
   onPrimary,
   onSecondary,
 }: DialogProps) {
+  const handleClose = onSecondary || onClose;
+
   useEffect(() => {
     if (!isOpen) return;
 
     const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === ESCAPE_KEY) onSecondary();
+      if (e.key === ESCAPE_KEY) handleClose();
     };
 
     document.addEventListener('keydown', handleEscapeKey);
@@ -32,15 +36,27 @@ export const Dialog = memo(function Dialog({
       document.removeEventListener('keydown', handleEscapeKey);
       document.body.style.overflow = '';
     };
-  }, [isOpen, onSecondary]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
 
+  // Custom children mode
+  if (children) {
+    return (
+      <div className={DIALOG.OVERLAY} onClick={handleClose}>
+        <div className="bg-[var(--bg)] rounded-2xl w-full max-w-lg mx-4 overflow-hidden" onClick={e => e.stopPropagation()}>
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  // Default confirmation dialog mode
   const Icon = danger ? WarningIcon : InfoIcon;
   const iconClass = danger ? DIALOG.ICON_DANGER : DIALOG.ICON;
 
   return (
-    <div className={DIALOG.OVERLAY} onClick={onSecondary}>
+    <div className={DIALOG.OVERLAY} onClick={handleClose}>
       <div className={DIALOG.CONTAINER} onClick={e => e.stopPropagation()}>
         <div className={DIALOG.HEADER}>
           <div className={iconClass}>
@@ -52,7 +68,7 @@ export const Dialog = memo(function Dialog({
           <p className={DIALOG.MESSAGE}>{message}</p>
         </div>
         <div className={DIALOG.ACTIONS}>
-          <Button variant="ghost" onClick={onSecondary}>
+          <Button variant="ghost" onClick={handleClose}>
             {secondaryText}
           </Button>
           <Button variant={danger ? 'danger' : 'primary'} onClick={onPrimary}>

@@ -586,11 +586,13 @@ export interface ToastItemProps {
 
 export interface DialogProps {
   isOpen: boolean;
-  title: string;
-  message: string;
+  onClose: () => void;
+  children?: React.ReactNode;
+  title?: string;
+  message?: string;
   primaryText?: string;
   secondaryText?: string;
   danger?: boolean;
-  onPrimary: () => void;
-  onSecondary: () => void;
+  onPrimary?: () => void;
+  onSecondary?: () => void;
 }
