@@ -6,7 +6,7 @@ export const COURSE_CARD_BASE = 'group block bg-[var(--bg)] rounded-2xl overflow
 export const COURSE_CARD_IMAGE_BASE = 'flex-shrink-0 bg-[var(--bg-alt)] relative overflow-hidden';
 export const COURSE_CARD_TITLE_HOVER = 'text-[var(--text)] group-hover:text-[var(--accent)] transition-colors';
 export const COURSE_CARD_DESC = 'text-[var(--text)]/60';
-export const COURSE_CARD_IMAGE_HOVER = 'w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300';
+export const COURSE_CARD_IMAGE_HOVER = 'w-full h-full object-contain object-center';
 export const COURSE_CARD_PLACEHOLDER = 'flex items-center justify-center';
 export const COURSE_CARD_FOOTER = 'flex items-center justify-between mt-auto pt-2 border-t border-[var(--text)]/5';
 
