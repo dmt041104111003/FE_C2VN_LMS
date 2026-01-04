@@ -105,6 +105,7 @@ export const ROLE_BADGE_VARIANT: Record<UserRole, StatusBadgeVariant> = {
 
 export const STATUS_BADGE_VARIANT: Record<UserStatus, StatusBadgeVariant> = {
   ACTIVE: 'success',
+  INACTIVE: 'warning',
   BANNED: 'danger',
 };
 
