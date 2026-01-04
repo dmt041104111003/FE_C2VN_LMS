@@ -2,6 +2,12 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { VerifyEmailForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Xác thực email',
+  description: 'Xác thực địa chỉ email để hoàn tất đăng ký C2VN.',
+};
 
 export default function VerifyEmailPage() {
   return (

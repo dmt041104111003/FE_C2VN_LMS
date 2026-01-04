@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { ForgotPasswordForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Quên mật khẩu',
+  description: 'Khôi phục mật khẩu tài khoản C2VN của bạn.',
+};
 
 export default function ForgotPasswordPage() {
   return (

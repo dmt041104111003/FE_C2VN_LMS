@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { LoginForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Đăng nhập',
+  description: 'Đăng nhập vào C2VN để truy cập khóa học Blockchain và Cardano.',
+};
 
 export default function LoginPage() {
   return (

@@ -2,6 +2,12 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { ResetPasswordForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Đặt lại mật khẩu',
+  description: 'Đặt lại mật khẩu mới cho tài khoản C2VN.',
+};
 
 export default function ResetPasswordPage() {
   return (

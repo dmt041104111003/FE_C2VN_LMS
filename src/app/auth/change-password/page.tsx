@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { ChangePasswordForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Đổi mật khẩu',
+  description: 'Thay đổi mật khẩu tài khoản C2VN của bạn.',
+};
 
 export default function ChangePasswordPage() {
   return (

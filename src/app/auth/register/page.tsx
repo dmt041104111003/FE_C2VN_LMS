@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { RegisterForm } from '@/components/auth';
 import { Logo } from '@/components/ui';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Đăng ký',
+  description: 'Tạo tài khoản C2VN để bắt đầu học Blockchain và Cardano.',
+};
 
 export default function RegisterPage() {
   return (
