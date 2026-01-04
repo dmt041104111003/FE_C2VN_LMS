@@ -90,10 +90,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
         loginMethod: 'EMAIL_PASSWORD',
       });
-      await authService.getCurrentUser();
+      await checkAuth();
       syncAuthTabs('login');
       router.push(ROUTES.HOME);
-      await checkAuth();
     } finally {
       setState(prev => ({ ...prev, isLoading: false }));
     }
@@ -127,9 +126,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         loginMethod: 'WALLET',
       });
 
+      await checkAuth();
       syncAuthTabs('login');
       router.push(ROUTES.HOME);
-      await checkAuth();
     } finally {
       setState(prev => ({ ...prev, isLoading: false }));
     }
