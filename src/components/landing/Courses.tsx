@@ -18,10 +18,12 @@ import {
   COURSES_GRID_1,
   COURSES_GRID_2,
   COURSES_GRID_3,
+  COURSES_GRID_4,
   COURSES_CARD_BASE,
   COURSES_CARD_1,
   COURSES_CARD_2,
   COURSES_CARD_3,
+  COURSES_CARD_4,
   COURSES_CARD_IMAGE,
   COURSES_CARD_GRADIENT,
   COURSES_CARD_CONTENT,
@@ -29,17 +31,20 @@ import {
   COURSES_CARD_TITLE,
 } from './landing.styles';
 
+const CARD_GRID_STYLES_4 = [COURSES_CARD_1, COURSES_CARD_2, COURSES_CARD_3, COURSES_CARD_4] as const;
 const CARD_GRID_STYLES_3 = [COURSES_CARD_1, COURSES_CARD_2, COURSES_CARD_3] as const;
 
 const getGridClass = (count: number) => {
   if (count === 1) return COURSES_GRID_1;
   if (count === 2) return COURSES_GRID_2;
-  return COURSES_GRID_3;
+  if (count === 3) return COURSES_GRID_3;
+  return COURSES_GRID_4;
 };
 
 const getCardStyle = (index: number, count: number) => {
-  if (count >= 3) return CARD_GRID_STYLES_3[index] || '';
-  return ''; 
+  if (count >= 4) return CARD_GRID_STYLES_4[index] || '';
+  if (count === 3) return CARD_GRID_STYLES_3[index] || '';
+  return '';
 };
 
 function CoursesComponent() {
@@ -57,7 +62,7 @@ function CoursesComponent() {
             const instructorEmail = c.instructorEmail ? String(c.instructorEmail) : undefined;
             const instructorWalletAddress = c.instructorWalletAddress ? String(c.instructorWalletAddress) : undefined;
             const instructorName = String(c.instructorName || '');
-            
+
             const instructorAvatar = (instructorWalletAddress || instructorEmail || instructorName)
               ? getUserAvatar({ walletAddress: instructorWalletAddress, email: instructorEmail, fullName: instructorName })
               : '/loading.png';
@@ -89,7 +94,7 @@ function CoursesComponent() {
             if (studentsDiff !== 0) return studentsDiff;
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           })
-          .slice(0, 3);
+          .slice(0, 4);
         setCourses(mapped);
       } catch {
         setCourses([]);
@@ -100,7 +105,7 @@ function CoursesComponent() {
     fetchLatestCourses();
   }, []);
 
-  const modalItems = useMemo(() => 
+  const modalItems = useMemo(() =>
     courses.map((course) => ({
       image: course.thumbnail,
       tag: course.tags?.[0] || '',
@@ -113,7 +118,7 @@ function CoursesComponent() {
       buttonText: COURSES_LABELS.viewDetail,
       buttonHref: `/courses/${course.slug || course.id}`,
     })),
-  [courses]);
+    [courses]);
 
   const openModal = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -124,13 +129,13 @@ function CoursesComponent() {
   }, []);
 
   const goToPrev = useCallback(() => {
-    setCurrentIndex(prev => 
+    setCurrentIndex(prev =>
       prev !== null ? (prev - 1 + modalItems.length) % modalItems.length : null
     );
   }, [modalItems.length]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex(prev => 
+    setCurrentIndex(prev =>
       prev !== null ? (prev + 1) % modalItems.length : null
     );
   }, [modalItems.length]);
@@ -151,8 +156,8 @@ function CoursesComponent() {
         <div className={getGridClass(isLoading ? 3 : courses.length)}>
           {isLoading ? (
             <>
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES_3[i - 1] || ''}`} rounded="lg" />
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES_4[i - 1] || ''}`} rounded="lg" />
               ))}
             </>
           ) : (
