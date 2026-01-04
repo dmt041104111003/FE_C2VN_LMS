@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useCallback, useEffect, useState, useRef } from 'react';
-import { Button, useToast } from '@/components/ui';
+import { Button, useToast, Loading } from '@/components/ui';
 import { LEARNING_LABELS } from '@/constants/learning';
 import type { QuizSectionProps, ServerQuizResult } from '@/types/learning';
 import { useQuizState, useFullscreen } from '@/hooks';
@@ -141,7 +141,7 @@ function QuizSectionComponent({
     [actions, currentQuestion?.id]
   );
 
-  if (loadingPrevious) return null;
+  if (loadingPrevious) return <Loading size="lg" text="Đang tải kết quả..." className="py-16" />;
   if (!currentQuestion || totalQuestions === 0) return null;
 
   const renderQuizContent = (

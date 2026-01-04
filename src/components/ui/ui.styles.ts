@@ -621,3 +621,83 @@ export const COPYABLE_TEXT = {
     TRUNCATED_SUFFIX: '\n(Click để sao chép)',
   },
 } as const;
+
+export const SPINNER_SIZES = {
+  xs: { wrapper: 'w-4 h-4', dot: 'w-1 h-1' },
+  sm: { wrapper: 'w-6 h-6', dot: 'w-1.5 h-1.5' },
+  md: { wrapper: 'w-8 h-8', dot: 'w-2 h-2' },
+  lg: { wrapper: 'w-12 h-12', dot: 'w-2.5 h-2.5' },
+  xl: { wrapper: 'w-16 h-16', dot: 'w-3 h-3' },
+} as const;
+
+export const SPINNER_COLORS = {
+  default: 'bg-[var(--text)]',
+  accent: 'bg-[var(--accent)]',
+  white: 'bg-white',
+  subtle: 'bg-[var(--text)]/40',
+} as const;
+
+export const SPINNER_BORDER_COLORS = {
+  default: 'border-[var(--text)]',
+  accent: 'border-[var(--accent)]',
+  white: 'border-white',
+  subtle: 'border-[var(--text)]/40',
+} as const;
+
+export const SPINNER_BORDER_WIDTHS = {
+  xs: 'border',
+  sm: 'border-[1.5px]',
+  md: 'border-2',
+  lg: 'border-2',
+  xl: 'border-[3px]',
+} as const;
+
+export const SPINNER_TEXT_SIZES = {
+  xs: 'text-xs',
+  sm: 'text-xs',
+  md: 'text-sm',
+  lg: 'text-base',
+  xl: 'text-lg',
+} as const;
+
+export const SPINNER_WAVE_HEIGHTS = {
+  xs: 'h-3',
+  sm: 'h-4',
+  md: 'h-6',
+  lg: 'h-8',
+  xl: 'h-10',
+} as const;
+
+export const SPINNER_WAVE_WIDTHS = {
+  xs: 'w-0.5',
+  sm: 'w-1',
+  md: 'w-1',
+  lg: 'w-1.5',
+  xl: 'w-2',
+} as const;
+
+export const SPINNER_WAVE_GAPS = {
+  xs: 'gap-0.5',
+  sm: 'gap-0.5',
+  md: 'gap-1',
+  lg: 'gap-1',
+  xl: 'gap-1.5',
+} as const;
+
+export const SKELETON_ROUNDED = {
+  none: '',
+  sm: 'rounded',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  full: 'rounded-full',
+} as const;
+
+export const SPINNER = {
+  CONTAINER: 'flex flex-col items-center justify-center gap-3',
+  TEXT: 'text-[var(--text)]/70 font-medium',
+  FULLSCREEN: 'fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg)]',
+  OVERLAY: 'absolute inset-0 z-10 flex items-center justify-center bg-[var(--bg)]/80 backdrop-blur-sm',
+  OVERLAY_NO_BLUR: 'absolute inset-0 z-10 flex items-center justify-center bg-[var(--bg)]/60',
+  PAGE: 'min-h-screen flex items-center justify-center bg-[var(--bg)]',
+  SKELETON: 'bg-[var(--bg-alt)] animate-pulse',
+} as const;

@@ -3,7 +3,7 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button, Input, PasswordInput, GoogleIcon, GitHubIcon, WalletModal } from '@/components/ui';
+import { Button, Input, PasswordInput, GoogleIcon, GitHubIcon, WalletModal, ButtonSpinner } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { LOGIN } from '@/constants/login';
 import { ROUTES } from '@/constants/navigation';
@@ -142,7 +142,7 @@ function LoginFormComponent() {
           className="w-full mt-2"
           disabled={isLoading}
         >
-          {LOGIN.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : LOGIN.submitText}
         </Button>
       </form>
 

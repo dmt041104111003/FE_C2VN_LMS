@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChevronLeftIcon, StatusBadge, Dialog, useToast, TrashIcon } from '@/components/ui';
+import { ChevronLeftIcon, StatusBadge, Dialog, useToast, TrashIcon, Loading } from '@/components/ui';
 import { PAGE, ICON_SM } from '@/components/ui/ui.styles';
 import { ROUTES } from '@/constants/navigation';
 import { useInfiniteScroll, useAuth } from '@/hooks';
@@ -398,7 +398,11 @@ export function UserInboxPage() {
       </div>
 
       <div className={STYLES.container}>
-        {isEmpty && !loading ? (
+        {loading ? (
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải tin nhắn..." />
+          </div>
+        ) : isEmpty ? (
           <div className="text-center py-8 text-[var(--text)]/50">{LABELS.empty}</div>
         ) : isAdmin ? (
           

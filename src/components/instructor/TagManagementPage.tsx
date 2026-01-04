@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Button, useToast, Dialog, TrashIcon, PlusIcon } from '@/components/ui';
+import { Button, useToast, Dialog, TrashIcon, PlusIcon, Loading } from '@/components/ui';
 import { ICON_SM } from '@/components/ui/ui.styles';
 import { TAG_LABELS as LABELS, TAG_STYLES as S } from '@/constants/tag';
 import { tagService, type TagResponse } from '@/services/tag';
@@ -12,17 +12,21 @@ import { formatDate } from '@/constants/config';
 export function TagManagementPage() {
   const toast = useToast();
   const [tags, setTags] = useState<TagResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [newTagName, setNewTagName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<TagResponse | null>(null);
 
   const loadTags = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await tagService.getAll();
       setTags(data);
     } catch (err) {
       const msg = err instanceof Error ? translateError(err.message) : LABELS.toast.loadError;
       toast.error(msg);
+    } finally {
+      setIsLoading(false);
     }
   }, [toast]);
 
@@ -118,7 +122,11 @@ export function TagManagementPage() {
           </Button>
         </div>
 
-        {tags.length === 0 ? (
+        {isLoading ? (
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải thẻ..." />
+          </div>
+        ) : tags.length === 0 ? (
           <div className={S.EMPTY}>{LABELS.empty}</div>
         ) : (
           <div className={S.LIST}>

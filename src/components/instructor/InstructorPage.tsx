@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { DataTable, Dialog, Pagination, Panel, useToast } from '@/components/ui';
+import { DataTable, Dialog, Pagination, Panel, useToast, Loading } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
@@ -44,6 +44,7 @@ export function InstructorPage() {
   const router = useRouter();
   const toast = useToast();
   const [courses, setCourses] = useState<InstructorCourse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [page, setPage] = useState(1);
@@ -51,12 +52,15 @@ export function InstructorPage() {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      setIsLoading(true);
       try {
         const response = await courseService.getMyCourses(0, 100);
         setCourses(response.content.map(mapApiCourseToInstructorCourse));
       } catch (err) {
         const errorMsg = err instanceof Error ? translateError(err.message) : 'Không thể tải danh sách khóa học';
         toast.error(errorMsg);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCourses();
@@ -161,6 +165,11 @@ export function InstructorPage() {
           onCreateCourse={handleCreate}
         />
 
+        {isLoading ? (
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải khóa học..." />
+          </div>
+        ) : (
         <Panel
           title={LABELS.title}
           footer={
@@ -189,6 +198,7 @@ export function InstructorPage() {
             ))}
           </DataTable>
         </Panel>
+        )}
         <Dialog
           isOpen={modal.type !== null}
           title={modalConfig.title}

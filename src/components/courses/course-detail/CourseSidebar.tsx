@@ -5,6 +5,7 @@ import { Course } from '@/types/course';
 import { BookIcon, ClockIcon, UsersIcon } from '@/components/ui/icons';
 import { Dialog } from '@/components/ui/Dialog';
 import { WalletModal } from '@/components/ui/WalletModal';
+import { ButtonSpinner } from '@/components/ui/Spinner';
 import { formatCurrency, formatDuration } from '@/constants/config';
 import { COURSE_DETAIL, COURSE_PAGE } from '@/constants/course';
 import { ROUTES } from '@/constants/navigation';
@@ -133,9 +134,14 @@ function EnrollButton({ onClick, isProcessing, isFree }: {
     <button 
       onClick={onClick} 
       disabled={isProcessing} 
-      className={`${S.COURSE_DETAIL_CARD_BUTTON} ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`${S.COURSE_DETAIL_CARD_BUTTON} ${isProcessing ? 'opacity-70 cursor-not-allowed' : ''}`}
     >
-      {isProcessing ? 'Đang xử lý...' : getEnrollButtonText(isFree)}
+      {isProcessing ? (
+        <span className="flex items-center justify-center gap-2">
+          <ButtonSpinner size="sm" />
+          <span>Đang xử lý...</span>
+        </span>
+      ) : getEnrollButtonText(isFree)}
     </button>
   );
 }

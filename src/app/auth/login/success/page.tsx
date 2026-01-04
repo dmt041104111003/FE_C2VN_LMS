@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts';
 import { useToast } from '@/components/ui/Toast';
+import { PageLoading } from '@/components/ui';
 import { ROUTES } from '@/constants/navigation';
 
 export default function LoginSuccessPage() {
@@ -30,5 +31,5 @@ export default function LoginSuccessPage() {
     handleOAuthSuccess();
   }, [refreshUser, router, toast]);
 
-  return null;
+  return <PageLoading text="Đang đăng nhập..." />;
 }

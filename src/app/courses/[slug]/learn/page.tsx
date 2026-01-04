@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { AuthGuard } from '@/components/auth';
 import { LearningPage } from '@/components/learning';
+import { PageLoading } from '@/components/ui';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLearnPageData } from '@/hooks';
 
@@ -15,6 +16,7 @@ export default function LearnPage() {
     courseId, 
     chapters, 
     progress,
+    isLoading,
     upgradeInfo,
     isUpgrading,
     handleUpgrade,
@@ -24,6 +26,14 @@ export default function LearnPage() {
   });
 
   const progressKey = Object.keys(progress.lessonProgress).length;
+
+  if (isLoading) {
+    return (
+      <AuthGuard>
+        <PageLoading text="Đang tải nội dung học..." />
+      </AuthGuard>
+    );
+  }
 
   return (
     <AuthGuard>

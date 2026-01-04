@@ -2,7 +2,7 @@
 
 import { useCallback, useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, PlusIcon, useToast, Dialog, ChevronLeftIcon, Tabs, TabPanel, StatusBadge } from '@/components/ui';
+import { Button, PlusIcon, useToast, Dialog, ChevronLeftIcon, Tabs, TabPanel, StatusBadge, PageLoading, ButtonSpinner } from '@/components/ui';
 import { ICON_SM, PAGE } from '@/components/ui/ui.styles';
 import { COURSE_DETAIL_STYLES as DS } from '@/constants/course-detail';
 import { COURSE_STATUS_LABELS, COURSE_STATUS_VARIANT } from '@/constants/instructor';
@@ -96,6 +96,14 @@ export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
   const stats = useMemo(() => `${formData.chapters.length} chương · ${formData.chapters.reduce((s, c) => s + c.lectures.length, 0)} bài · ${formData.quizzes.length} quiz`, [formData]);
   const backPath = isEditMode ? `/instructor/courses/${courseId}` : '/instructor';
 
+  if (isLoading) {
+    return (
+      <InstructorLayout activeId="courses" title={isEditMode ? L.editPageTitle : L.pageTitle}>
+        <PageLoading text="Đang tải khóa học..." />
+      </InstructorLayout>
+    );
+  }
+
   return (
     <InstructorLayout activeId="courses" title={isEditMode ? L.editPageTitle : L.pageTitle}>
       <Dialog isOpen={showResumeDialog} title={isEditMode ? L.editResumeDialog.title : L.resumeDialog.title} message={isEditMode ? L.editResumeDialog.message : L.resumeDialog.message} primaryText={isEditMode ? L.actions.continueEditingEdit : L.actions.continueEditing} secondaryText={isEditMode ? L.actions.restoreOriginal : L.actions.createNew} onPrimary={handleContinueEditing} onSecondary={handleCreateNew} />
@@ -105,7 +113,9 @@ export function CourseCreatePage({ courseId }: CourseCreatePageProps) {
           <Button variant="ghost" size="sm" onClick={() => router.push(backPath)} className="gap-1.5"><ChevronLeftIcon className={ICON_SM} />{L.back}</Button>
           <div className="flex gap-2">
             {hasFormData && <Button variant="ghost" size="sm" onClick={() => { clearDraftStorage(); clearForm(); setSelectedTagIds([]); }} disabled={isSubmitting}>{L.actions.clearForm}</Button>}
-            <Button variant="primary" size="sm" onClick={handleSubmit} disabled={isSubmitting || isLoading}>{isEditMode ? L.actions.save : L.actions.create}</Button>
+            <Button variant="primary" size="sm" onClick={handleSubmit} disabled={isSubmitting || isLoading}>
+              {isSubmitting ? <ButtonSpinner size="xs" /> : isEditMode ? L.actions.save : L.actions.create}
+            </Button>
           </div>
         </div>
 

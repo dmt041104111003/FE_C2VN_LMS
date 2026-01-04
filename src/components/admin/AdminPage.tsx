@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { Dialog, useToast } from '@/components/ui';
+import { Dialog, useToast, Loading } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import { ADMIN_LABELS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
@@ -20,6 +20,7 @@ export function AdminPage() {
   toastRef.current = toast;
 
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -30,6 +31,7 @@ export function AdminPage() {
   const isInitialMount = useRef(true);
 
   const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
     try {
       const response = await userService.getUsers({
         keyword: keyword || undefined,
@@ -43,6 +45,8 @@ export function AdminPage() {
       setTotalPages(response.totalPages);
     } catch {
       toastRef.current.error('Không thể tải danh sách người dùng');
+    } finally {
+      setIsLoading(false);
     }
   }, [keyword, roleFilter, statusFilter, page]);
 
@@ -132,6 +136,11 @@ export function AdminPage() {
   return (
     <AdminLayout activeId="users" title={LABELS.title}>
       <div className={PAGE.CONTAINER}>
+        {isLoading && users.length === 0 ? (
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải danh sách người dùng..." />
+          </div>
+        ) : (
         <UserTable
           users={users}
           totalCount={totalCount}
@@ -150,6 +159,7 @@ export function AdminPage() {
           onDelete={handleDeleteClick}
           onChangeRole={handleChangeRoleClick}
         />
+        )}
         <Dialog
           isOpen={modal.type !== null}
           title={modalConfig.title}

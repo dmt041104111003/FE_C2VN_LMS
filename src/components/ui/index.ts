@@ -42,6 +42,20 @@ export { UserCell } from './UserCell';
 export { Sidebar } from './Sidebar';
 export { SidebarLayout } from './SidebarLayout';
 export { ToastProvider, useToast, Toast } from './Toast';
+export { 
+  Spinner, 
+  SpinnerBounce,
+  SpinnerWave, 
+  SpinnerRing,
+  SpinnerFade,
+  SpinnerLine,
+  SpinnerBreath,
+  Loading, 
+  LoadingOverlay, 
+  PageLoading, 
+  Skeleton, 
+  ButtonSpinner 
+} from './Spinner';
 export type {
   PriceRange,
   RatingFilterType,
@@ -97,7 +111,24 @@ export type {
 } from './ui.types';
 export type { RatingInputProps } from '@/types/review';
 export type { ShowMoreProps } from './ShowMore';
-export type { DialogProps, FormModalProps, FormModalLabels, FormFieldConfig, FormFieldOption, FormFieldType, CopyableTextProps } from './ui.types';
+export type { 
+  DialogProps, 
+  FormModalProps, 
+  FormModalLabels, 
+  FormFieldConfig, 
+  FormFieldOption, 
+  FormFieldType, 
+  CopyableTextProps,
+  SpinnerSize,
+  SpinnerVariant,
+  SpinnerProps,
+  LoadingProps,
+  LoadingOverlayProps,
+  PageLoadingProps,
+  SkeletonProps,
+  SkeletonRounded,
+  ButtonSpinnerProps,
+} from './ui.types';
 export {
   GitHubIcon,
   YouTubeIcon,

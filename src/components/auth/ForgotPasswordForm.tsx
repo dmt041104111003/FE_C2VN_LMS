@@ -3,7 +3,7 @@
 import { memo, useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, ButtonSpinner } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { FORGOT_PASSWORD } from '@/constants/login';
 import { ROUTES } from '@/constants/navigation';
@@ -149,7 +149,7 @@ function ForgotPasswordFormComponent() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {FORGOT_PASSWORD.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : FORGOT_PASSWORD.submitText}
         </Button>
       </form>
 

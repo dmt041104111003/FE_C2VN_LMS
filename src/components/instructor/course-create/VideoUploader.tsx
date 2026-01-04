@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
-import { Tabs, useToast } from '@/components/ui';
+import { Tabs, useToast, Loading } from '@/components/ui';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { COURSE_CREATE_STYLES as S, VIDEO_UPLOADER } from '@/constants/course-create';
 import { uploadVideo } from '@/services/api';
@@ -90,7 +90,11 @@ export function VideoUploader({
               disabled={disabled || isUploading}
             />
             
-            {!showUploadedState ? (
+            {isUploading ? (
+              <div className="py-6">
+                <Loading size="md" text="Đang tải video lên..." />
+              </div>
+            ) : !showUploadedState ? (
               <label htmlFor="video-upload" className={dropzoneClass}>
                 <div className="text-center">
                   <p className="text-sm text-[var(--accent)] font-medium">{LABELS.uploadBtn}</p>

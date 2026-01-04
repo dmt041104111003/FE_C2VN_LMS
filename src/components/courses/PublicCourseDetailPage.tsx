@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { Header, Footer, Dialog, useToast } from '@/components/ui';
+import { Header, Footer, Dialog, useToast, Loading } from '@/components/ui';
 import { CourseDetail } from './CourseDetail';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
 import type { Course } from '@/types/course';
@@ -30,6 +30,7 @@ export function PublicCourseDetailPage() {
   const { user, isAuthenticated } = useAuth();
   const toast = useToast();
   const [course, setCourse] = useState<Course | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [notFoundError, setNotFoundError] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -44,6 +45,7 @@ export function PublicCourseDetailPage() {
     if (!slug) return;
 
     const fetchCourse = async () => {
+      setIsLoading(true);
       try {
         const data = await courseService.getCourseBySlug(slug, user?.id) as Record<string, unknown>;
         const courseId = String(data.id || '');
@@ -77,6 +79,8 @@ export function PublicCourseDetailPage() {
         setCourse(mapApiToCourse(data));
       } catch {
         setNotFoundError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -244,6 +248,19 @@ export function PublicCourseDetailPage() {
   const handleDeleteCancel = useCallback(() => {
     setDeleteModalId(null);
   }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className={HEADER_SPACER} />
+        <main className="min-h-[60vh] flex items-center justify-center">
+          <Loading size="lg" text="Đang tải khóa học..." />
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   if (notFoundError || !course) {
     return (

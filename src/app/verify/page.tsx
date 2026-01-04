@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Header, Footer } from '@/components/ui';
+import { Header, Footer, Loading } from '@/components/ui';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
 import { VerifyForm, CertificateResult } from '@/components/verify';
 import { VERIFY_PAGE } from '@/constants/verify';
@@ -75,7 +75,7 @@ export default function VerifyCertificatePage() {
       <Header />
       <div className={HEADER_SPACER} />
       <main className={VERIFY_PAGE.MAIN}>
-        <Suspense fallback={<div className={VERIFY_PAGE.CONTAINER} />}>
+        <Suspense fallback={<div className={`${VERIFY_PAGE.CONTAINER} flex items-center justify-center`}><Loading size="lg" /></div>}>
           <VerifyContent />
         </Suspense>
       </main>

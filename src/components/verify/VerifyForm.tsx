@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, memo, useEffect } from 'react';
-import { Input, Button, useToast } from '@/components/ui';
+import { Input, Button, useToast, ButtonSpinner } from '@/components/ui';
 import { VERIFY_LABELS, VERIFY_FORM } from '@/constants/verify';
 import type { VerifyFormProps } from './verify.types';
 
@@ -54,7 +54,7 @@ function VerifyFormComponent({ onVerify, initialWallet = '', initialCourse = '' 
         />
       </div>
       <Button type="submit" variant="primary" size="md" className="w-full" disabled={isSubmitting}>
-        {VERIFY_LABELS.verify}
+        {isSubmitting ? <ButtonSpinner size="sm" /> : VERIFY_LABELS.verify}
       </Button>
     </form>
   );

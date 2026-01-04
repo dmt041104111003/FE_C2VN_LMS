@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { SearchIcon } from './icons';
 import { Card } from './Card';
 import { SearchInput } from './SearchInput';
+import { Loading } from './Spinner';
 import { SearchModalProps, SearchSuggestionItem } from './ui.types';
 import {
   SEARCH_PLACEHOLDER,
@@ -44,10 +45,11 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
   const [searchValue, setSearchValue] = useState('');
   const [courses, setCourses] = useState<CourseResult[]>([]);
   const [suggestions, setSuggestions] = useState<SearchSuggestionItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  
   useEffect(() => {
     const fetchCourses = async () => {
+      setIsLoading(true);
       try {
         const data = await courseService.getPublishedCourses() as CourseResult[];
         const getCourseScore = (c: CourseResult) => (c.rating || 0) * 100 + (c.numOfStudents || 0);
@@ -84,6 +86,8 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
       } catch {
         setCourses([]);
         setSuggestions([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCourses();
@@ -143,7 +147,11 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
         </div>
 
         <div className={SEARCH_CONTENT}>
-          {!searchValue ? (
+          {isLoading ? (
+            <div className="py-8">
+              <Loading size="md" />
+            </div>
+          ) : !searchValue ? (
             <>
               {newestCourses.length > 0 && (
                 <div className={SEARCH_SECTION}>

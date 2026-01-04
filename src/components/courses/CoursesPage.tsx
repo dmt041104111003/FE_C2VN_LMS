@@ -2,7 +2,7 @@
 
 import { memo, useState, useMemo, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Header, Footer, Pagination, Filter, SearchInput, PriceRange, RatingFilterType } from '@/components/ui';
+import { Header, Footer, Pagination, Filter, SearchInput, PriceRange, RatingFilterType, Loading, Skeleton } from '@/components/ui';
 import { CourseCard } from './CourseCard';
 import { COURSE_PAGE, COURSE_GRID } from '@/constants/course';
 import type { Course } from '@/types/course';
@@ -30,6 +30,7 @@ function CoursesPageInner() {
   const priceParam = searchParams.get('price');
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tagFilter, setTagFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState<RatingFilterType>(0);
@@ -37,6 +38,7 @@ function CoursesPageInner() {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      setIsLoading(true);
       try {
         const data = await courseService.getPublishedCourses();
         const mapped: Course[] = ((data || []) as Record<string, unknown>[]).map(c => {
@@ -79,6 +81,8 @@ function CoursesPageInner() {
         setCourses(mapped);
       } catch {
         setCourses([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCourses();
@@ -274,7 +278,11 @@ function CoursesPageInner() {
             </aside>
 
             <main className="flex-1 min-w-0">
-              {paginatedCourses.length === 0 ? (
+              {isLoading ? (
+                <div className="py-16">
+                  <Loading size="lg" text="Đang tải khóa học..." />
+                </div>
+              ) : paginatedCourses.length === 0 ? (
                 <div className={COURSES_PAGE_EMPTY}>
                   <p className={COURSES_PAGE_EMPTY_TEXT}>{COURSE_PAGE.emptyText}</p>
                 </div>
@@ -320,9 +328,22 @@ function CoursesPageFallback() {
       <Header />
       <main className={COURSES_PAGE_MAIN}>
         <div className={COURSES_PAGE_CONTAINER}>
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-[var(--text)]/10 rounded w-1/3" />
-            <div className="h-4 bg-[var(--text)]/10 rounded w-1/2" />
+          <div className="space-y-4 mb-8">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+          <Skeleton className="h-12 w-full mb-8" rounded="lg" />
+          <div className="flex flex-col lg:flex-row gap-8">
+            <aside className="lg:w-[320px] flex-shrink-0">
+              <Skeleton className="h-[400px] w-full" rounded="lg" />
+            </aside>
+            <main className="flex-1 min-w-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <Skeleton key={i} className="h-[280px] w-full" rounded="lg" />
+                ))}
+              </div>
+            </main>
           </div>
         </div>
       </main>

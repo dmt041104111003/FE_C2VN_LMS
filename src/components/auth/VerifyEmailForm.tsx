@@ -2,7 +2,7 @@
 
 import { memo, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, ButtonSpinner, Loading } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { VERIFY_EMAIL } from '@/constants/login';
 import { useAuth } from '@/contexts';
@@ -110,7 +110,7 @@ function VerifyEmailFormInner() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {VERIFY_EMAIL.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : VERIFY_EMAIL.submitText}
         </Button>
       </form>
 
@@ -134,7 +134,7 @@ const VerifyEmailFormMemo = memo(VerifyEmailFormInner);
 
 export function VerifyEmailForm() {
   return (
-    <Suspense fallback={<div className="animate-pulse h-64" />}>
+    <Suspense fallback={<Loading size="lg" text="Đang tải..." className="py-16" />}>
       <VerifyEmailFormMemo />
     </Suspense>
   );

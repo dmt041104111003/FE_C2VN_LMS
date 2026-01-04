@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Dialog, useToast, FormModal } from '@/components/ui';
+import { Dialog, useToast, FormModal, Loading } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import {
@@ -47,8 +47,10 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
 
   const [courseInfo, setCourseInfo] = useState<{ title: string; id: string } | null>(null);
   const [students, setStudents] = useState<CourseStudent[]>([]);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(true);
 
   const fetchStudents = useCallback(async () => {
+    setIsLoadingStudents(true);
     try {
       const courseData = await courseService.getCourseBySlug(courseId) as { id: string; title: string };
       const realCourseId = courseData.id;
@@ -73,6 +75,8 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
       } as CourseStudent)));
     } catch {
       toast.error('Không thể tải danh sách học viên');
+    } finally {
+      setIsLoadingStudents(false);
     }
   }, [courseId, toast]);
 
@@ -168,6 +172,11 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
   return (
     <InstructorLayout activeId="courses" title={pageTitle}>
       <div className={PAGE.CONTAINER}>
+        {isLoadingStudents ? (
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải danh sách học viên..." />
+          </div>
+        ) : (
         <StudentTable
           students={paginatedStudents}
           totalCount={filteredStudents.length}
@@ -185,6 +194,7 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           onAddStudent={handleAddStudentClick}
           onBack={handleBack}
         />
+        )}
 
         <Dialog
           isOpen={modal.type !== null}

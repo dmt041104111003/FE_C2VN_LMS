@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState, useCallback } from 'react';
-import { Button, PasswordInput } from '@/components/ui';
+import { Button, PasswordInput, ButtonSpinner } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { CHANGE_PASSWORD } from '@/constants/login';
 import { useAuth } from '@/contexts';
@@ -121,7 +121,7 @@ function ChangePasswordFormComponent() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {CHANGE_PASSWORD.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : CHANGE_PASSWORD.submitText}
         </Button>
       </form>
     </>

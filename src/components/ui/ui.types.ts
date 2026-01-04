@@ -602,3 +602,38 @@ export interface DialogProps {
   onPrimary?: () => void;
   onSecondary?: () => void;
 }
+
+export type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type SpinnerVariant = 'default' | 'accent' | 'white' | 'subtle';
+export type SkeletonRounded = 'none' | 'sm' | 'md' | 'lg' | 'full';
+
+export interface SpinnerProps {
+  size?: SpinnerSize;
+  variant?: SpinnerVariant;
+  className?: string;
+}
+
+export interface LoadingProps extends SpinnerProps {
+  text?: string;
+  fullScreen?: boolean;
+  overlay?: boolean;
+}
+
+export interface LoadingOverlayProps extends SpinnerProps {
+  text?: string;
+  blur?: boolean;
+}
+
+export interface PageLoadingProps {
+  text?: string;
+}
+
+export interface SkeletonProps {
+  className?: string;
+  rounded?: SkeletonRounded;
+}
+
+export interface ButtonSpinnerProps {
+  size?: 'xs' | 'sm' | 'md';
+  className?: string;
+}

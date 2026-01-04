@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button, StatusBadge, ChevronLeftIcon, Dialog, useToast, Tabs, TabPanel, VideoPlayer, ShowMore } from '@/components/ui';
+import { Button, StatusBadge, ChevronLeftIcon, Dialog, useToast, Tabs, TabPanel, VideoPlayer, ShowMore, Loading } from '@/components/ui';
 import { ICON_SM, PAGE } from '@/components/ui/ui.styles';
 import { TipTapPreview } from '@/components/editor/TipTapPreview';
 import { formatCurrency } from '@/constants/config';
@@ -36,6 +36,7 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
   const toast = useToast();
   const { user } = useAuth();
   const [course, setCourse] = useState<CourseData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activities, setActivities] = useState<CourseActivity[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -43,6 +44,7 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
 
   useEffect(() => {
     const fetchCourse = async () => {
+      setIsLoading(true);
       setError(null);
       try {
         const data = await courseService.getCourseById(courseId, user?.id);
@@ -51,6 +53,8 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
       } catch (err) {
         const msg = err instanceof Error ? translateError(err.message) : LABELS.notFound;
         setError(msg);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -99,6 +103,18 @@ export function CourseDetailPage({ courseId }: CourseDetailPageProps) {
       questions: course.quizzes.reduce((sum, q) => sum + q.questions.length, 0),
     };
   }, [course]);
+
+  if (isLoading) {
+    return (
+      <InstructorLayout activeId="courses" title={LABELS.title}>
+        <div className={PAGE.CONTAINER}>
+          <div className="py-16">
+            <Loading size="lg" text="Đang tải khóa học..." />
+          </div>
+        </div>
+      </InstructorLayout>
+    );
+  }
 
   if (error || !course) {
     return (

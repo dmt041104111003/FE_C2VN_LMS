@@ -2,7 +2,7 @@
 
 import { memo, useState, useCallback, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Button, Badge, CardModal } from '@/components/ui';
+import { Button, Badge, CardModal, Skeleton } from '@/components/ui';
 import {
   ROUTES,
   COURSES_LABELS,
@@ -44,10 +44,12 @@ const getCardStyle = (index: number, count: number) => {
 
 function CoursesComponent() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchLatestCourses = async () => {
+      setIsLoading(true);
       try {
         const data = await courseService.getPublishedCourses();
         const mapped: Course[] = ((data || []) as Record<string, unknown>[])
@@ -91,6 +93,8 @@ function CoursesComponent() {
         setCourses(mapped);
       } catch {
         setCourses([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchLatestCourses();
@@ -144,29 +148,37 @@ function CoursesComponent() {
             <Button variant="ghost">{COURSES_LABELS.viewAll}</Button>
           </Link>
         </div>
-        <div className={getGridClass(courses.length)}>
-          {courses.map((course, index) => (
-            <div
-              key={course.id}
-              className={`${COURSES_CARD_BASE} ${getCardStyle(index, courses.length)} cursor-pointer`}
-              onClick={() => openModal(index)}
-            >
-              <img
-                src={course.thumbnail}
-                alt={course.title}
-                className={COURSES_CARD_IMAGE}
-                draggable={false}
-                onContextMenu={(e) => e.preventDefault()}
-              />
-              <div className={COURSES_CARD_GRADIENT} />
-              <div className={COURSES_CARD_CONTENT}>
-                <Badge variant="accent" className={COURSES_CARD_BADGE}>
-                  {course.tags?.[0] || ''}
-                </Badge>
-                <h3 className={COURSES_CARD_TITLE}>{course.title}</h3>
+        <div className={getGridClass(isLoading ? 3 : courses.length)}>
+          {isLoading ? (
+            <>
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES_3[i - 1] || ''}`} rounded="lg" />
+              ))}
+            </>
+          ) : (
+            courses.map((course, index) => (
+              <div
+                key={course.id}
+                className={`${COURSES_CARD_BASE} ${getCardStyle(index, courses.length)} cursor-pointer`}
+                onClick={() => openModal(index)}
+              >
+                <img
+                  src={course.thumbnail}
+                  alt={course.title}
+                  className={COURSES_CARD_IMAGE}
+                  draggable={false}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+                <div className={COURSES_CARD_GRADIENT} />
+                <div className={COURSES_CARD_CONTENT}>
+                  <Badge variant="accent" className={COURSES_CARD_BADGE}>
+                    {course.tags?.[0] || ''}
+                  </Badge>
+                  <h3 className={COURSES_CARD_TITLE}>{course.title}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 

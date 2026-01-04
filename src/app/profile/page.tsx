@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Header, Footer } from '@/components/ui';
+import { Header, Footer, Loading } from '@/components/ui';
 import { UserProfile } from '@/components/user';
 import { AuthGuard } from '@/components/auth';
 import { HEADER_SPACER } from '@/components/ui/ui.styles';
@@ -30,9 +30,11 @@ function ProfileContent() {
   const [courses, setCourses] = useState<UserCourse[]>([]);
   const [certificates, setCertificates] = useState<UserCertificate[]>([]);
   const [totalHours, setTotalHours] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [enrollments, certs] = await Promise.all([
           getMyEnrollments(),
@@ -47,6 +49,8 @@ function ProfileContent() {
       } catch {
         setCourses([]);
         setCertificates([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -61,6 +65,19 @@ function ProfileContent() {
 
   if (!user) {
     return null;
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className={HEADER_SPACER} />
+        <main className="min-h-[60vh] flex items-center justify-center">
+          <Loading size="lg" text="Đang tải hồ sơ..." />
+        </main>
+        <Footer />
+      </>
+    );
   }
 
   return (

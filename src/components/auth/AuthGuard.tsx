@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts';
 import { ROUTES } from '@/constants/navigation';
 import { hasRole } from '@/constants/auth';
+import { PageLoading } from '@/components/ui';
 import type { AuthGuardProps } from '@/types/auth';
 import type { UserRole } from '@/types/user';
 
@@ -31,8 +32,12 @@ export function AuthGuard({ children, allowedRoles, redirectTo = ROUTES.LOGIN }:
     setIsAuthorized(true);
   }, [isLoading, isAuthenticated, user, allowedRoles, router, redirectTo]);
 
+  if (isLoading) {
+    return <PageLoading text="Đang xác thực..." />;
+  }
+
   if (!isAuthorized) {
-    return null;
+    return <PageLoading text="Đang chuyển hướng..." />;
   }
 
   return <>{children}</>;

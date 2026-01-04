@@ -3,7 +3,7 @@
 import { memo, useState, useCallback, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Button, Input, PasswordInput } from '@/components/ui';
+import { Button, Input, PasswordInput, ButtonSpinner, Loading } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { RESET_PASSWORD } from '@/constants/login';
 import { ROUTES } from '@/constants/navigation';
@@ -150,7 +150,7 @@ function ResetPasswordFormInner() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {RESET_PASSWORD.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : RESET_PASSWORD.submitText}
         </Button>
       </form>
 
@@ -177,7 +177,7 @@ const ResetPasswordFormMemo = memo(ResetPasswordFormInner);
 
 export function ResetPasswordForm() {
   return (
-    <Suspense fallback={<div className="animate-pulse h-64" />}>
+    <Suspense fallback={<Loading size="lg" text="Đang tải..." className="py-16" />}>
       <ResetPasswordFormMemo />
     </Suspense>
   );

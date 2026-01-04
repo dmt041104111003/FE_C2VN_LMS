@@ -3,7 +3,7 @@
 import { memo, useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button, Input, PasswordInput } from '@/components/ui';
+import { Button, Input, PasswordInput, ButtonSpinner } from '@/components/ui';
 import { useToast } from '@/components/ui/Toast';
 import { REGISTER } from '@/constants/register';
 import { ROUTES } from '@/constants/navigation';
@@ -137,7 +137,7 @@ function RegisterFormComponent() {
           className="w-full mt-8"
           disabled={isLoading}
         >
-          {REGISTER.submitText}
+          {isLoading ? <ButtonSpinner size="sm" /> : REGISTER.submitText}
         </Button>
       </form>
 

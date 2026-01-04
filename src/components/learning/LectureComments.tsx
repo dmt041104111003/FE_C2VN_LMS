@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState, useCallback, useEffect, useMemo } from 'react';
-import { Button, Dialog, useToast, ShowMore } from '@/components/ui';
+import { Button, Dialog, useToast, ShowMore, Loading } from '@/components/ui';
 import { ThumbsUpIcon, ThumbsDownIcon, TrashIcon, EditIcon } from '@/components/ui';
 import { TipTapEditor, TipTapPreview } from '@/components/editor';
 import { getUserAvatar } from '@/utils';
@@ -494,7 +494,11 @@ function LectureCommentsComponent({ lectureId, isInstructor = false }: LectureCo
         </div>
       )}
 
-      {comments.length === 0 ? (
+      {loading ? (
+        <div className="py-8">
+          <Loading size="md" text="Đang tải bình luận..." />
+        </div>
+      ) : comments.length === 0 ? (
         <div className={REVIEW_LIST.EMPTY}>{LABELS.EMPTY}</div>
       ) : (
         <ShowMore
