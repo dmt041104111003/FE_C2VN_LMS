@@ -93,6 +93,7 @@ export const LOGIN_METHOD_LABELS: Record<LoginMethod, string> = {
 
 export const STATUS_LABELS: Record<UserStatus, string> = {
   ACTIVE: 'Hoạt động',
+  INACTIVE: 'Không hoạt động',
   BANNED: 'Đã khóa',
 };
 
