@@ -93,6 +93,7 @@ function ForgotPasswordFormComponent() {
             variant="primary" 
             size="lg" 
             className="w-full"
+            disabled={isLoading}
           >
             Tiếp tục
           </Button>
@@ -111,7 +112,7 @@ function ForgotPasswordFormComponent() {
         </div>
 
         <div className={AUTH_FOOTER}>
-          <Link href={ROUTES.LOGIN} className={AUTH_BACK_LINK}>
+          <Link href={ROUTES.LOGIN} className={`${AUTH_BACK_LINK} ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
             ← {FORGOT_PASSWORD.backToLogin}
           </Link>
         </div>
@@ -154,7 +155,7 @@ function ForgotPasswordFormComponent() {
       </form>
 
       <div className={AUTH_FOOTER}>
-        <Link href={ROUTES.LOGIN} className={AUTH_BACK_LINK}>
+        <Link href={ROUTES.LOGIN} className={`${AUTH_BACK_LINK} ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
           ← {FORGOT_PASSWORD.backToLogin}
         </Link>
       </div>

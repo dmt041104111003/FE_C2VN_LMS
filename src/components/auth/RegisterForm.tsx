@@ -32,6 +32,9 @@ function RegisterFormComponent() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  
+  const disabled = isLoading || submitting;
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +55,7 @@ function RegisterFormComponent() {
       return;
     }
 
+    setSubmitting(true);
     try {
       await register(email, password, fullName);
       toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực.');
@@ -61,6 +65,8 @@ function RegisterFormComponent() {
         : 'Đăng ký thất bại. Vui lòng thử lại.';
       toast.error(errorMsg);
       setError(errorMsg);
+    } finally {
+      setSubmitting(false);
     }
   }, [fullName, email, password, confirmPassword, register, toast]);
 
@@ -90,7 +96,7 @@ function RegisterFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <div className={AUTH_FORM_FIELD}>
@@ -103,7 +109,7 @@ function RegisterFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <div className={AUTH_FORM_FIELD}>
@@ -115,7 +121,7 @@ function RegisterFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <div className={AUTH_FORM_FIELD}>
@@ -127,7 +133,7 @@ function RegisterFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <Button 
@@ -135,16 +141,16 @@ function RegisterFormComponent() {
           variant="primary" 
           size="lg" 
           className="w-full mt-8"
-          disabled={isLoading}
+          disabled={disabled}
         >
-          {isLoading ? <ButtonSpinner size="sm" /> : REGISTER.submitText}
+          {disabled ? <ButtonSpinner size="sm" /> : REGISTER.submitText}
         </Button>
       </form>
 
       <div className={AUTH_FOOTER}>
         <p className={AUTH_FOOTER_TEXT}>
           {REGISTER.hasAccount}{' '}
-          <Link href={ROUTES.LOGIN} className={AUTH_FOOTER_LINK}>
+          <Link href={ROUTES.LOGIN} className={`${AUTH_FOOTER_LINK} ${disabled ? 'pointer-events-none opacity-50' : ''}`}>
             {REGISTER.loginLink}
           </Link>
         </p>

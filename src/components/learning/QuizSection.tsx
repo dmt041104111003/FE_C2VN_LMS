@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useCallback, useEffect, useState, useRef } from 'react';
-import { Button, useToast, Loading } from '@/components/ui';
+import { Button, useToast, Loading, ButtonSpinner } from '@/components/ui';
 import { LEARNING_LABELS } from '@/constants/learning';
 import type { QuizSectionProps, ServerQuizResult } from '@/types/learning';
 import { useQuizState, useFullscreen } from '@/hooks';
@@ -38,7 +38,7 @@ const ActionButtons = memo(function ActionButtons({
   }
   return (
     <Button className="w-full" onClick={onSubmit} disabled={isSubmitting}>
-      {isSubmitting ? 'Đang nộp bài...' : LABELS.submit}
+      {isSubmitting ? <ButtonSpinner size="sm" /> : LABELS.submit}
     </Button>
   );
 });
@@ -151,42 +151,46 @@ function QuizSectionComponent({
     question: typeof currentQuestion,
     isResultMode: boolean,
     actionProps: ActionButtonsProps
-  ) => (
-    <div className={QUIZ.GRID}>
-      <div className={QUIZ.GRID_SIDEBAR}>
-        <QuestionList
-          questions={quiz.questions}
-          currentIndex={state.currentIndex}
-          answers={answers}
-          onSelect={handleSelectQuestion}
-          showResults={isResultMode}
-          correctAnswers={isResultMode ? correctMap : undefined}
-        />
-        <div className="hidden lg:block mt-4">
-          <ActionButtons {...actionProps} />
-        </div>
-      </div>
-      <div className={QUIZ.GRID_QUESTION}>
-        <QuizQuestion
-          question={question}
-          questionNumber={currentQuestionNumber}
-          selectedAnswer={answers.get(question?.id || '')}
-          onAnswer={isResultMode ? () => {} : handleAnswer}
-          showResult={isResultMode}
-          correctAnswerSet={isResultMode ? correctMap.get(question?.id || '') : undefined}
-          hideExplanation={isResultMode}
-        />
-        {isResultMode && question?.id && explainMap.get(question.id) && (
-          <div className="mt-4">
-            <QuizExplanation explanation={explainMap.get(question.id)} />
+  ) => {
+    const isDisabled = actionProps.isSubmitting || false;
+    
+    return (
+      <div className={`${QUIZ.GRID} ${isDisabled ? 'pointer-events-none opacity-70' : ''}`}>
+        <div className={QUIZ.GRID_SIDEBAR}>
+          <QuestionList
+            questions={quiz.questions}
+            currentIndex={state.currentIndex}
+            answers={answers}
+            onSelect={isDisabled ? () => {} : handleSelectQuestion}
+            showResults={isResultMode}
+            correctAnswers={isResultMode ? correctMap : undefined}
+          />
+          <div className={`hidden lg:block mt-4 ${isDisabled ? 'pointer-events-auto opacity-100' : ''}`}>
+            <ActionButtons {...actionProps} />
           </div>
-        )}
-        <div className="lg:hidden mt-6 flex flex-col gap-2">
-          <ActionButtons {...actionProps} />
+        </div>
+        <div className={QUIZ.GRID_QUESTION}>
+          <QuizQuestion
+            question={question}
+            questionNumber={currentQuestionNumber}
+            selectedAnswer={answers.get(question?.id || '')}
+            onAnswer={isResultMode || isDisabled ? () => {} : handleAnswer}
+            showResult={isResultMode}
+            correctAnswerSet={isResultMode ? correctMap.get(question?.id || '') : undefined}
+            hideExplanation={isResultMode}
+          />
+          {isResultMode && question?.id && explainMap.get(question.id) && (
+            <div className="mt-4">
+              <QuizExplanation explanation={explainMap.get(question.id)} />
+            </div>
+          )}
+          <div className={`lg:hidden mt-6 flex flex-col gap-2 ${isDisabled ? 'pointer-events-auto opacity-100' : ''}`}>
+            <ActionButtons {...actionProps} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   if (isAlreadyPassed) {
     const { correctMap, explainMap, selectedMap } = previousResult 
@@ -228,24 +232,35 @@ function QuizSectionComponent({
   }
 
   return (
-    <div ref={quizRef} className={QUIZ.FULLSCREEN}>
-      <QuizProgress
-        current={currentQuestionNumber}
-        total={totalQuestions}
-        label={`${LABELS.question} ${currentQuestionNumber} / ${totalQuestions}`}
-        timer={quiz.timeLimit ? state.timeLeft : undefined}
-        isWarning={isTimeWarning}
-      />
-      
-      <div className={QUIZ.MAIN}>
-        <div className={QUIZ.MAIN_INNER}>
-          {renderQuizContent(state.answers, correctAnswersMap, explanationsMap, currentQuestion, false, {
-            onSubmit: handleSubmit, isSubmitting
-          })}
+    <div ref={quizRef} className={`${QUIZ.FULLSCREEN} relative`}>
+      <div className={isSubmitting ? 'pointer-events-none' : ''}>
+        <QuizProgress
+          current={currentQuestionNumber}
+          total={totalQuestions}
+          label={`${LABELS.question} ${currentQuestionNumber} / ${totalQuestions}`}
+          timer={quiz.timeLimit ? state.timeLeft : undefined}
+          isWarning={isTimeWarning}
+        />
+        
+        <div className={QUIZ.MAIN}>
+          <div className={QUIZ.MAIN_INNER}>
+            {renderQuizContent(state.answers, correctAnswersMap, explanationsMap, currentQuestion, false, {
+              onSubmit: handleSubmit, isSubmitting
+            })}
+          </div>
         </div>
       </div>
 
-      {isPaused && (
+      {isSubmitting && (
+        <div className="absolute inset-0 bg-[var(--bg)]/60 flex items-center justify-center z-50">
+          <div className="bg-[var(--card)] rounded-xl p-6 shadow-lg flex flex-col items-center gap-3">
+            <Loading size="lg" />
+            <p className="text-sm text-[var(--text)]/70 font-medium">Đang nộp bài...</p>
+          </div>
+        </div>
+      )}
+
+      {isPaused && !isSubmitting && (
         <div className={QUIZ.PAUSED_OVERLAY}>
           <div className={QUIZ.PAUSED_BOX}>
             <p className={QUIZ.PAUSED_TEXT}>{LABELS.paused}</p>

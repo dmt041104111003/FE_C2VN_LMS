@@ -165,7 +165,7 @@ function ResetPasswordFormInner() {
         >
           Gửi lại mã
         </Button>
-        <Link href={ROUTES.LOGIN} className={AUTH_BACK_LINK}>
+        <Link href={ROUTES.LOGIN} className={`${AUTH_BACK_LINK} ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
           {RESET_PASSWORD.backToLogin}
         </Link>
       </div>

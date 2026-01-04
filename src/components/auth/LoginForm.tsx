@@ -42,6 +42,9 @@ function LoginFormComponent() {
   const [wallets, setWallets] = useState<CardanoWallet[]>([]);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  
+  const disabled = isLoading || submitting;
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -62,6 +65,7 @@ function LoginFormComponent() {
       return;
     }
 
+    setSubmitting(true);
     try {
       await loginWithEmail(email, password);
       toast.success('Đăng nhập thành công!');
@@ -71,6 +75,8 @@ function LoginFormComponent() {
         : 'Đăng nhập thất bại. Vui lòng thử lại.';
       toast.error(errorMsg);
       setError(errorMsg);
+    } finally {
+      setSubmitting(false);
     }
   }, [email, password, loginWithEmail, toast]);
 
@@ -78,6 +84,7 @@ function LoginFormComponent() {
     setShowWalletModal(false);
     setError('');
     
+    setSubmitting(true);
     try {
       await loginWithWallet(wallet.key);
       toast.success('Đăng nhập thành công!');
@@ -89,8 +96,20 @@ function LoginFormComponent() {
           : 'Đăng nhập ví thất bại. Vui lòng thử lại.';
       toast.error(errorMsg);
       setError(errorMsg);
+    } finally {
+      setSubmitting(false);
     }
   }, [loginWithWallet, toast]);
+
+  const handleGoogleLogin = useCallback(() => {
+    setSubmitting(true);
+    loginWithGoogle();
+  }, [loginWithGoogle]);
+
+  const handleGithubLogin = useCallback(() => {
+    setSubmitting(true);
+    loginWithGithub();
+  }, [loginWithGithub]);
 
   const openWalletModal = useCallback(() => setShowWalletModal(true), []);
   const closeWalletModal = useCallback(() => setShowWalletModal(false), []);
@@ -115,7 +134,7 @@ function LoginFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <div className={AUTH_FORM_FIELD}>
@@ -127,11 +146,11 @@ function LoginFormComponent() {
             variant="minimal"
             size="md"
             required
-            disabled={isLoading}
+            disabled={disabled}
           />
         </div>
         <div className={AUTH_FORM_FORGOT}>
-          <Link href="/auth/forgot-password" className={AUTH_FORM_FORGOT_LINK}>
+          <Link href="/auth/forgot-password" className={`${AUTH_FORM_FORGOT_LINK} ${disabled ? 'pointer-events-none opacity-50' : ''}`}>
             {LOGIN.forgotPassword}
           </Link>
         </div>
@@ -140,9 +159,9 @@ function LoginFormComponent() {
           variant="primary" 
           size="lg" 
           className="w-full mt-2"
-          disabled={isLoading}
+          disabled={disabled}
         >
-          {isLoading ? <ButtonSpinner size="sm" /> : LOGIN.submitText}
+          {disabled ? <ButtonSpinner size="sm" /> : LOGIN.submitText}
         </Button>
       </form>
 
@@ -158,8 +177,8 @@ function LoginFormComponent() {
           variant="secondary"
           size="md"
           className={AUTH_SOCIAL_BTN}
-          onClick={loginWithGoogle}
-          disabled={isLoading}
+          onClick={handleGoogleLogin}
+          disabled={disabled}
         >
           <GoogleIcon />
           {LOGIN.googleText}
@@ -169,8 +188,8 @@ function LoginFormComponent() {
           variant="secondary"
           size="md"
           className={AUTH_SOCIAL_BTN}
-          onClick={loginWithGithub}
-          disabled={isLoading}
+          onClick={handleGithubLogin}
+          disabled={disabled}
         >
           <GitHubIcon />
           {LOGIN.githubText}
@@ -181,7 +200,7 @@ function LoginFormComponent() {
           size="md"
           onClick={openWalletModal}
           className={AUTH_SOCIAL_BTN}
-          disabled={isLoading}
+          disabled={disabled}
         >
           <img src="/loading.png" alt="" className={AUTH_SOCIAL_ICON} />
           {LOGIN.walletText}
@@ -191,7 +210,7 @@ function LoginFormComponent() {
       <div className={AUTH_FOOTER}>
         <p className={AUTH_FOOTER_TEXT}>
           {LOGIN.noAccount}{' '}
-          <Link href={ROUTES.REGISTER} className={AUTH_FOOTER_LINK}>
+          <Link href={ROUTES.REGISTER} className={`${AUTH_FOOTER_LINK} ${disabled ? 'pointer-events-none opacity-50' : ''}`}>
             {LOGIN.registerLink}
           </Link>
         </p>
