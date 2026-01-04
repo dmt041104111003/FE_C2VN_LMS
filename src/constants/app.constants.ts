@@ -261,7 +261,7 @@ export const YOUTUBE_PLAYER_VARS = {
 export const VIDEO_SEEK_TOLERANCE_SECONDS = 3;
 export const VIDEO_CHECK_INTERVAL_MS = 500;
 
-export const API_BASE_URL = process.env.SERVER_URL || 'http://localhost:8080';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8080';
 
 export const API_ENDPOINTS = {
   AUTH: {
