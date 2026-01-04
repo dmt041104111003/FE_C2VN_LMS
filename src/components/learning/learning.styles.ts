@@ -94,6 +94,10 @@ export const QUIZ = {
   META: 'flex items-center justify-center gap-6 text-sm text-[var(--text)]/40',
   META_ITEM: 'flex items-center gap-1.5',
   START_BTN: '',
+  PAUSED_OVERLAY: 'fixed inset-0 bg-black/80 flex items-center justify-center z-[101]',
+  PAUSED_BOX: 'bg-[var(--bg)] border border-[var(--border)] rounded-lg p-8 text-center',
+  PAUSED_TEXT: 'text-xl font-medium text-[var(--text)] mb-2',
+  PAUSED_HINT: 'text-sm text-[var(--text)]/50',
 } as const;
 
 export const QUESTION_LIST_STATUS: Record<QuestionDisplayStatus, string> = {

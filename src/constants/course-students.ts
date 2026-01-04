@@ -6,7 +6,7 @@ import type {
   CertificateStatus,
 } from '@/types/course-students';
 import type { StatusBadgeVariant } from '@/components/ui';
-import type { ModalConfig } from '@/types/common';
+import type { ModalConfig } from '@/types/core.types';
 
 export const INITIAL_STUDENT_FORM: StudentFormData = {
   fullName: '',
@@ -87,16 +87,6 @@ export const STUDENT_MODAL_CONFIG: Record<NonNullable<StudentModalType>, ModalCo
     title: 'Xóa học viên',
     message: 'Học viên sẽ bị xóa khỏi khóa học này. Hành động không thể hoàn tác.',
     danger: true,
-  },
-  issueCertificate: {
-    title: 'Cấp chứng chỉ',
-    message: 'Xác nhận cấp chứng chỉ hoàn thành khóa học cho học viên này?',
-    danger: false,
-  },
-  issueAllCertificates: {
-    title: 'Cấp chứng chỉ hàng loạt',
-    message: 'Xác nhận cấp chứng chỉ cho tất cả học viên đã hoàn thành nhưng chưa được cấp?',
-    danger: false,
   },
 };
 

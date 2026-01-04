@@ -39,7 +39,10 @@ const LABELS = {
   youCommented: 'đã bình luận',
   youReplied: 'đã phản hồi',
   youReviewed: 'đã đánh giá',
+  certificateIssued: 'Bạn đã được cấp chứng chỉ',
+  viewCertificate: 'Xem chứng chỉ',
 };
+
 
 const TYPE_CONFIG = {
   REVIEW: { label: 'Đánh giá', variant: 'success' as const },
@@ -47,6 +50,7 @@ const TYPE_CONFIG = {
   QNA: { label: 'Hỏi đáp', variant: 'warning' as const },
   QNA_REPLY: { label: 'Phản hồi hỏi đáp', variant: 'default' as const },
   CONTACT: { label: 'Liên hệ', variant: 'info' as const },
+  CERTIFICATE: { label: 'Chứng chỉ', variant: 'success' as const },
 } as const;
 
 
@@ -94,7 +98,7 @@ const STYLES = {
 
 interface InboxItem {
   id: number;
-  type: 'REVIEW' | 'REVIEW_REPLY' | 'QNA' | 'QNA_REPLY' | 'CONTACT';
+  type: 'REVIEW' | 'REVIEW_REPLY' | 'QNA' | 'QNA_REPLY' | 'CONTACT' | 'CERTIFICATE';
   content: string;
   rate: number | null;
   createdAt: string;
@@ -109,13 +113,15 @@ interface InboxItem {
   userEmail: string | null;
   userWalletAddress: string | null;
   own: boolean;  
-  read: boolean; 
+  read: boolean;
+  certificateId?: number;
+  imgUrl?: string;
 }
 
 
 interface GroupedNotification {
   groupKey: string;
-  type: 'REVIEW_REPLY' | 'QNA_REPLY' | 'QNA' | 'REVIEW' | 'CONTACT';
+  type: 'REVIEW_REPLY' | 'QNA_REPLY' | 'QNA' | 'REVIEW' | 'CONTACT' | 'CERTIFICATE';
   items: InboxItem[];
   users: { name: string; email: string | null; wallet: string | null }[];
   latestAt: string;
@@ -125,7 +131,9 @@ interface GroupedNotification {
   lectureId: number | null;
   parentId: number | null;
   hasUnread: boolean;
-  isOwn: boolean; 
+  isOwn: boolean;
+  certificateId?: number;
+  imgUrl?: string;
 }
 
 interface ContactGroup {
@@ -157,30 +165,24 @@ function groupNotifications(items: InboxItem[]): GroupedNotification[] {
   const groupMap = new Map<string, GroupedNotification>();
   
   for (const item of items) {
-    
-    
     let groupKey: string;
     
-    if (item.own) {
-      
+    if (item.type === 'CERTIFICATE') {
+      groupKey = `CERTIFICATE-${item.id}`;
+    } else if (item.own) {
       groupKey = `OWN-${item.type}-${item.id}`;
     } else if (item.type === 'QNA_REPLY' || item.type === 'REVIEW_REPLY') {
-      
       groupKey = `${item.type}-${item.parentId}`;
     } else if (item.type === 'QNA') {
-      
       groupKey = `QNA-lecture-${item.lectureId}`;
     } else if (item.type === 'REVIEW') {
-      
       groupKey = `REVIEW-course-${item.courseId}`;
     } else {
-      
       groupKey = `CONTACT-${item.id}`;
     }
     
     const existing = groupMap.get(groupKey);
-    if (existing && !item.own) {
-      
+    if (existing && !item.own && item.type !== 'CERTIFICATE') {
       existing.items.push(item);
       
       if (!existing.users.find(u => u.name === item.userName)) {
@@ -216,10 +218,11 @@ function groupNotifications(items: InboxItem[]): GroupedNotification[] {
         parentId: item.parentId,
         hasUnread: !item.read,
         isOwn: item.own,
+        certificateId: item.certificateId,
+        imgUrl: item.imgUrl,
       });
     }
   }
-  
   
   return Array.from(groupMap.values())
     .sort((a, b) => new Date(b.latestAt).getTime() - new Date(a.latestAt).getTime());
@@ -241,9 +244,7 @@ export function UserInboxPage() {
     const fetchInbox = async () => {
       try {
         if (isAdmin) {
-          
           const contacts = await getAllContactMessages();
-          
           
           const groupMap = new Map<string, ContactMessage[]>();
           for (const c of contacts) {
@@ -251,7 +252,6 @@ export function UserInboxPage() {
             existing.push(c);
             groupMap.set(c.email, existing);
           }
-          
           
           const groups: ContactGroup[] = Array.from(groupMap.entries()).map(([email, messages]) => ({
             email,
@@ -263,9 +263,8 @@ export function UserInboxPage() {
           groups.sort((a, b) => new Date(b.latestAt).getTime() - new Date(a.latestAt).getTime());
           setContactGroups(groups);
         } else {
-          
-          const result = await api.get<InboxItem[]>('/api/feedbacks/inbox');
-          setItems(result || []);
+          const inboxResult = await api.get<InboxItem[]>('/api/feedbacks/inbox');
+          setItems(inboxResult || []);
         }
       } catch {
         setItems([]);
@@ -300,13 +299,26 @@ export function UserInboxPage() {
   );
 
   const handleViewGroup = async (group: GroupedNotification) => {
-    if (!group.courseSlug) return;
+    if (group.type === 'CERTIFICATE') {
+      if (group.certificateId && group.hasUnread) {
+        try {
+          await api.post(`/api/feedbacks/inbox/read?itemType=CERTIFICATE&itemId=${group.certificateId}`);
+          setItems(prev => prev.map(i => 
+            i.type === 'CERTIFICATE' && i.certificateId === group.certificateId 
+              ? { ...i, read: true } 
+              : i
+          ));
+        } catch {}
+      }
+      router.push(`${ROUTES.PROFILE}#certificate-${group.certificateId}`);
+      return;
+    }
     
+    if (!group.courseSlug) return;
     
     if (group.hasUnread) {
       const itemType = group.type === 'QNA' || group.type === 'QNA_REPLY' ? 'LECTURE_COMMENT' : 'FEEDBACK';
       try {
-        
         await Promise.all(
           group.items
             .filter(i => !i.read)
@@ -316,9 +328,7 @@ export function UserInboxPage() {
         setItems(prev => prev.map(i => 
           group.items.some(gi => gi.id === i.id) ? { ...i, read: true } : i
         ));
-      } catch {
-        
-      }
+      } catch {}
     }
     
     const isQna = group.type === 'QNA' || group.type === 'QNA_REPLY';
@@ -498,8 +508,8 @@ function GroupedNotificationCard({ group, onView }: GroupedNotificationCardProps
   const S = STYLES.item;
   const config = TYPE_CONFIG[group.type] || TYPE_CONFIG.REVIEW;
   
-  
   const buildUserNamesText = () => {
+    if (group.type === 'CERTIFICATE') return '';
     if (group.isOwn) return LABELS.you;
     const names = group.users.map(u => u.name);
     if (names.length === 1) return names[0];
@@ -508,10 +518,12 @@ function GroupedNotificationCard({ group, onView }: GroupedNotificationCardProps
     return `${names[0]}, ${names[1]} ${LABELS.and} ${names.length - 2} ${LABELS.others}`;
   };
   
-  
   const buildActionText = () => {
+    if (group.type === 'CERTIFICATE') {
+      return LABELS.certificateIssued;
+    }
+    
     if (group.isOwn) {
-      
       switch (group.type) {
         case 'QNA_REPLY':
         case 'REVIEW_REPLY':
@@ -539,26 +551,27 @@ function GroupedNotificationCard({ group, onView }: GroupedNotificationCardProps
     }
   };
   
-  
   const firstUser = group.users[0];
-  const avatarSrc = getUserAvatar({
-    walletAddress: firstUser?.wallet || undefined,
-    email: firstUser?.email || undefined,
-    fullName: firstUser?.name || undefined,
-  });
-  
+  const avatarSrc = group.type === 'CERTIFICATE' && group.imgUrl
+    ? group.imgUrl
+    : getUserAvatar({
+        walletAddress: firstUser?.wallet || undefined,
+        email: firstUser?.email || undefined,
+        fullName: firstUser?.name || undefined,
+      });
   
   const secondUser = group.users[1];
-  const secondAvatarSrc = secondUser ? getUserAvatar({
+  const secondAvatarSrc = secondUser && group.type !== 'CERTIFICATE' ? getUserAvatar({
     walletAddress: secondUser?.wallet || undefined,
     email: secondUser?.email || undefined,
     fullName: secondUser?.name || undefined,
   }) : null;
   
-  
   const latestItem = group.items.sort((a, b) => 
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )[0];
+
+  const isCertificate = group.type === 'CERTIFICATE';
 
   return (
     <div 
@@ -567,43 +580,59 @@ function GroupedNotificationCard({ group, onView }: GroupedNotificationCardProps
       style={{ cursor: 'pointer' }}
     >
       <div className="flex gap-3">
-        {}
         <div className="relative shrink-0">
-          <img src={avatarSrc} alt={firstUser?.name} className="w-10 h-10 rounded-full object-cover" />
-          {secondAvatarSrc && (
-            <img 
-              src={secondAvatarSrc} 
-              alt={secondUser?.name} 
-              className="w-6 h-6 rounded-full object-cover absolute -bottom-1 -right-1 border-2 border-[var(--card)]" 
-            />
-          )}
-          {group.users.length > 2 && (
-            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--accent)] text-white text-xs flex items-center justify-center border-2 border-[var(--card)]">
-              +{group.users.length - 1}
-            </span>
+          {isCertificate ? (
+            <div className="w-12 h-12 rounded-lg overflow-hidden bg-[var(--accent)]/10 flex items-center justify-center">
+              {group.imgUrl ? (
+                <img src={group.imgUrl} alt="Certificate" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-xs font-medium text-[var(--accent)]">CERT</span>
+              )}
+            </div>
+          ) : (
+            <>
+              <img src={avatarSrc} alt={firstUser?.name} className="w-10 h-10 rounded-full object-cover" />
+              {secondAvatarSrc && (
+                <img 
+                  src={secondAvatarSrc} 
+                  alt={secondUser?.name} 
+                  className="w-6 h-6 rounded-full object-cover absolute -bottom-1 -right-1 border-2 border-[var(--card)]" 
+                />
+              )}
+              {group.users.length > 2 && (
+                <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--accent)] text-white text-xs flex items-center justify-center border-2 border-[var(--card)]">
+                  +{group.users.length - 1}
+                </span>
+              )}
+            </>
           )}
         </div>
         
-        {}
         <div className="flex-1 min-w-0">
           <p className="text-sm text-[var(--text)]">
-            <span className="font-semibold">{buildUserNamesText()}</span>
-            {' '}{buildActionText()}
+            {isCertificate ? (
+              <span className="font-semibold">{buildActionText()}</span>
+            ) : (
+              <>
+                <span className="font-semibold">{buildUserNamesText()}</span>
+                {' '}{buildActionText()}
+              </>
+            )}
           </p>
           <p className="text-xs text-[var(--text)]/60 mt-0.5">
-            {group.lectureTitle || group.courseTitle || 'Khóa học'}
+            {group.courseTitle || 'Khóa học'}
           </p>
-          {latestItem && (
+          {latestItem && !isCertificate && (
             <p className="text-sm text-[var(--text)]/70 mt-2 line-clamp-2" dangerouslySetInnerHTML={{ __html: latestItem.content }} />
+          )}
+          {isCertificate && (
+            <p className="text-sm text-[var(--accent)] mt-2">{LABELS.viewCertificate}</p>
           )}
           <div className="flex items-center justify-between mt-2">
             <span className={S.time}>{formatTimeAgo(group.latestAt)}</span>
-            <StatusBadge variant={config.variant}>
-              {group.items.length > 1 ? `${group.items.length} ${LABELS.messages}` : config.label}
-            </StatusBadge>
+            <StatusBadge variant={config.variant}>{config.label}</StatusBadge>
           </div>
         </div>
-        
       </div>
     </div>
   );

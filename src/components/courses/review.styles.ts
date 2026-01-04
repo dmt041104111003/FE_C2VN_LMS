@@ -29,7 +29,7 @@ export const RATING_INPUT = {
 } as const;
 
 export const REVIEW_FORM = {
-  CONTAINER: `space-y-6 p-6 bg-[${COLORS.BG_ALT}] rounded-2xl`,
+  CONTAINER: 'space-y-4',
   SECTION: 'space-y-2',
   LABEL: `text-sm font-medium text-[${COLORS.TEXT}]`,
   TEXTAREA: `w-full min-h-[120px] p-4 bg-[${COLORS.BG}] border border-[${COLORS.TEXT}]/${OPACITY.LIGHT} rounded-xl text-sm text-[${COLORS.TEXT}] placeholder:text-[${COLORS.TEXT}]/${OPACITY.MEDIUM} focus:border-[${COLORS.ACCENT}]/${OPACITY.HALF} focus:outline-none resize-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[${COLORS.BG_ALT}]`,
@@ -52,36 +52,36 @@ export const REVIEW_STATS = {
 } as const;
 
 export const REVIEW_LIST = {
-  CONTAINER: 'space-y-6',
-  EMPTY: `py-12 text-center text-sm text-[${COLORS.TEXT}]/${OPACITY.HALF}`,
+  CONTAINER: 'space-y-3 sm:space-y-4',
+  EMPTY: `py-8 text-center text-xs sm:text-sm text-[${COLORS.TEXT}]/${OPACITY.HALF}`,
 } as const;
 
 export const REVIEW_CARD = {
-  CONTAINER: `p-6 bg-[${COLORS.BG_ALT}] rounded-2xl`,
-  HEADER: 'flex items-start justify-between gap-4 mb-4',
-  USER: 'flex items-center gap-3',
-  AVATAR: 'w-12 h-12 rounded-full object-cover bg-transparent',
-  USER_INFO: 'flex flex-col',
-  NAME: `font-medium text-[${COLORS.TEXT}]`,
-  DATE: `text-xs text-[${COLORS.TEXT}]/${OPACITY.HALF}`,
-  CONTENT: `text-sm text-[${COLORS.TEXT}]/${OPACITY.FULL} leading-relaxed mb-4`,
-  FOOTER: `flex items-center justify-between pt-4 border-t border-[${COLORS.TEXT}]/${OPACITY.SUBTLE}`,
-  ACTIONS: 'flex items-center gap-4',
-  ACTION_BTN: `flex items-center gap-1.5 text-xs text-[${COLORS.TEXT}]/${OPACITY.SOFT} hover:text-[${COLORS.TEXT}]/${OPACITY.STRONG} transition-colors`,
+  CONTAINER: `p-3 sm:p-4 bg-[${COLORS.BG_ALT}] rounded-xl`,
+  HEADER: 'flex items-start justify-between gap-2 sm:gap-3 mb-2 sm:mb-3',
+  USER: 'flex items-center gap-2 sm:gap-3',
+  AVATAR: 'w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover bg-transparent flex-shrink-0',
+  USER_INFO: 'flex flex-col min-w-0',
+  NAME: `text-sm font-medium text-[${COLORS.TEXT}] truncate`,
+  DATE: `text-[10px] sm:text-xs text-[${COLORS.TEXT}]/${OPACITY.HALF}`,
+  CONTENT: `text-xs sm:text-sm text-[${COLORS.TEXT}]/${OPACITY.FULL} leading-relaxed mb-2 sm:mb-3`,
+  FOOTER: `flex items-center justify-between pt-2 sm:pt-3 border-t border-[${COLORS.TEXT}]/${OPACITY.SUBTLE}`,
+  ACTIONS: 'flex items-center gap-2 sm:gap-3',
+  ACTION_BTN: `flex items-center gap-1 text-[10px] sm:text-xs text-[${COLORS.TEXT}]/${OPACITY.SOFT} hover:text-[${COLORS.TEXT}]/${OPACITY.STRONG} transition-colors`,
   ACTION_BTN_ACTIVE: `!text-[${COLORS.ACCENT}] font-semibold`,
-  ACTION_COUNT: 'min-w-[16px]',
-  REPORT_BTN: `text-xs text-[${COLORS.TEXT}]/${OPACITY.SOFT} hover:text-[${COLORS.TEXT}]/${OPACITY.STRONG} transition-colors`,
+  ACTION_COUNT: 'min-w-[12px] sm:min-w-[16px]',
+  REPORT_BTN: `text-[10px] sm:text-xs text-[${COLORS.TEXT}]/${OPACITY.SOFT} hover:text-[${COLORS.TEXT}]/${OPACITY.STRONG} transition-colors`,
 } as const;
 
 export const REVIEW_REPLY = {
-  CONTAINER: `mt-4 pl-6 border-l-2 border-[${COLORS.TEXT}]/${OPACITY.LIGHT} space-y-4`,
-  CARD: `p-4 bg-[${COLORS.BG}] rounded-xl`,
-  HEADER: 'flex items-center gap-3 mb-2',
-  AVATAR: 'w-8 h-8 rounded-full object-cover bg-transparent',
-  NAME: `text-sm font-medium text-[${COLORS.TEXT}]`,
-  BADGE: `text-xs px-2 py-0.5 bg-[${COLORS.ACCENT}]/${OPACITY.LIGHT} text-[${COLORS.ACCENT}] rounded-full`,
-  DATE: `text-xs text-[${COLORS.TEXT}]/${OPACITY.MEDIUM}`,
-  CONTENT: `text-sm text-[${COLORS.TEXT}]/${OPACITY.BOLD}`,
+  CONTAINER: `mt-2 sm:mt-3 pl-3 sm:pl-4 border-l-2 border-[${COLORS.TEXT}]/${OPACITY.LIGHT} space-y-2 sm:space-y-3`,
+  CARD: `p-2 sm:p-3 bg-[${COLORS.BG}] rounded-lg`,
+  HEADER: 'flex items-center gap-2 mb-1 sm:mb-2',
+  AVATAR: 'w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover bg-transparent flex-shrink-0',
+  NAME: `text-xs sm:text-sm font-medium text-[${COLORS.TEXT}] truncate`,
+  BADGE: `text-[10px] px-1.5 py-0.5 bg-[${COLORS.ACCENT}]/${OPACITY.LIGHT} text-[${COLORS.ACCENT}] rounded-full`,
+  DATE: `text-[10px] sm:text-xs text-[${COLORS.TEXT}]/${OPACITY.MEDIUM}`,
+  CONTENT: `text-xs sm:text-sm text-[${COLORS.TEXT}]/${OPACITY.BOLD}`,
 } as const;
 
 export const REVIEW_SECTION = {
@@ -92,12 +92,12 @@ export const REVIEW_SECTION = {
 } as const;
 
 export const REPLY_FORM = {
-  CONTAINER: 'mt-3 space-y-2',
-  TEXTAREA: `w-full px-3 py-2 text-sm border border-[${COLORS.BORDER}] rounded-lg bg-[${COLORS.BG}] text-[${COLORS.TEXT}] focus:outline-none focus:border-[${COLORS.PRIMARY}]`,
+  CONTAINER: 'mt-2 sm:mt-3 space-y-2',
+  TEXTAREA: `w-full px-2 sm:px-3 py-2 text-xs sm:text-sm border border-[${COLORS.BORDER}] rounded-lg bg-[${COLORS.BG}] text-[${COLORS.TEXT}] focus:outline-none focus:border-[${COLORS.PRIMARY}]`,
   ACTIONS: 'flex gap-2 justify-end',
-  CANCEL_BTN: `px-3 py-1.5 text-sm text-[${COLORS.TEXT}]/${OPACITY.BOLD} hover:text-[${COLORS.TEXT}]`,
-  SUBMIT_BTN: `px-3 py-1.5 text-sm bg-[${COLORS.PRIMARY}] text-white rounded-lg disabled:opacity-50`,
-  REPLY_LINK: `ml-4 text-sm text-[${COLORS.PRIMARY}] hover:underline`,
+  CANCEL_BTN: `px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-[${COLORS.TEXT}]/${OPACITY.BOLD} hover:text-[${COLORS.TEXT}]`,
+  SUBMIT_BTN: `px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-[${COLORS.PRIMARY}] text-white rounded-lg disabled:opacity-50`,
+  REPLY_LINK: `ml-2 sm:ml-3 text-xs sm:text-sm text-[${COLORS.PRIMARY}] hover:underline`,
 } as const;
 
 export const getActionBtnClass = (isActive: boolean): string => {

@@ -76,10 +76,17 @@ function CoursesComponent() {
                 ? (c.courseTags as { name?: string }[]).map(t => String(t.name || ''))
                 : [],
               totalStudents: Number(c.totalStudents) || 0,
+              rating: Number(c.rating) || 0,
               createdAt: String(c.createdAt || ''),
             } as Course;
           })
-          .sort((a, b) => (b.totalStudents || 0) - (a.totalStudents || 0))
+          .sort((a, b) => {
+            const ratingDiff = (b.rating || 0) - (a.rating || 0);
+            if (ratingDiff !== 0) return ratingDiff;
+            const studentsDiff = (b.totalStudents || 0) - (a.totalStudents || 0);
+            if (studentsDiff !== 0) return studentsDiff;
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          })
           .slice(0, 3);
         setCourses(mapped);
       } catch {

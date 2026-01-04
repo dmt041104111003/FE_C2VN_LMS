@@ -69,7 +69,6 @@ function HeaderInner() {
 
   const userAvatar = getUserAvatar(user);
 
-  
   useEffect(() => {
     if (!isAuthenticated) {
       setUnreadCount(0);
@@ -86,18 +85,22 @@ function HeaderInner() {
     href: user.role === 'ADMIN' ? ROUTES.ADMIN : user.role === 'INSTRUCTOR' ? ROUTES.INSTRUCTOR : null,
   } : null;
 
-  const isActive = useCallback((href: string) => {
+  const isActive = useCallback((href: string, children?: readonly { href: string }[]) => {
     if (href === '/') return pathname === '/';
-    return pathname.startsWith(href);
+    if (pathname.startsWith(href)) return true;
+    if (children) {
+      return children.some(child => {
+        const childPath = child.href.split('?')[0];
+        return pathname === childPath || pathname.startsWith(childPath + '/');
+      });
+    }
+    return false;
   }, [pathname]);
 
   const isChildActive = useCallback((childHref: string) => {
     const [childPath, childQuery] = childHref.split('?');
     if (pathname !== childPath) return false;
-    
-    if (!childQuery) {
-      return searchParams.toString() === '';
-    }
+    if (!childQuery) return true;
     
     const childParams = new URLSearchParams(childQuery);
     for (const [key, value] of childParams.entries()) {
@@ -136,7 +139,7 @@ function HeaderInner() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={isActive(item.href) ? HEADER_NAV_LINK_ACTIVE : HEADER_NAV_LINK}
+                  className={isActive(item.href, 'children' in item ? item.children : undefined) ? HEADER_NAV_LINK_ACTIVE : HEADER_NAV_LINK}
                 >
                   {item.label}
                 </Link>
@@ -260,7 +263,7 @@ function HeaderInner() {
                 <div key={item.label} className={HEADER_MEGA_COL}>
                   <Link
                     href={item.href}
-                    className={isActive(item.href) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
+                    className={isActive(item.href, 'children' in item ? item.children : undefined) ? HEADER_MEGA_TITLE_ACTIVE : HEADER_MEGA_TITLE}
                     onClick={closeMenu}
                   >
                     {item.label}

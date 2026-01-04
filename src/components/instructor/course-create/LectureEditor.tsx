@@ -2,10 +2,10 @@
 
 import { memo, useCallback } from 'react';
 import { TipTapEditor } from '@/components/editor/TipTapEditor';
-import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { COURSE_CREATE_LABELS as LABELS, COURSE_CREATE_STYLES as S } from '@/constants/course-create';
 import type { LectureEditorProps } from '@/types/course-create';
 import { EditorCardHeader } from './EditorCardHeader';
+import { VideoUploader } from './VideoUploader';
 
 export const LectureEditor = memo(function LectureEditor({
   lecture,
@@ -22,16 +22,17 @@ export const LectureEditor = memo(function LectureEditor({
     onUpdate(chapterIndex, lectureIndex, { ...lecture, [field]: value });
   }, [lecture, chapterIndex, lectureIndex, onUpdate]);
 
-  const handleDurationChange = useCallback((duration: number) => {
-    onUpdate(chapterIndex, lectureIndex, { ...lecture, duration });
-  }, [lecture, chapterIndex, lectureIndex, onUpdate]);
-
   const handleRemove = useCallback(() => {
     onRemove(chapterIndex, lectureIndex);
   }, [chapterIndex, lectureIndex, onRemove]);
 
   const handlePreviewFreeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onUpdate(chapterIndex, lectureIndex, { ...lecture, previewFree: e.target.checked });
+  }, [lecture, chapterIndex, lectureIndex, onUpdate]);
+
+  const handleVideoChange = useCallback((url: string, duration?: number) => {
+    const updatedLecture = { ...lecture, videoUrl: url, ...(duration !== undefined && { duration }) };
+    onUpdate(chapterIndex, lectureIndex, updatedLecture);
   }, [lecture, chapterIndex, lectureIndex, onUpdate]);
 
   return (
@@ -72,22 +73,11 @@ export const LectureEditor = memo(function LectureEditor({
         </div>
       </div>
 
-      <div className={S.FORM_GROUP}>
-        <label className={S.LABEL}>{LABELS.lectures.videoUrl}</label>
-        <input
-          type="text"
-          value={lecture.videoUrl}
-          onChange={e => handleChange('videoUrl', e.target.value)}
-          placeholder={LABELS.lectures.videoPlaceholder}
-          className={S.INPUT}
-          disabled={disabled}
-        />
-        {lecture.videoUrl && (
-          <div className={S.VIDEO_PREVIEW}>
-            <VideoPlayer url={lecture.videoUrl} onDurationChange={handleDurationChange} />
-          </div>
-        )}
-      </div>
+      <VideoUploader
+        videoUrl={lecture.videoUrl}
+        onVideoChange={handleVideoChange}
+        disabled={disabled}
+      />
 
       <div className={S.FORM_GROUP}>
         <label className={S.LABEL}>{LABELS.lectures.content}</label>

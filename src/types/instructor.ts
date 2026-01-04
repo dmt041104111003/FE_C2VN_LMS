@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import type { SearchSuggestion } from './core.types';
+export type { SearchSuggestion } from './core.types';
 
 export type CourseStatus = 'draft' | 'published' | 'archived';
 
@@ -38,11 +40,6 @@ export interface InstructorModalState {
 
 export interface CourseEditData {
   title: string;
-}
-
-export interface SearchSuggestion {
-  text: string;
-  type?: 'course' | 'instructor' | 'tag';
 }
 
 export interface CourseFiltersProps {

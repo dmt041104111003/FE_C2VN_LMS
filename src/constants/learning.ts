@@ -171,6 +171,8 @@ export const LEARNING_LABELS = {
     attempts: 'Số lần thử',
     remaining: 'còn lại',
     questionList: 'Danh sách câu hỏi',
+    paused: 'Tạm dừng',
+    returnToResume: 'Quay lại để tiếp tục làm bài',
   },
   progress: {
     courseProgress: 'Tiến độ khóa học',

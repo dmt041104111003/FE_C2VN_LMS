@@ -35,6 +35,7 @@ interface CourseResult {
   instructorName?: string;
   courseTags?: { name?: string }[];
   numOfStudents?: number;
+  rating?: number;
   createdAt?: string;
 }
 
@@ -49,28 +50,35 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
     const fetchCourses = async () => {
       try {
         const data = await courseService.getPublishedCourses() as CourseResult[];
-        setCourses(data || []);
+        const getCourseScore = (c: CourseResult) => (c.rating || 0) * 100 + (c.numOfStudents || 0);
         
+        const sortedData = [...(data || [])].sort((a, b) => getCourseScore(b) - getCourseScore(a));
+        setCourses(sortedData);
         
-        const courseSuggestions: SearchSuggestionItem[] = (data || [])
+        const courseSuggestions: SearchSuggestionItem[] = sortedData
           .filter(c => c.title)
           .map(c => ({ text: c.title!, type: 'course' as const }));
         
-        const instructorSet = new Set<string>();
-        const tagSet = new Set<string>();
+        const instructorScores = new Map<string, number>();
+        const tagScores = new Map<string, number>();
         
-        (data || []).forEach(c => {
-          if (c.instructorName) instructorSet.add(c.instructorName);
+        sortedData.forEach(c => {
+          const score = getCourseScore(c);
+          if (c.instructorName) {
+            instructorScores.set(c.instructorName, (instructorScores.get(c.instructorName) || 0) + score);
+          }
           c.courseTags?.forEach(t => {
-            if (t.name) tagSet.add(t.name);
+            if (t.name) tagScores.set(t.name, (tagScores.get(t.name) || 0) + score);
           });
         });
         
-        const instructorSuggestions: SearchSuggestionItem[] = Array.from(instructorSet)
-          .map(name => ({ text: name, type: 'instructor' as const }));
+        const instructorSuggestions: SearchSuggestionItem[] = Array.from(instructorScores.entries())
+          .sort((a, b) => b[1] - a[1])
+          .map(([name]) => ({ text: name, type: 'instructor' as const }));
         
-        const tagSuggestions: SearchSuggestionItem[] = Array.from(tagSet)
-          .map(name => ({ text: name, type: 'tag' as const }));
+        const tagSuggestions: SearchSuggestionItem[] = Array.from(tagScores.entries())
+          .sort((a, b) => b[1] - a[1])
+          .map(([name]) => ({ text: name, type: 'tag' as const }));
         
         setSuggestions([...courseSuggestions, ...instructorSuggestions, ...tagSuggestions]);
       } catch {
@@ -81,19 +89,25 @@ function SearchModalComponent({ onClose }: SearchModalProps) {
     fetchCourses();
   }, []);
 
+  const sortByPopularity = useCallback((a: CourseResult, b: CourseResult) => {
+    const ratingDiff = (b.rating || 0) - (a.rating || 0);
+    if (ratingDiff !== 0) return ratingDiff;
+    const studentsDiff = (b.numOfStudents || 0) - (a.numOfStudents || 0);
+    if (studentsDiff !== 0) return studentsDiff;
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  }, []);
+
   const newestCourses = useMemo(() => {
-    return [...courses]
-      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
-      .slice(0, 3);
-  }, [courses]);
+    return [...courses].sort(sortByPopularity).slice(0, 3);
+  }, [courses, sortByPopularity]);
 
   const trendingSearches = useMemo(() => {
     return [...courses]
-      .sort((a, b) => (b.numOfStudents || 0) - (a.numOfStudents || 0))
+      .sort(sortByPopularity)
       .slice(0, 4)
       .map((c) => c.title)
       .filter(Boolean) as string[];
-  }, [courses]);
+  }, [courses, sortByPopularity]);
 
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

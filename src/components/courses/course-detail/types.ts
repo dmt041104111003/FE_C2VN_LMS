@@ -104,8 +104,6 @@ export interface EnrollmentState {
   isDialogOpen: boolean;
   isWalletModalOpen: boolean;
   isProcessing: boolean;
-  isFaceCaptureOpen: boolean;
-  capturedFaceImage: string | null;
   pendingWallet: { key: string; name: string } | null;
 }
 
@@ -114,9 +112,7 @@ export interface UseEnrollmentReturn {
   wallets: { key: string; name: string; icon?: string }[];
   handleEnrollClick: () => void;
   handleConfirmEnroll: () => Promise<void>;
-  handleWalletSelect: (wallet: { key: string; name: string; icon?: string }) => void;
+  handleWalletSelect: (wallet: { key: string; name: string; icon?: string }) => Promise<void>;
   closeDialog: () => void;
   closeWalletModal: () => void;
-  closeFaceCapture: () => void;
-  processPaymentWithFace: (faceImage: string) => Promise<void>;
 }

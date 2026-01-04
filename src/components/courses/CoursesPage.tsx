@@ -66,9 +66,15 @@ function CoursesPageInner() {
             tags: Array.isArray(c.courseTags) 
               ? (c.courseTags as { name?: string }[]).map(t => String(t.name || ''))
               : [],
-            status: c.draft ? 'DRAFT' : 'PUBLISHED',
+            status: (c.draft ? 'DRAFT' : 'PUBLISHED') as 'DRAFT' | 'PUBLISHED',
             createdAt: String(c.createdAt || ''),
           };
+        }).sort((a, b) => {
+          const ratingDiff = (b.rating || 0) - (a.rating || 0);
+          if (ratingDiff !== 0) return ratingDiff;
+          const studentsDiff = (b.totalStudents || 0) - (a.totalStudents || 0);
+          if (studentsDiff !== 0) return studentsDiff;
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
         setCourses(mapped);
       } catch {
@@ -106,11 +112,16 @@ function CoursesPageInner() {
   }, [priceParam, maxPrice, parsePriceParam]);
 
   const allTags = useMemo(() => {
-    const tags = new Set<string>();
+    const tagScores = new Map<string, number>();
     for (const course of courses) {
-      course.tags?.forEach(tag => tags.add(tag));
+      const courseScore = (course.rating || 0) * 100 + (course.totalStudents || 0);
+      course.tags?.forEach(tag => {
+        tagScores.set(tag, (tagScores.get(tag) || 0) + courseScore);
+      });
     }
-    return Array.from(tags).sort();
+    return Array.from(tagScores.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag]) => tag);
   }, [courses]);
 
   const searchSuggestions = useMemo(() => {

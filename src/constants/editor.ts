@@ -62,13 +62,13 @@ export const EDITOR_CONFIG = {
 } as const;
 
 export const MENU_STYLES = {
-  WRAPPER: 'border-b border-[var(--text)]/10 px-4 py-3 bg-[var(--bg)]',
-  ROW: 'flex flex-wrap items-center gap-1',
-  GROUP: 'flex items-center gap-1 px-2 border-r border-[var(--text)]/10 last:border-r-0',
-  BTN: 'p-2 rounded text-[var(--text)]/40 hover:text-[var(--text)] hover:bg-[var(--text)]/5 transition-colors disabled:opacity-20 disabled:cursor-not-allowed',
+  WRAPPER: 'border-b border-[var(--text)]/10 px-2 sm:px-4 py-2 sm:py-3 bg-[var(--bg)] overflow-x-auto',
+  ROW: 'flex flex-wrap items-center gap-0.5 sm:gap-1',
+  GROUP: 'flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2 border-r border-[var(--text)]/10 last:border-r-0',
+  BTN: 'p-1.5 sm:p-2 rounded text-[var(--text)]/40 hover:text-[var(--text)] hover:bg-[var(--text)]/5 transition-colors disabled:opacity-20 disabled:cursor-not-allowed',
   BTN_ACTIVE: 'text-[var(--accent)] bg-[var(--accent)]/10',
-  ICON: 'w-4 h-4',
-  HEADING_LABEL: 'text-xs font-bold',
+  ICON: 'w-3.5 h-3.5 sm:w-4 sm:h-4',
+  HEADING_LABEL: 'text-[10px] sm:text-xs font-bold',
 } as const;
 
 export const TOOLBAR_ACTIONS = {

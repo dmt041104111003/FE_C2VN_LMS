@@ -23,6 +23,7 @@ export const ROUTES = {
   BLOG: '/blog',
   FAQ: '/faq',
   FORUM: '/forum',
+  VERIFY_CERTIFICATE: '/verify',
 } as const;
 
 export const NAV_ITEMS = [
@@ -42,7 +43,7 @@ export const NAV_ITEMS = [
     children: [
       { label: 'Tài liệu', href: ROUTES.DOCS },
       { label: 'Bài viết', href: ROUTES.BLOG },
-      { label: 'Video', href: '/videos' },
+      { label: 'Xác minh chứng chỉ', href: ROUTES.VERIFY_CERTIFICATE },
     ],
   },
   {
@@ -241,6 +242,8 @@ export const getYouTubeId = (url?: string): string | null => {
   }
   return null;
 };
+
+export const isYouTubeUrl = (url?: string): boolean => getYouTubeId(url) !== null;
 
 export const VIDEO_UNAVAILABLE_TEXT = 'Video không khả dụng';
 

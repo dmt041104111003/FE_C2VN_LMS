@@ -272,11 +272,13 @@ export const FEATURE_SIZES: Record<'xs' | 'sm', { icon: string; text: string; ga
 
 export const TAG_BASE = 'text-xs px-2 py-0.5 bg-[var(--bg-alt)] text-[var(--text)]/60 rounded';
 
-export const VIDEO_PLAYER_WRAPPER = 'relative aspect-video';
-export const VIDEO_PLAYER_ERROR = 'aspect-video bg-black flex items-center justify-center';
-export const VIDEO_PLAYER_ERROR_TEXT = 'text-white/50 text-sm';
-export const VIDEO_PLAYER_IFRAME = 'w-full h-full';
-export const VIDEO_PLAYER_OVERLAY = 'absolute inset-0 pointer-events-none';
+export const VIDEO_PLAYER = {
+  WRAPPER: 'relative aspect-video bg-black rounded-lg overflow-hidden',
+  ERROR: 'aspect-video bg-black flex items-center justify-center rounded-lg',
+  ERROR_TEXT: 'text-white/50 text-sm',
+  IFRAME: 'w-full h-full',
+  VIDEO: 'w-full h-full object-contain',
+} as const;
 
 export const VIDEO_MODAL_OVERLAY = 'fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4';
 export const VIDEO_MODAL_CLOSE = 'absolute top-4 right-4 text-white z-10 p-2 hover:bg-white/10 rounded-full transition-colors';
@@ -511,13 +513,13 @@ export const SIDEBAR = {
 
 export const SIDEBAR_LAYOUT = {
   CONTAINER: 'h-screen bg-[var(--bg)] flex overflow-hidden',
-  SIDEBAR_DESKTOP: 'w-52 flex-shrink-0 hidden lg:block border-r border-[var(--border)]',
+  SIDEBAR_DESKTOP: 'flex-shrink-0 hidden lg:block border-r border-[var(--border)] transition-all duration-300',
   SIDEBAR_MOBILE_OVERLAY: 'fixed inset-0 z-50 bg-black/30 lg:hidden',
-  SIDEBAR_MOBILE_CONTENT: 'w-52 h-full bg-[var(--bg)]',
+  SIDEBAR_MOBILE_CONTENT: 'h-full bg-[var(--bg)]',
   MAIN: 'flex-1 flex flex-col min-w-0 h-full',
-  HEADER: 'h-14 border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 flex-shrink-0',
+  HEADER: 'h-20 sm:h-14 portrait:h-20 landscape:sm:h-14 border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 flex-shrink-0',
   HEADER_LEFT: 'flex items-center gap-3',
-  HEADER_MENU_BTN: 'p-1.5 -ml-1.5 text-[var(--text)]/30 hover:text-[var(--text)]/60 transition-colors lg:hidden',
+  HEADER_MENU_BTN: 'p-1.5 -ml-1.5 text-[var(--text)]/30 hover:text-[var(--text)]/60 transition-colors',
   HEADER_INFO: 'flex flex-col gap-0.5',
   HEADER_SUBTITLE: 'text-xs text-[var(--text)]/30 uppercase tracking-[0.15em]',
   HEADER_TITLE: 'text-sm text-[var(--text)]/80',
@@ -525,6 +527,8 @@ export const SIDEBAR_LAYOUT = {
   HEADER_NAV_BTN: 'p-2 text-[var(--text)]/30 hover:text-[var(--text)]/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors',
   HEADER_NAV_ICON: 'w-5 h-5',
   CONTENT: 'flex-1 overflow-y-auto min-h-0',
+  RIGHT_SIDEBAR_DESKTOP: 'flex-shrink-0 hidden lg:block border-l border-[var(--border)] transition-all duration-300 overflow-y-auto',
+  RIGHT_SIDEBAR_TOGGLE: 'absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-12 bg-[var(--bg-alt)] border border-[var(--border)] border-r-0 rounded-l flex items-center justify-center cursor-pointer hover:bg-[var(--bg)] transition-colors',
 } as const;
 
 export const TOAST = {

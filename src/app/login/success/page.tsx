@@ -20,10 +20,11 @@ export default function LoginSuccessPage() {
       try {
         await refreshUser();
         toast.success('Đăng nhập thành công!');
+        router.replace(ROUTES.HOME);
       } catch {
         toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+        router.replace(ROUTES.LOGIN);
       }
-      router.replace(ROUTES.HOME);
     };
 
     handleOAuthSuccess();

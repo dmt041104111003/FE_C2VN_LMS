@@ -5,7 +5,6 @@ import { Course } from '@/types/course';
 import { BookIcon, ClockIcon, UsersIcon } from '@/components/ui/icons';
 import { Dialog } from '@/components/ui/Dialog';
 import { WalletModal } from '@/components/ui/WalletModal';
-import { FaceCaptureModal } from '@/components/face/FaceCaptureModal';
 import { formatCurrency, formatDuration } from '@/constants/config';
 import { COURSE_DETAIL, COURSE_PAGE } from '@/constants/course';
 import { ROUTES } from '@/constants/navigation';
@@ -161,8 +160,6 @@ export function CourseSidebar({
     handleWalletSelect,
     closeDialog,
     closeWalletModal,
-    closeFaceCapture,
-    processPaymentWithFace,
   } = useEnrollment({ course, courseSlug, discountedPrice });
 
   const dialogMessage = isFree 
@@ -221,13 +218,6 @@ export function CourseSidebar({
         emptyText={ENROLL_DIALOG.noWallet}
         onClose={closeWalletModal}
         onSelect={handleWalletSelect}
-      />
-
-      <FaceCaptureModal
-        isOpen={state.isFaceCaptureOpen}
-        onClose={closeFaceCapture}
-        onCapture={processPaymentWithFace}
-        isProcessing={state.isProcessing}
       />
     </>
   );

@@ -13,6 +13,7 @@ export {
   DEFAULT_PAGE_SIZE,
   formatCode,
   getYouTubeId,
+  isYouTubeUrl,
   VIDEO_UNAVAILABLE_TEXT,
   obfuscateVideoUrl,
   deobfuscateVideoUrl,

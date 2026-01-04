@@ -167,6 +167,7 @@ const mapTestToQuiz = (test: Record<string, unknown>, type: 'final' | 'chapter',
   type,
   chapterId,
   passScore: Number(test.passScore) || 0,
+  timeLimit: Number(test.durationMinutes) || 30,
   questions: Array.isArray(test.questions)
     ? test.questions.map((q: Record<string, unknown>, qidx: number) => ({
         id: String(q.id || qidx),

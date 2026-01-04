@@ -5,7 +5,7 @@ import { Dialog, useToast } from '@/components/ui';
 import { PAGE } from '@/components/ui/ui.styles';
 import { DEFAULT_PAGE_SIZE } from '@/constants/config';
 import { ADMIN_LABELS, ADMIN_MODAL_CONFIG } from '@/constants/admin';
-import { DEFAULT_MODAL_CONFIG } from '@/types/common';
+import { DEFAULT_MODAL_CONFIG } from '@/types/core.types';
 import type { AdminUser, UserRole, UserStatus, AdminModalType, AdminModalState } from '@/types/admin';
 import * as userService from '@/services/user';
 import { AdminLayout } from './AdminLayout';

@@ -9,7 +9,6 @@ import {
   ActionsCell,
   CopyableText,
   TrashIcon,
-  CertificateIcon,
 } from '@/components/ui';
 import { ICON_SM, COPYABLE_TEXT } from '@/components/ui/ui.styles';
 import { formatCode, formatDate } from '@/constants/config';
@@ -32,35 +31,22 @@ export const StudentRow = memo(function StudentRow({
   index,
   student,
   onRemove,
-  onIssueCertificate,
 }: StudentRowProps) {
   const handleRemove = useCallback(() => onRemove(student.id), [student.id, onRemove]);
-  const handleIssueCertificate = useCallback(() => onIssueCertificate(student.id), [student.id, onIssueCertificate]);
 
   const isCompleted = student.status === 'completed';
   const hasCertificate = student.certificateStatus === 'issued';
-  const canIssueCertificate = isCompleted && !hasCertificate;
+  const hasWallet = Boolean(student.walletAddress);
+  const isPending = isCompleted && !hasCertificate && hasWallet;
 
-  const dropdownItems = useMemo((): DropdownItem[] => {
-    const items: DropdownItem[] = [];
-
-    if (canIssueCertificate) {
-      items.push({
-        label: ACTIONS.issueCertificate,
-        icon: <CertificateIcon className={ICON_SM} />,
-        onClick: handleIssueCertificate,
-      });
-    }
-
-    items.push({
+  const dropdownItems = useMemo((): DropdownItem[] => [
+    {
       label: ACTIONS.remove,
       icon: <TrashIcon className={ICON_SM} />,
       onClick: handleRemove,
       danger: true,
-    });
-
-    return items;
-  }, [handleRemove, handleIssueCertificate, canIssueCertificate]);
+    },
+  ], [handleRemove]);
 
   const contactValue = student.walletAddress || student.email;
 
@@ -88,18 +74,14 @@ export const StudentRow = memo(function StudentRow({
         </StatusBadge>
       </TableCell>
       <TableCell label={HEADERS[6]}>
-        {canIssueCertificate ? (
-          <button
-            type="button"
-            onClick={handleIssueCertificate}
-            className="text-sm text-[var(--accent)] hover:underline cursor-pointer"
-          >
-            {CERTIFICATE_STATUS_LABELS.pending}
-          </button>
-        ) : hasCertificate ? (
+        {hasCertificate ? (
           <StatusBadge variant={CERTIFICATE_STATUS_VARIANT.issued}>
             {CERTIFICATE_STATUS_LABELS.issued}
           </StatusBadge>
+        ) : isPending ? (
+          <span className="text-sm text-[var(--text)]/60">{CERTIFICATE_STATUS_LABELS.pending}</span>
+        ) : isCompleted && !hasWallet ? (
+          <span className="text-sm text-[var(--text)]/40">Không có ví</span>
         ) : (
           <span className="text-sm text-[var(--text)]/40">—</span>
         )}

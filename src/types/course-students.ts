@@ -1,8 +1,10 @@
+import type { SearchSuggestion } from './core.types';
+export type { SearchSuggestion } from './core.types';
+
 export type StudentStatus = 'active' | 'completed';
 export type StudentContactType = 'email' | 'wallet';
 export type CertificateStatus = 'pending' | 'issued';
-export type StudentModalType = 'remove' | 'issueCertificate' | 'issueAllCertificates' | null;
-export type SearchSuggestionType = 'course' | 'instructor' | 'tag';
+export type StudentModalType = 'remove' | null;
 
 export interface CourseStudent {
   id: string;
@@ -33,16 +35,10 @@ export interface StudentModalState {
   studentId: string | null;
 }
 
-export interface SearchSuggestion {
-  text: string;
-  type: SearchSuggestionType;
-}
-
 export interface StudentRowProps {
   index: number;
   student: CourseStudent;
   onRemove: (studentId: string) => void;
-  onIssueCertificate: (studentId: string) => void;
 }
 
 export interface CourseStudentsPageProps {
@@ -53,10 +49,8 @@ export interface StudentFiltersProps {
   keyword: string;
   statusFilter: StudentStatus | '';
   searchSuggestions?: SearchSuggestion[];
-  pendingCertificateCount: number;
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: StudentStatus | '') => void;
-  onIssueAllCertificates: () => void;
   onAddStudent: () => void;
 }
 
@@ -70,13 +64,10 @@ export interface StudentTableProps {
   statusFilter: StudentStatus | '';
   searchSuggestions?: SearchSuggestion[];
   courseTitle: string;
-  pendingCertificateCount: number;
   onKeywordChange: (value: string) => void;
   onStatusChange: (value: StudentStatus | '') => void;
   onPageChange: (page: number) => void;
   onRemove: (studentId: string) => void;
-  onIssueCertificate: (studentId: string) => void;
-  onIssueAllCertificates: () => void;
   onAddStudent: () => void;
   onBack: () => void;
 }

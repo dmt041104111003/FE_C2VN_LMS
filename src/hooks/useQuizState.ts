@@ -49,7 +49,7 @@ const createAttempt = (quizId: string, answers: Map<string, string | string[]>, 
   completedAt: new Date().toISOString(),
 });
 
-export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): UseQuizStateReturn {
+export function useQuizState({ quiz, courseId, userId, paused = false }: UseQuizStateParams & { paused?: boolean }): UseQuizStateReturn {
   const { questions, timeLimit, id: quizId } = quiz;
   const totalQuestions = questions.length;
 
@@ -58,10 +58,8 @@ export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): Us
   const [isSubmitting, setIsSubmitting] = useState(false);
   const timerRef = useRef<NodeJS.Timeout>();
 
-  const { correctAnswersMap, explanationsMap } = useMemo(
-    () => buildAnswerMaps(serverResult),
-    [serverResult]
-  );
+  const { correctAnswersMap, explanationsMap } = useMemo(() => 
+    buildAnswerMaps(serverResult), [serverResult]);
 
   const { currentIndex, started, timeLeft, answers, attempt } = state;
   const hasResults = state.showResults && correctAnswersMap.size > 0;
@@ -107,9 +105,7 @@ export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): Us
         answers: formatAnswersForSubmission(answers),
       });
 
-      if (!result || typeof result.score === 'undefined') {
-        return;
-      }
+      if (!result || typeof result.score === 'undefined') return;
 
       setServerResult(result);
       setState(prev => ({
@@ -132,7 +128,10 @@ export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): Us
   const getAttempt = useCallback(() => attempt, [attempt]);
 
   useEffect(() => {
-    if (!isQuizInProgress || !timeLimit) return;
+    if (!isQuizInProgress || !timeLimit || paused) {
+      clearTimer();
+      return;
+    }
     
     timerRef.current = setInterval(() => {
       setState(prev => {
@@ -145,7 +144,7 @@ export function useQuizState({ quiz, courseId, userId }: UseQuizStateParams): Us
     }, TIMER_INTERVAL_MS);
 
     return clearTimer;
-  }, [isQuizInProgress, timeLimit, clearTimer]);
+  }, [isQuizInProgress, timeLimit, clearTimer, paused]);
 
   useEffect(() => {
     if (timeLeft === 0 && isQuizInProgress && timeLimit) submit();

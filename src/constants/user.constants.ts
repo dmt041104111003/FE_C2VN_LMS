@@ -3,7 +3,7 @@ import type { UserRole, LoginMethod, StatsKey, UserProfile, UserStats } from '@/
 import type { UserStatus, AdminModalType } from '@/types/admin';
 import type { CourseStatus, InstructorModalType, AddStudentModalState } from '@/types/instructor';
 import type { StatusBadgeVariant } from '@/components/ui';
-import type { ModalConfig } from '@/types/common';
+import type { ModalConfig } from '@/types/core.types';
 import {
   GoogleIcon,
   GitHubIcon,

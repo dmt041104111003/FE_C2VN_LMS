@@ -159,7 +159,9 @@ export {
   createCorrectAnswersMap,
 } from './learning';
 export {
-  FACE_MESSAGES,
-  getFaceMessage,
-  FACE_CONFIG,
-} from './face';
+  VERIFY_LABELS,
+  VERIFY_PAGE,
+  VERIFY_FORM,
+  VERIFY_RESULT,
+  getCardanoScanUrl,
+} from './verify';

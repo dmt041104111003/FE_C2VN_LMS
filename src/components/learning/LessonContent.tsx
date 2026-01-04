@@ -1,13 +1,13 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { LockIcon } from '@/components/ui/icons';
-import { VideoPlayer, ShowMore } from '@/components/ui';
+import { VideoPlayer } from '@/components/ui';
 import { TipTapPreview } from '@/components/editor';
 import { LessonFooter } from './LessonFooter';
 import { LectureComments } from './LectureComments';
 import type { LessonContentProps } from '@/types/learning';
-import { LOCKED_CONTENT, SHOW_MORE_TEXT, QNA_TEXT, LESSON_PREFIX } from './learning.constants';
+import { LOCKED_CONTENT, LESSON_PREFIX } from './learning.constants';
 import * as S from './learning.styles';
 
 export type { LessonContentProps };
@@ -18,23 +18,12 @@ const extractLectureId = (lessonId: string): string => {
     : lessonId;
 };
 
-
-const useCommentTargetId = () => useMemo(() => {
-  if (typeof window === 'undefined') return undefined;
-  const hash = window.location.hash;
-  if (!hash || !hash.startsWith('#comment-')) return undefined;
-  return 'qna-section'; 
-}, []);
-
 export const VideoLessonContent = memo(function VideoLessonContent({ 
   lesson,
   isCompleted,
   onNext,
   hasNext,
 }: LessonContentProps) {
-  const lectureId = extractLectureId(lesson.id);
-  const qnaTargetId = useCommentTargetId();
-
   return (
     <div className={S.VIDEO_LESSON.CONTAINER}>
       <div className={S.VIDEO_LESSON.VIDEO_WRAPPER}>
@@ -50,40 +39,28 @@ export const VideoLessonContent = memo(function VideoLessonContent({
           onNext={onNext}
         />
       </div>
+    </div>
+  );
+});
 
+export const VideoLessonRightPanel = memo(function VideoLessonRightPanel({ 
+  lesson,
+}: Pick<LessonContentProps, 'lesson'>) {
+  const lectureId = extractLectureId(lesson.id);
+
+  return (
+    <div className="h-full flex flex-col">
       {lesson.content && (
-        <div className="border-t border-[var(--border)]">
-          <ShowMore 
-            initialCount={0} 
-            showText={SHOW_MORE_TEXT.SHOW}
-            hideText={SHOW_MORE_TEXT.HIDE}
-            className="px-6 py-4"
-            buttonPosition="top"
-          >
-            {[
-              <div key="content" className="pb-2">
-                <TipTapPreview content={lesson.content} />
-              </div>
-            ]}
-          </ShowMore>
+        <div className="border-b border-[var(--border)] p-4">
+          <h3 className="text-sm font-medium text-[var(--text)]/80 mb-3">Nội dung bài học</h3>
+          <div className="text-sm">
+            <TipTapPreview content={lesson.content} />
+          </div>
         </div>
       )}
-
-      <div className="border-t border-[var(--border)]">
-        <ShowMore
-          initialCount={0}
-          showText={QNA_TEXT.SHOW}
-          hideText={QNA_TEXT.HIDE}
-          className="px-6 py-4"
-          buttonPosition="top"
-          targetId={qnaTargetId}
-        >
-          {[
-            <div key="qna" id="qna-section" className="pb-2">
-              <LectureComments lectureId={lectureId} />
-            </div>
-          ]}
-        </ShowMore>
+      
+      <div className="flex-1 p-4 overflow-y-auto">
+        <LectureComments lectureId={lectureId} />
       </div>
     </div>
   );
@@ -96,9 +73,6 @@ export const ReadingLessonContent = memo(function ReadingLessonContent({
   onNext,
   hasNext,
 }: LessonContentProps) {
-  const lectureId = extractLectureId(lesson.id);
-  const qnaTargetId = useCommentTargetId();
-
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className={S.READING_LESSON.CONTAINER}>
@@ -116,22 +90,18 @@ export const ReadingLessonContent = memo(function ReadingLessonContent({
           />
         </div>
       </div>
-      <div className="max-w-3xl mx-auto w-full border-t border-[var(--border)]">
-        <ShowMore
-          initialCount={0}
-          showText={QNA_TEXT.SHOW}
-          hideText={QNA_TEXT.HIDE}
-          className="px-6 py-4"
-          buttonPosition="top"
-          targetId={qnaTargetId}
-        >
-          {[
-            <div key="qna" id="qna-section" className="pb-2">
-              <LectureComments lectureId={lectureId} />
-            </div>
-          ]}
-        </ShowMore>
-      </div>
+    </div>
+  );
+});
+
+export const ReadingLessonRightPanel = memo(function ReadingLessonRightPanel({ 
+  lesson,
+}: Pick<LessonContentProps, 'lesson'>) {
+  const lectureId = extractLectureId(lesson.id);
+
+  return (
+    <div className="h-full p-4 overflow-y-auto">
+      <LectureComments lectureId={lectureId} />
     </div>
   );
 });
@@ -147,4 +117,3 @@ export const LockedLessonContent = memo(function LockedLessonContent() {
     </div>
   );
 });
-

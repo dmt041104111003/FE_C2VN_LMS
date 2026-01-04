@@ -3,14 +3,11 @@
 import { memo, useCallback, useEffect, useState, useRef } from 'react';
 import { Button, useToast } from '@/components/ui';
 import { LEARNING_LABELS } from '@/constants/learning';
-import { FACE_CONFIG, getFaceMessage } from '@/constants/face';
 import type { QuizSectionProps, ServerQuizResult } from '@/types/learning';
 import { useQuizState, useFullscreen } from '@/hooks';
 import { QuizIntro, QuizProgress, QuizQuestion, QuestionList, QuizExplanation } from './components';
-import { FaceProctor } from '@/components/face';
 import { QUIZ } from './learning.styles';
 import { getPreviousQuizResult } from '@/services/course';
-import type { FaceVerifyResponse } from '@/services/face';
 import { 
   buildAnswerMapsFromResult, 
   buildAnswerMapsFromQuestions, 
@@ -46,18 +43,13 @@ const ActionButtons = memo(function ActionButtons({
   );
 });
 
-type FaceStatus = 'ok' | 'warning' | 'error';
-
 function QuizSectionComponent({ 
-  quiz, courseId, userId, isAlreadyPassed, onComplete, enrollmentId, enableFaceProctor = false,
+  quiz, courseId, userId, isAlreadyPassed, onComplete,
 }: QuizSectionProps) {
   const toast = useToast();
   const [previousResult, setPreviousResult] = useState<ServerQuizResult | null>(null);
   const [loadingPrevious, setLoadingPrevious] = useState(isAlreadyPassed || false);
-  const [faceMismatchCount, setFaceMismatchCount] = useState(0);
-  const [faceWarningCount, setFaceWarningCount] = useState(0);
-  const [faceStatus, setFaceStatus] = useState<FaceStatus>('ok');
-  const [faceMessage, setFaceMessage] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
   const isSubmittingRef = useRef(false);
 
   useEffect(() => {
@@ -71,7 +63,7 @@ function QuizSectionComponent({
     })();
   }, [isAlreadyPassed, courseId, quiz.id, userId]);
 
-  const { state, actions, computed } = useQuizState({ quiz, courseId, userId });
+  const { state, actions, computed } = useQuizState({ quiz, courseId, userId, paused: isPaused });
   const { currentQuestion, totalQuestions, isTimeWarning, correctAnswersMap, explanationsMap, isSubmitting } = computed;
 
   const isQuizActive = state.started && !state.showResults && !isAlreadyPassed;
@@ -84,59 +76,39 @@ function QuizSectionComponent({
   }, [toast]);
 
   const handleFullscreenExit = useCallback(() => {
+    if (isSubmittingRef.current) {
+      isSubmittingRef.current = false;
+      actions.submit();
+      return;
+    }
     forceExitQuiz('Bạn đã thoát chế độ toàn màn hình. Bài kiểm tra bị hủy.');
-  }, [forceExitQuiz]);
+  }, [forceExitQuiz, actions]);
 
   const { ref: quizRef } = useFullscreen<HTMLDivElement>({
     isActive: isQuizActive,
     onExit: handleFullscreenExit,
   });
 
-  const incrementMismatch = useCallback(() => {
-    setFaceMismatchCount(prev => {
-      const newCount = prev + 1;
-      if (newCount >= FACE_CONFIG.MAX_MISMATCH) {
-        forceExitQuiz(`Phát hiện gương mặt không khớp quá ${FACE_CONFIG.MAX_MISMATCH} lần. Bài kiểm tra bị hủy.`);
-      }
-      return newCount;
-    });
-  }, [forceExitQuiz]);
-
-  const handleFaceVerificationResult = useCallback((result: FaceVerifyResponse) => {
-    if (result.success && result.isMatch) {
-      setFaceStatus('ok');
-      setFaceWarningCount(0);
-      setFaceMessage('');
-    } else {
-      setFaceMessage(result.isMatch === false ? 'FACE_MISMATCH' : result.message);
-    }
-  }, []);
-
-  const handleFaceWarning = useCallback(() => {
-    setFaceStatus('warning');
-    setFaceWarningCount(prev => {
-      const newCount = prev + 1;
-      if (newCount >= FACE_CONFIG.WARNING_THRESHOLD) {
-        incrementMismatch();
-        return 0;
-      }
-      return newCount;
-    });
-  }, [incrementMismatch]);
-
-  const handleFaceMismatch = useCallback(() => {
-    setFaceStatus('error');
-    setFaceWarningCount(0);
-    incrementMismatch();
-  }, [incrementMismatch]);
+  useEffect(() => {
+    if (isQuizActive) setIsPaused(false);
+  }, [isQuizActive]);
 
   useEffect(() => {
-    if (isQuizActive) {
-      setFaceMismatchCount(0);
-      setFaceWarningCount(0);
-      setFaceStatus('ok');
-      setFaceMessage('');
-    }
+    if (!isQuizActive) return;
+
+    const handleVisibilityChange = () => setIsPaused(document.hidden);
+    const handleBlur = () => setIsPaused(true);
+    const handleFocus = () => setIsPaused(false);
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [isQuizActive]);
 
   const handleSubmit = useCallback(() => {
@@ -157,15 +129,20 @@ function QuizSectionComponent({
     if (attempt) onComplete(attempt.passed, Math.round(attempt.score));
   }, [actions, onComplete, isAlreadyPassed, previousResult]);
 
+  const handleRetry = useCallback(() => {
+    actions.retry();
+  }, [actions]);
+
   const handleSelectQuestion = useCallback((index: number) => actions.goTo(index), [actions]);
   const handleAnswer = useCallback(
-    (value: string | string[]) => actions.answer(currentQuestion.id, value),
-    [actions, currentQuestion.id]
+    (value: string | string[]) => {
+      if (currentQuestion?.id) actions.answer(currentQuestion.id, value);
+    },
+    [actions, currentQuestion?.id]
   );
 
   if (loadingPrevious) return null;
-
-  const showDamageEffect = enableFaceProctor && enrollmentId && isQuizActive && faceStatus !== 'ok';
+  if (!currentQuestion || totalQuestions === 0) return null;
 
   const renderQuizContent = (
     answers: Map<string, string | string[]>,
@@ -196,10 +173,10 @@ function QuizSectionComponent({
           selectedAnswer={answers.get(question?.id || '')}
           onAnswer={isResultMode ? () => {} : handleAnswer}
           showResult={isResultMode}
-          correctAnswerSet={isResultMode ? correctMap.get(question.id) : undefined}
+          correctAnswerSet={isResultMode ? correctMap.get(question?.id || '') : undefined}
           hideExplanation={isResultMode}
         />
-        {isResultMode && explainMap.get(question.id) && (
+        {isResultMode && question?.id && explainMap.get(question.id) && (
           <div className="mt-4">
             <QuizExplanation explanation={explainMap.get(question.id)} />
           </div>
@@ -243,7 +220,7 @@ function QuizSectionComponent({
         <QuizProgress current={currentQuestionNumber} total={totalQuestions} label={`${scoreDisplay}% · ${attempt.passed ? LABELS.passed : LABELS.failed}`} />
         <div className={QUIZ.MAIN_INNER}>
           {renderQuizContent(state.answers, correctAnswersMap, explanationsMap, currentQuestion, true, {
-            isResults: true, passed: attempt.passed, onRetry: actions.retry, onContinue: handleContinue
+            isResults: true, passed: attempt.passed, onRetry: handleRetry, onContinue: handleContinue
           })}
         </div>
       </div>
@@ -252,17 +229,6 @@ function QuizSectionComponent({
 
   return (
     <div ref={quizRef} className={QUIZ.FULLSCREEN}>
-      {showDamageEffect && (
-        <div 
-          className="fixed inset-0 pointer-events-none z-50"
-          style={{
-            border: `4px solid var(--${faceStatus === 'error' ? 'incorrect' : 'warning'})`,
-            boxShadow: faceStatus === 'error'
-              ? 'inset 0 0 20px rgba(220, 38, 38, 0.3)'
-              : 'inset 0 0 15px rgba(234, 179, 8, 0.2)',
-          }}
-        />
-      )}
       <QuizProgress
         current={currentQuestionNumber}
         total={totalQuestions}
@@ -271,18 +237,6 @@ function QuizSectionComponent({
         isWarning={isTimeWarning}
       />
       
-      {enableFaceProctor && enrollmentId && (faceMessage || faceMismatchCount > 0) && (
-        <div className={`px-4 py-2 text-center text-sm ${
-          faceStatus === 'error' 
-            ? 'bg-[var(--incorrect)]/10 text-[var(--incorrect)]'
-            : 'bg-[var(--warning)]/10 text-[var(--warning)]'
-        }`}>
-          {faceMessage && getFaceMessage(faceMessage)}
-          {faceMessage && faceMismatchCount > 0 && ' - '}
-          {faceMismatchCount > 0 && `Vi phạm: ${faceMismatchCount}/${FACE_CONFIG.MAX_MISMATCH}`}
-        </div>
-      )}
-      
       <div className={QUIZ.MAIN}>
         <div className={QUIZ.MAIN_INNER}>
           {renderQuizContent(state.answers, correctAnswersMap, explanationsMap, currentQuestion, false, {
@@ -290,18 +244,14 @@ function QuizSectionComponent({
           })}
         </div>
       </div>
-      
-      {enableFaceProctor && enrollmentId && (
-        <FaceProctor
-          enrollmentId={enrollmentId}
-          testId={Number(quiz.id)}
-          intervalMs={FACE_CONFIG.VERIFY_INTERVAL_MS}
-          enabled={isQuizActive}
-          onVerificationResult={handleFaceVerificationResult}
-          onNoFace={handleFaceWarning}
-          onMultipleFaces={handleFaceWarning}
-          onMismatch={handleFaceMismatch}
-        />
+
+      {isPaused && (
+        <div className={QUIZ.PAUSED_OVERLAY}>
+          <div className={QUIZ.PAUSED_BOX}>
+            <p className={QUIZ.PAUSED_TEXT}>{LABELS.paused}</p>
+            <p className={QUIZ.PAUSED_HINT}>{LABELS.returnToResume}</p>
+          </div>
+        </div>
       )}
     </div>
   );

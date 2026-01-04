@@ -235,6 +235,23 @@ function PlayIconComponent({ className }: IconProps) {
   );
 }
 
+function PauseIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+    </svg>
+  );
+}
+
+function ReplayIconComponent({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M1 4v6h6M23 20v-6h-6" />
+      <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+    </svg>
+  );
+}
+
 function ClockIconComponent({ className }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -592,6 +609,8 @@ export const StarIcon = memo(StarIconComponent);
 export const StarOutlineIcon = memo(StarOutlineIconComponent);
 export const CheckCircleIcon = memo(CheckCircleIconComponent);
 export const PlayIcon = memo(PlayIconComponent);
+export const PauseIcon = memo(PauseIconComponent);
+export const ReplayIcon = memo(ReplayIconComponent);
 export const ClockIcon = memo(ClockIconComponent);
 export const UsersIcon = memo(UsersIconComponent);
 export const BookIcon = memo(BookIconComponent);
@@ -820,6 +839,14 @@ const CertificateIconComponent = ({ className }: IconProps) => (
   </svg>
 );
 export const CertificateIcon = memo(CertificateIconComponent);
+
+const CopyIconComponent = ({ className }: IconProps) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+export const CopyIcon = memo(CopyIconComponent);
 
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,

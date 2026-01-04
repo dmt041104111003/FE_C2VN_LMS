@@ -18,8 +18,6 @@ export default function LearnPage() {
     upgradeInfo,
     isUpgrading,
     handleUpgrade,
-    enrollmentId,
-    hasFaceEnrolled,
   } = useLearnPageData({
     slug,
     userId: user?.id,
@@ -39,8 +37,6 @@ export default function LearnPage() {
           upgradeInfo={upgradeInfo}
           isUpgrading={isUpgrading}
           onUpgrade={handleUpgrade}
-          enrollmentId={enrollmentId}
-          enableFaceProctor={hasFaceEnrolled}
         />
       )}
     </AuthGuard>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { UserRole } from './user';
+import type { UserRole } from './core.types';
 
 export interface LoginEmailRequest {
   email: string;

@@ -1,10 +1,15 @@
-import type { QuizType, QuizQuestion, Quiz } from '@/types/quiz.types';
+import type { QuizType, QuizQuestion, Quiz, QuizSourceType } from '@/types/quiz.types';
 
 export const QUIZ_CONFIG = {
   PASS_SCORE: {
     MIN: 0,
     MAX: 100,
     DEFAULT: 0,
+  },
+  TIME_LIMIT: {
+    MIN: 1,
+    MAX: 180,
+    DEFAULT: 30,
   },
   OPTIONS: {
     DEFAULT_COUNT: 4,
@@ -34,6 +39,8 @@ export const QUIZ_LABELS = {
   quizType: 'Loại bài kiểm tra',
   passScore: 'Điểm đạt',
   passScoreHint: 'Phần trăm tối thiểu để đạt (0-100)',
+  timeLimit: 'Thời gian (phút)',
+  timeLimitHint: 'Thời gian làm bài (1-180 phút)',
   selectChapter: 'Chọn chương',
   selectLecture: 'Chọn bài giảng',
   selectChapterPlaceholder: '-- Chọn chương --',
@@ -54,7 +61,18 @@ export const QUIZ_LABELS = {
   chapterPrefix: 'Chương',
   lecturePrefix: 'Bài',
   untitled: 'Chưa đặt tên',
+  external: {
+    apiUrl: 'URL Script',
+    apiUrlPlaceholder: 'https://script.google.com/macros/s/.../exec',
+    fromQuestion: 'Từ câu',
+    toQuestion: 'Đến câu',
+  },
 } as const;
+
+export const QUIZ_SOURCE_TABS: ReadonlyArray<{ key: QuizSourceType; label: string }> = [
+  { key: 'manual', label: 'Thủ công' },
+  { key: 'external', label: 'Nhập từ URL' },
+] as const;
 
 let questionIdCounter = 0;
 let quizIdCounter = 0;
@@ -76,6 +94,7 @@ export const createEmptyQuiz = (): Quiz => ({
   type: 'final',
   questions: [createEmptyQuestion()],
   passScore: QUIZ_CONFIG.PASS_SCORE.DEFAULT,
+  timeLimit: QUIZ_CONFIG.TIME_LIMIT.DEFAULT,
 });
 
 export const clampPassScore = (value: number): number => 
@@ -83,6 +102,12 @@ export const clampPassScore = (value: number): number =>
 
 export const parsePassScore = (value: string): number => 
   clampPassScore(parseInt(value, 10) || QUIZ_CONFIG.PASS_SCORE.DEFAULT);
+
+export const clampTimeLimit = (value: number): number => 
+  Math.min(QUIZ_CONFIG.TIME_LIMIT.MAX, Math.max(QUIZ_CONFIG.TIME_LIMIT.MIN, value));
+
+export const parseTimeLimit = (value: string): number => 
+  clampTimeLimit(parseInt(value, 10) || QUIZ_CONFIG.TIME_LIMIT.DEFAULT);
 
 export const isChapterRequired = (type: QuizType): boolean => 
   type === 'chapter';

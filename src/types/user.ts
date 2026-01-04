@@ -1,6 +1,5 @@
-export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
-export type LoginMethod = 'EMAIL_PASSWORD' | 'WALLET' | 'GOOGLE' | 'GITHUB';
-export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'BANNED';
+export type { UserRole, LoginMethod, UserStatus } from './core.types';
+import type { UserRole, LoginMethod, UserStatus } from './core.types';
 
 export interface UserProfile {
   id: string;
@@ -33,19 +32,26 @@ export interface UserCourse {
   enrolledAt: string;
   completedAt?: string;
   certificateId?: string;
+  enrollmentId?: number;
+  walletAddress?: string;
 }
 
 export interface UserCertificate {
-  id: string;
+  id: string | number;
   courseId: string;
   courseTitle: string;
   issuedAt: string;
-  transactionHash?: string;
+  txHash?: string;
   policyId?: string;
   assetName?: string;
-  imageUrl?: string;
-  qrCodeUrl?: string;
+  imgUrl?: string;
+  qrUrl?: string;
+  name?: string;
+  enrollmentId?: number;
+  walletAddress?: string;
 }
+
+export type CertificateResponse = UserCertificate;
 
 export interface UserProfilePageProps {
   user: UserProfile;
@@ -55,42 +61,11 @@ export interface UserProfilePageProps {
   isOwnProfile?: boolean;
 }
 
-export interface UserCourseItemProps {
-  course: UserCourse;
-}
-
-export interface UserCertificateItemProps {
-  certificate: UserCertificate;
-}
-
-export interface LoginMethodInfo {
-  icon: React.FC<{ className?: string }>;
-  text: string;
-}
-
 export type StatsKey = keyof UserStats;
 
-export interface CourseImageProps {
-  thumbnail?: string;
-  title: string;
-}
-
-export interface UserProgressBarProps {
-  progress: number;
-}
-
-export interface StatsSectionProps {
-  stats: UserStats;
-}
-
-export interface ListSectionProps<T> {
-  title: string;
-  items: T[];
-  emptyText: string;
-  initialCount: number;
-  incrementCount: number;
-  renderItem: (item: T) => React.ReactNode;
-  getKey: (item: T) => string;
+export interface UserProfileEditData {
+  fullName: string;
+  bio: string;
 }
 
 export interface UserProfileEditProps {
@@ -98,19 +73,4 @@ export interface UserProfileEditProps {
   onSave?: (data: UserProfileEditData) => void;
   onCancel?: () => void;
   disabled?: boolean;
-}
-
-export interface UserProfileEditData {
-  fullName: string;
-  bio: string;
-}
-
-export interface FormSectionProps {
-  label: string;
-  children: React.ReactNode;
-}
-
-export interface ActionButtonsProps {
-  onCancel: () => void;
-  onSave: () => void;
 }

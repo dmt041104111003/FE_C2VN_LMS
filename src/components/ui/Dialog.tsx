@@ -40,7 +40,6 @@ export const Dialog = memo(function Dialog({
 
   if (!isOpen) return null;
 
-  // Custom children mode
   if (children) {
     return (
       <div className={DIALOG.OVERLAY} onClick={handleClose}>
@@ -51,7 +50,6 @@ export const Dialog = memo(function Dialog({
     );
   }
 
-  // Default confirmation dialog mode
   const Icon = danger ? WarningIcon : InfoIcon;
   const iconClass = danger ? DIALOG.ICON_DANGER : DIALOG.ICON;
 

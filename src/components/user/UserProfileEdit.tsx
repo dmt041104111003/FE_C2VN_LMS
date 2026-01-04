@@ -5,10 +5,10 @@ import { Input, Button } from '@/components/ui';
 import { TipTapEditor } from '@/components/editor';
 import { USER_LABELS } from '@/constants/user';
 import { getUserAvatar } from '@/utils';
-import type { UserProfileEditProps, FormSectionProps, ActionButtonsProps } from '@/types/user';
+import type { UserProfileEditProps } from '@/types/user';
 import * as S from './user.styles';
 
-const FormSection = memo(function FormSection({ label, children }: FormSectionProps) {
+const FormSection = memo(function FormSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className={S.USER_EDIT.SECTION}>
       <label className={S.USER_EDIT.LABEL}>{label}</label>
@@ -17,11 +17,7 @@ const FormSection = memo(function FormSection({ label, children }: FormSectionPr
   );
 });
 
-interface ActionButtonsPropsWithDisabled extends ActionButtonsProps {
-  disabled?: boolean;
-}
-
-const ActionButtons = memo(function ActionButtons({ onCancel, onSave, disabled }: ActionButtonsPropsWithDisabled) {
+const ActionButtons = memo(function ActionButtons({ onCancel, onSave, disabled }: { onCancel: () => void; onSave: () => void; disabled?: boolean }) {
   return (
     <div className={S.USER_EDIT.ACTIONS}>
       <Button variant="ghost" size="md" onClick={onCancel} disabled={disabled}>

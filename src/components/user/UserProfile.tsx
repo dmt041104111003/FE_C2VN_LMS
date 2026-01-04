@@ -1,36 +1,33 @@
 'use client';
 
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useMemo, useCallback, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   UserProfilePageProps,
-  UserCourseItemProps,
-  UserCertificateItemProps,
-  LoginMethodInfo,
-  CourseImageProps,
-  UserProgressBarProps,
-  StatsSectionProps,
-  ListSectionProps,
   UserCourse,
   UserCertificate,
+  UserStats,
 } from '@/types/user';
 import {
   USER_LABELS,
   USER_CONFIG,
   ROLE_LABELS,
-  LOGIN_METHOD_ICONS,
   STATS_ITEMS,
   truncateWalletAddress,
 } from '@/constants/user';
 import { ROUTES } from '@/constants/navigation';
 import { formatDate } from '@/constants/config';
-import { ShowMore } from '@/components/ui';
+import { ShowMore, useToast, Tabs, TabPanel, CloseIcon, CheckCircleIcon, GoogleIcon, GitHubIcon, WalletIcon, MailIcon } from '@/components/ui';
 import { TipTapPreview } from '@/components/editor';
 import { getUserAvatar } from '@/utils';
-import { CheckCircleIcon, CalendarIcon } from '@/components/ui/icons';
 import * as S from './user.styles';
+import {
+  LIGHTBOX_OVERLAY,
+  LIGHTBOX_CLOSE,
+  LIGHTBOX_CLOSE_ICON,
+} from '@/components/ui/ui.styles';
 
-const CourseImage = memo(function CourseImage({ thumbnail, title }: CourseImageProps) {
+const CourseImage = memo(function CourseImage({ thumbnail, title }: { thumbnail?: string; title: string }) {
   if (thumbnail) {
     return <img src={thumbnail} alt={title} className={S.USER_COURSE_ITEM.IMAGE} />;
   }
@@ -41,7 +38,7 @@ const CourseImage = memo(function CourseImage({ thumbnail, title }: CourseImageP
   );
 });
 
-const ProgressBar = memo(function ProgressBar({ progress }: UserProgressBarProps) {
+const ProgressBar = memo(function ProgressBar({ progress }: { progress: number }) {
   return (
     <div className={S.USER_COURSE_ITEM.PROGRESS_WRAPPER}>
       <div className={S.USER_COURSE_ITEM.PROGRESS_BAR}>
@@ -55,13 +52,13 @@ const ProgressBar = memo(function ProgressBar({ progress }: UserProgressBarProps
 const CompletedBadge = memo(function CompletedBadge() {
   return (
     <div className={S.USER_COURSE_ITEM.COMPLETED}>
-      <CheckCircleIcon className={S.ICON_SIZES.SM} />
+      <CheckCircleIcon className="w-4 h-4" />
       <span>{USER_LABELS.completedText}</span>
     </div>
   );
 });
 
-const UserCourseItem = memo(function UserCourseItem({ course }: UserCourseItemProps) {
+const UserCourseItem = memo(function UserCourseItem({ course }: { course: UserCourse }) {
   const isCompleted = course.progress === USER_CONFIG.PROGRESS_COMPLETE;
 
   return (
@@ -78,21 +75,54 @@ const UserCourseItem = memo(function UserCourseItem({ course }: UserCourseItemPr
   );
 });
 
-const UserCertificateItem = memo(function UserCertificateItem({ certificate }: UserCertificateItemProps) {
+interface CertificateItemProps {
+  certificate: UserCertificate;
+  onClick: (cert: UserCertificate) => void;
+  onCopyLink: (url: string) => void;
+  userWallet?: string;
+}
+
+const buildVerifyUrl = (wallet: string, courseTitle: string) => 
+  `${window.location.origin}/verify?wallet=${encodeURIComponent(wallet)}&course=${encodeURIComponent(courseTitle)}`;
+
+const UserCertificateItem = memo(function UserCertificateItem({ certificate, onClick, onCopyLink, userWallet }: CertificateItemProps) {
+  const walletAddress = certificate.walletAddress || userWallet;
+  const verifyUrl = certificate.qrUrl || (walletAddress && certificate.courseTitle ? buildVerifyUrl(walletAddress, certificate.courseTitle) : null);
+  
+  const handleCopyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (verifyUrl) onCopyLink(verifyUrl);
+  };
+
   return (
-    <Link href={`${ROUTES.CERTIFICATES}/${certificate.id}`} className={S.USER_CERTIFICATE_ITEM.CONTAINER}>
-      <div className={S.USER_CERTIFICATE_ITEM.IMAGE_WRAPPER}>
-        <img src={USER_CONFIG.DEFAULT_CERTIFICATE_IMAGE} alt="" className={S.USER_CERTIFICATE_ITEM.IMAGE} />
-      </div>
-      <div className={S.USER_CERTIFICATE_ITEM.CONTENT}>
-        <h3 className={S.USER_CERTIFICATE_ITEM.TITLE}>{certificate.courseTitle}</h3>
-        <span className={S.USER_CERTIFICATE_ITEM.META}>{formatDate(certificate.issuedAt)}</span>
-      </div>
-    </Link>
+    <div className={`${S.USER_CERTIFICATE_ITEM.CONTAINER} w-full`}>
+      <button
+        type="button"
+        onClick={() => onClick(certificate)}
+        className="flex items-center gap-4 flex-1 text-left cursor-pointer"
+      >
+        <div className={S.USER_CERTIFICATE_ITEM.IMAGE_WRAPPER}>
+          <img src={USER_CONFIG.DEFAULT_CERTIFICATE_IMAGE} alt="" className={S.USER_CERTIFICATE_ITEM.IMAGE} />
+        </div>
+        <div className={S.USER_CERTIFICATE_ITEM.CONTENT}>
+          <h3 className={S.USER_CERTIFICATE_ITEM.TITLE}>{certificate.courseTitle}</h3>
+          <span className={S.USER_CERTIFICATE_ITEM.META}>{formatDate(certificate.issuedAt)}</span>
+        </div>
+      </button>
+      {verifyUrl && (
+        <button
+          type="button"
+          onClick={handleCopyClick}
+          className="text-xs text-[var(--accent)] hover:underline px-3 py-1"
+        >
+          Xác minh
+        </button>
+      )}
+    </div>
   );
 });
 
-const StatsSection = memo(function StatsSection({ stats }: StatsSectionProps) {
+const StatsSection = memo(function StatsSection({ stats }: { stats: UserStats }) {
   return (
     <div className={S.USER_STATS.CONTAINER}>
       {STATS_ITEMS.map(({ key, label }) => (
@@ -104,6 +134,16 @@ const StatsSection = memo(function StatsSection({ stats }: StatsSectionProps) {
     </div>
   );
 });
+
+interface ListSectionProps<T> {
+  title: string;
+  items: T[];
+  emptyText: string;
+  initialCount: number;
+  incrementCount: number;
+  renderItem: (item: T) => React.ReactNode;
+  getKey: (item: T) => string;
+}
 
 function ListSection<T>({ title, items, emptyText, initialCount, incrementCount, renderItem, getKey }: ListSectionProps<T>) {
   if (items.length === 0) {
@@ -131,7 +171,115 @@ function ListSection<T>({ title, items, emptyText, initialCount, incrementCount,
   );
 }
 
+const COPY_SUCCESS_MSG = 'Đã sao chép!';
+
+const CERT_TABS = [
+  { key: 'image', label: 'Chứng chỉ' },
+  { key: 'info', label: 'Thông tin' },
+];
+
+interface CertificateLightboxProps {
+  cert: UserCertificate;
+  userWallet?: string;
+  onClose: () => void;
+  onCopy: (text: string) => void;
+}
+
+const CertificateLightbox = memo(function CertificateLightbox({ cert, userWallet, onClose, onCopy }: CertificateLightboxProps) {
+  const [activeTab, setActiveTab] = useState('image');
+  const walletAddress = cert.walletAddress || userWallet;
+
+  const copyField = (value: string) => {
+    onCopy(value);
+  };
+
+  return (
+    <div className={LIGHTBOX_OVERLAY} onClick={onClose}>
+      <button className={LIGHTBOX_CLOSE} onClick={onClose}>
+        <CloseIcon className={LIGHTBOX_CLOSE_ICON} />
+      </button>
+      <div className="bg-[var(--bg)] rounded-xl max-w-lg w-full max-h-[90vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="p-4 border-b border-[var(--text)]/5">
+          <Tabs items={CERT_TABS} activeKey={activeTab} onChange={setActiveTab} variant="underline" size="sm" />
+        </div>
+
+        <div className="p-4 overflow-y-auto max-h-[70vh]">
+          <TabPanel isActive={activeTab === 'image'}>
+            {cert.imgUrl ? (
+              <img
+                src={cert.imgUrl}
+                alt="Certificate"
+                className="w-full rounded-lg pointer-events-none select-none"
+                draggable={false}
+                onContextMenu={e => e.preventDefault()}
+              />
+            ) : (
+              <div className="py-8 text-center text-sm text-[var(--text)]/40">Không có ảnh</div>
+            )}
+          </TabPanel>
+
+          <TabPanel isActive={activeTab === 'info'}>
+            <div className="space-y-0">
+              {cert.policyId && (
+                <button onClick={() => copyField(cert.policyId!)} className="w-full flex items-center justify-between gap-2 py-3 border-b border-[var(--text)]/5 hover:bg-[var(--text)]/5 transition-colors">
+                  <span className="text-sm text-[var(--text)]/50 shrink-0">Policy ID</span>
+                  <span className="text-xs text-[var(--text)] truncate max-w-[200px]">{cert.policyId}</span>
+                </button>
+              )}
+              {cert.assetName && (
+                <button onClick={() => copyField(cert.assetName!)} className="w-full flex items-center justify-between gap-2 py-3 border-b border-[var(--text)]/5 hover:bg-[var(--text)]/5 transition-colors">
+                  <span className="text-sm text-[var(--text)]/50 shrink-0">Asset Name</span>
+                  <span className="text-xs text-[var(--text)] truncate max-w-[200px]">{cert.assetName}</span>
+                </button>
+              )}
+              {walletAddress && (
+                <button onClick={() => copyField(walletAddress)} className="w-full flex items-center justify-between gap-2 py-3 hover:bg-[var(--text)]/5 transition-colors">
+                  <span className="text-sm text-[var(--text)]/50 shrink-0">Địa chỉ ví</span>
+                  <span className="text-xs text-[var(--text)] truncate max-w-[200px]">{walletAddress}</span>
+                </button>
+              )}
+            </div>
+          </TabPanel>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile = false }: UserProfilePageProps) {
+  const [selectedCert, setSelectedCert] = useState<UserCertificate | null>(null);
+  const toast = useToast();
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || certificates.length === 0) return;
+    
+    const hash = window.location.hash;
+    const match = hash.match(/^#certificate-(\d+)$/);
+    if (match) {
+      const certId = match[1];
+      const cert = certificates.find(c => c.id === certId);
+      if (cert) {
+        setSelectedCert(cert);
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+  }, [certificates]);
+
+  const handleCertificateClick = useCallback((cert: UserCertificate) => {
+    setSelectedCert(cert);
+  }, []);
+
+  const handleCloseDialog = useCallback(() => {
+    setSelectedCert(null);
+  }, []);
+
+  const handleCopyLink = useCallback(async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(COPY_SUCCESS_MSG);
+    } catch {}
+  }, [toast]);
+
   if (!user) {
     return (
       <div className={S.USER_PROFILE.CONTAINER}>
@@ -144,20 +292,28 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
 
   const roleLabel = ROLE_LABELS[user.role];
 
-  const loginMethodInfo = useMemo((): LoginMethodInfo | null => {
+  const loginMethodInfo = useMemo(() => {
     if (!user.loginMethod) return null;
-    const Icon = LOGIN_METHOD_ICONS[user.loginMethod];
-    if (!Icon) return null;
     if (user.loginMethod === 'WALLET') {
-      return user.walletAddress ? { icon: Icon, text: truncateWalletAddress(user.walletAddress) } : null;
+      return user.walletAddress ? { icon: WalletIcon, text: truncateWalletAddress(user.walletAddress) } : null;
     }
-    return { icon: Icon, text: user.email };
+    if (user.loginMethod === 'GOOGLE') {
+      return { icon: GoogleIcon, text: user.email };
+    }
+    if (user.loginMethod === 'GITHUB') {
+      return { icon: GitHubIcon, text: user.email };
+    }
+    return { icon: MailIcon, text: user.email };
   }, [user.loginMethod, user.walletAddress, user.email]);
 
-  const renderCourse = useCallback((course: UserCourse) => <UserCourseItem course={course} />, []);
-  const renderCertificate = useCallback((cert: UserCertificate) => <UserCertificateItem certificate={cert} />, []);
+  const renderCourse = useCallback((course: UserCourse) => (
+    <UserCourseItem course={course} />
+  ), []);
+  const renderCertificate = useCallback((cert: UserCertificate) => (
+    <UserCertificateItem certificate={cert} onClick={handleCertificateClick} onCopyLink={handleCopyLink} userWallet={user?.walletAddress} />
+  ), [handleCertificateClick, handleCopyLink, user?.walletAddress]);
   const getCourseKey = useCallback((course: UserCourse) => course.id, []);
-  const getCertificateKey = useCallback((cert: UserCertificate) => cert.id, []);
+  const getCertificateKey = useCallback((cert: UserCertificate) => String(cert.id), []);
 
   const avatarSrc = useMemo(
     () => getUserAvatar({
@@ -175,6 +331,12 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
         <div className={S.USER_PROFILE.INFO}>
           <h1 className={S.USER_PROFILE.NAME}>{user.fullName}</h1>
           <span className={S.USER_PROFILE.ROLE}>{roleLabel}</span>
+          {loginMethodInfo && (
+            <span className="flex items-center gap-1.5 text-xs text-[var(--text)]/40 mt-1">
+              <loginMethodInfo.icon className="w-4 h-4" />
+              {loginMethodInfo.text}
+            </span>
+          )}
           {user.bio && (
             <div className={S.USER_PROFILE.BIO}>
               <TipTapPreview content={user.bio} compact />
@@ -182,15 +344,8 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
           )}
           <div className={S.USER_PROFILE.META}>
             <span className={S.USER_PROFILE.META_ITEM}>
-              <CalendarIcon className={S.ICON_SIZES.XS} />
               {formatDate(user.createdAt)}
             </span>
-            {loginMethodInfo && (
-              <span className={S.USER_PROFILE.META_ITEM}>
-                <loginMethodInfo.icon className={S.ICON_SIZES.XS} />
-                {loginMethodInfo.text}
-              </span>
-            )}
           </div>
         </div>
         {isOwnProfile && (
@@ -221,6 +376,15 @@ function UserProfileComponent({ user, stats, courses, certificates, isOwnProfile
         renderItem={renderCertificate}
         getKey={getCertificateKey}
       />
+
+      {selectedCert && (
+        <CertificateLightbox
+          cert={selectedCert}
+          userWallet={user?.walletAddress}
+          onClose={handleCloseDialog}
+          onCopy={handleCopyLink}
+        />
+      )}
     </div>
   );
 }

@@ -24,7 +24,7 @@ import {
 
 function RegisterFormComponent() {
   const router = useRouter();
-  const { register, isLoading, isAuthenticated } = useAuth();
+  const { register, isLoading, isAuthenticated, user } = useAuth();
   const toast = useToast();
   
   const [fullName, setFullName] = useState('');

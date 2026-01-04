@@ -19,13 +19,10 @@ export const StudentTable = memo(function StudentTable({
   statusFilter,
   searchSuggestions,
   courseTitle,
-  pendingCertificateCount,
   onKeywordChange,
   onStatusChange,
   onPageChange,
   onRemove,
-  onIssueCertificate,
-  onIssueAllCertificates,
   onAddStudent,
   onBack,
 }: StudentTableProps) {
@@ -35,10 +32,8 @@ export const StudentTable = memo(function StudentTable({
         keyword={keyword}
         statusFilter={statusFilter}
         searchSuggestions={searchSuggestions}
-        pendingCertificateCount={pendingCertificateCount}
         onKeywordChange={onKeywordChange}
         onStatusChange={onStatusChange}
-        onIssueAllCertificates={onIssueAllCertificates}
         onAddStudent={onAddStudent}
         onBack={onBack}
       />
@@ -65,7 +60,6 @@ export const StudentTable = memo(function StudentTable({
               index={startIndex + idx + 1}
               student={student}
               onRemove={onRemove}
-              onIssueCertificate={onIssueCertificate}
             />
           ))}
         </DataTable>

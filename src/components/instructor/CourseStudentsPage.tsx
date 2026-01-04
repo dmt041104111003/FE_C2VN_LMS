@@ -16,7 +16,7 @@ import {
   ADD_STUDENT_INITIAL_DATA,
   ADD_STUDENT_DRAFT_KEY,
 } from '@/constants/instructor';
-import { DEFAULT_MODAL_CONFIG } from '@/types/common';
+import { DEFAULT_MODAL_CONFIG } from '@/types/core.types';
 import type {
   CourseStudent,
   StudentStatus,
@@ -62,6 +62,7 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
         walletAddress: e.walletAddress,
         enrolledAt: e.enrollAt,
         status: e.courseCompleted ? 'completed' : 'active',
+        certificateStatus: e.hasCertificate ? 'issued' : undefined,
         progress: e.lectureProgressPercent || 0,
         lecturesCompleted: e.lecturesCompleted || 0,
         totalLectures: e.totalLectures || 0,
@@ -112,12 +113,6 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
     return result;
   }, [students]);
 
-  const pendingCertificateCount = useMemo(() => {
-    return students.filter(s => 
-      s.status === 'completed' && s.certificateStatus !== 'issued'
-    ).length;
-  }, [students]);
-
   const totalPages = Math.ceil(filteredStudents.length / DEFAULT_PAGE_SIZE);
   const startIndex = (page - 1) * DEFAULT_PAGE_SIZE;
   const paginatedStudents = filteredStudents.slice(startIndex, startIndex + DEFAULT_PAGE_SIZE);
@@ -128,14 +123,6 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
     setModal({ type: 'remove', studentId });
   }, []);
 
-  const handleIssueCertificateClick = useCallback((studentId: string) => {
-    setModal({ type: 'issueCertificate', studentId });
-  }, []);
-
-  const handleIssueAllCertificatesClick = useCallback(() => {
-    setModal({ type: 'issueAllCertificates', studentId: null });
-  }, []);
-
   const handleConfirm = useCallback(() => {
     const { studentId, type } = modal;
     if (!type) return;
@@ -143,18 +130,6 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
     if (type === 'remove' && studentId) {
       setStudents(prev => prev.filter(s => s.id !== studentId));
       toast.success(TOAST.removeSuccess);
-    } else if (type === 'issueCertificate' && studentId) {
-      setStudents(prev => prev.map(s =>
-        s.id === studentId ? { ...s, certificateStatus: 'issued' as const } : s
-      ));
-      toast.success(TOAST.certificateSuccess);
-    } else if (type === 'issueAllCertificates') {
-      setStudents(prev => prev.map(s =>
-        s.status === 'completed' && s.certificateStatus !== 'issued'
-          ? { ...s, certificateStatus: 'issued' as const }
-          : s
-      ));
-      toast.success(TOAST.allCertificatesSuccess);
     }
 
     closeModal();
@@ -203,13 +178,10 @@ export function CourseStudentsPage({ courseId }: CourseStudentsPageProps) {
           statusFilter={statusFilter}
           searchSuggestions={searchSuggestions}
           courseTitle={courseInfo?.title || LABELS.title}
-          pendingCertificateCount={pendingCertificateCount}
           onKeywordChange={setKeyword}
           onStatusChange={setStatusFilter}
           onPageChange={setPage}
           onRemove={handleRemoveClick}
-          onIssueCertificate={handleIssueCertificateClick}
-          onIssueAllCertificates={handleIssueAllCertificatesClick}
           onAddStudent={handleAddStudentClick}
           onBack={handleBack}
         />

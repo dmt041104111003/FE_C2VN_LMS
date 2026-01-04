@@ -1,12 +1,5 @@
-import type { UserRole, UserStatus, LoginMethod, AdminUser } from './admin';
-
-export interface UserSearchParams {
-  keyword?: string;
-  role?: UserRole | '';
-  status?: UserStatus | '';
-  page?: number;
-  size?: number;
-}
+import type { UserRole, UserStatus, LoginMethod, AdminUser, UserSearchParams } from './admin';
+export type { UserSearchParams } from './admin';
 
 export interface ApiUserResponse {
   id: string;

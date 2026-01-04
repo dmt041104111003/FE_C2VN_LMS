@@ -7,7 +7,6 @@ export { useAuth } from './useAuth';
 export { useCourseForm } from './useCourseForm';
 export { useEnrollment } from './useEnrollment';
 export { useLearnPageData } from './useLearnPageData';
-export { useCamera } from './useCamera';
 export { 
   useProgressState, 
   useLessonNavigation, 

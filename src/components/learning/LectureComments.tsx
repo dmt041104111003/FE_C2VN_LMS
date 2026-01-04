@@ -462,25 +462,30 @@ function LectureCommentsComponent({ lectureId, isInstructor = false }: LectureCo
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4">
       <div className="flex items-center gap-2">
-        <h3 className="text-lg font-semibold text-[var(--text)]">{LABELS.TITLE}</h3>
-        <span className="text-sm text-[var(--text)]/50">({totalCount})</span>
+        <h3 className="text-sm sm:text-base font-semibold text-[var(--text)]">{LABELS.TITLE}</h3>
+        <span className="text-xs sm:text-sm text-[var(--text)]/50">({totalCount})</span>
       </div>
 
       {isAuthenticated && (
         <div className={REVIEW_FORM.CONTAINER}>
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-3">
             <img src={userAvatar} alt="Avatar" className={REVIEW_CARD.AVATAR} />
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
               <TipTapEditor
                 content={newComment}
                 onChange={setNewComment}
                 placeholder={LABELS.PLACEHOLDER}
-                minHeight="100px"
+                minHeight="80px"
               />
               <div className="flex justify-end">
-                <Button onClick={handleSubmitComment} disabled={!hasContent(newComment)}>
+                <Button 
+                  size="sm" 
+                  onClick={handleSubmitComment} 
+                  disabled={!hasContent(newComment)}
+                  className="px-6 rounded"
+                >
                   {LABELS.SEND}
                 </Button>
               </div>

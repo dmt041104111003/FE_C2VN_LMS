@@ -76,3 +76,14 @@ export type VoidCallback = () => void;
 export type AsyncVoidCallback = () => Promise<void>;
 export type IdCallback = (id: string | number) => void;
 export type AsyncIdCallback = (id: string | number) => Promise<void>;
+
+export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
+export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'BANNED';
+export type LoginMethod = 'EMAIL_PASSWORD' | 'WALLET' | 'GOOGLE' | 'GITHUB';
+
+export type SearchSuggestionType = 'course' | 'instructor' | 'tag' | 'history' | UserRole;
+
+export interface SearchSuggestion {
+  text: string;
+  type?: SearchSuggestionType;
+}

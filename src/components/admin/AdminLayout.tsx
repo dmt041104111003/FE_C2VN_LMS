@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import Link from 'next/link';
 import { Sidebar, SidebarLayout, ChevronLeftIcon } from '@/components/ui';
 import { SIDEBAR } from '@/components/ui/ui.styles';

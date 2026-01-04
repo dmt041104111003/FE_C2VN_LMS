@@ -106,5 +106,13 @@ export interface JsonEditorProps {
   disabled?: boolean;
 }
 
+export interface VideoUploaderProps {
+  videoUrl: string;
+  onVideoChange: (url: string, duration?: number) => void;
+  disabled?: boolean;
+}
+
+export type VideoSourceType = 'youtube' | 'upload';
+
 export type SetFormData = React.Dispatch<React.SetStateAction<CourseFormData>>;
 

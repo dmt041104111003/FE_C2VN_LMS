@@ -4,7 +4,13 @@ import { memo, useMemo, useCallback } from 'react';
 import { SidebarLayout } from '@/components/ui';
 import { LearningSidebar } from './LearningSidebar';
 import { QuizSection } from './QuizSection';
-import { VideoLessonContent, ReadingLessonContent, LockedLessonContent } from './LessonContent';
+import { 
+  VideoLessonContent, 
+  VideoLessonRightPanel,
+  ReadingLessonContent, 
+  ReadingLessonRightPanel,
+  LockedLessonContent 
+} from './LessonContent';
 import type { LearningPageProps } from '@/types/learning';
 import {
   useProgressState,
@@ -23,8 +29,6 @@ function LearningPageComponent({
   upgradeInfo,
   isUpgrading,
   onUpgrade,
-  enrollmentId,
-  enableFaceProctor,
 }: LearningPageProps) {
   const allLessons = useMemo(() => flattenChaptersToLessons(chapters), [chapters]);
   const [progress, setProgress] = useProgressState(allLessons, initialProgress);
@@ -88,14 +92,27 @@ function LearningPageComponent({
             userId={userId}
             isAlreadyPassed={isCompleted}
             onComplete={handleQuizComplete}
-            enrollmentId={enrollmentId}
-            enableFaceProctor={enableFaceProctor}
           />
         ) : null;
       default:
         return null;
     }
   };
+
+  const renderRightSidebar = () => {
+    if (isLocked || !currentLesson) return null;
+
+    switch (currentLesson.type) {
+      case LESSON_TYPE.VIDEO:
+        return <VideoLessonRightPanel lesson={currentLesson} />;
+      case LESSON_TYPE.READING:
+        return <ReadingLessonRightPanel lesson={currentLesson} />;
+      default:
+        return null;
+    }
+  };
+
+  const rightSidebar = renderRightSidebar();
 
   return (
     <SidebarLayout
@@ -119,6 +136,8 @@ function LearningPageComponent({
         hasPrev,
         hasNext,
       }}
+      rightSidebar={rightSidebar}
+      rightSidebarWidth="w-1/2"
     >
       {renderLessonContent()}
     </SidebarLayout>

@@ -170,6 +170,7 @@ export {
   UnlockIcon,
   LogoutIcon,
   CertificateIcon,
+  CopyIcon,
   WarningIcon,
   ErrorCircleIcon,
   SOCIAL_ICONS,

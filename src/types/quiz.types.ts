@@ -1,4 +1,5 @@
 export type QuizType = 'final' | 'chapter' | 'lecture';
+export type QuizSourceType = 'manual' | 'external';
 
 export interface QuizQuestion {
   readonly id: string;
@@ -15,6 +16,7 @@ export interface Quiz {
   chapterId?: string;
   questions: QuizQuestion[];
   passScore?: number;
+  timeLimit?: number;
 }
 
 export interface QuizEditorProps {

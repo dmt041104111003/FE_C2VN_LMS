@@ -115,7 +115,6 @@ export interface MyEnrollmentResponse {
   completed: boolean;
   completedLectures: number;
   walletAddress?: string;
-  hasFaceEnrolled?: boolean;
 }
 
 export interface EnrollCourseRequest {
@@ -125,7 +124,6 @@ export interface EnrollCourseRequest {
   coursePaymentMethodId?: string;
   priceAda?: number;
   txHash?: string;
-  faceEmbedding?: string;
 }
 
 export interface EnrollmentResponse {
@@ -150,6 +148,7 @@ export interface EnrolledStudentResponse {
   allLecturesCompleted: boolean;
   allTestsCompleted: boolean;
   courseCompleted: boolean;
+  hasCertificate: boolean;
 }
 
 export interface CourseEnrolledResponse {
@@ -287,4 +286,3 @@ export interface FeedbackRequest {
 }
 
 export type ReactionType = 'LIKE' | 'DISLIKE';
-

@@ -94,7 +94,7 @@ export const normalizeFormData = (data: Partial<CourseFormData>): CourseFormData
 const mapQuizToTest = (quiz: Quiz, isEditMode: boolean): TestRequest => ({
   id: isEditMode && quiz.id && !isNaN(Number(quiz.id)) ? quiz.id : undefined,
   title: quiz.title,
-  durationMinutes: 30,
+  durationMinutes: quiz.timeLimit ?? 30,
   passScore: quiz.passScore ?? 60,
   questions: quiz.questions.map((q, idx) => ({
     id: isEditMode && q.id && !isNaN(Number(q.id)) ? q.id : undefined,

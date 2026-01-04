@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { getLearningContent, getCourseProgress, checkCourseUpgrade, upgradeCourseSnapshot, getMyEnrollments } from '@/services/course';
+import { getLearningContent, getCourseProgress, checkCourseUpgrade, upgradeCourseSnapshot } from '@/services/course';
 import type { LearningChapter, CourseProgress, CourseUpgradeInfo } from '@/types/learning';
 import type { ApiChapter, ApiTest, CompletedItem } from '@/types/learn-page';
 import { INITIAL_PROGRESS } from '@/constants/learn-page';
@@ -30,8 +30,6 @@ interface UseLearnPageDataReturn {
   upgradeInfo: CourseUpgradeInfo | null;
   isUpgrading: boolean;
   handleUpgrade: () => Promise<void>;
-  enrollmentId?: number;
-  hasFaceEnrolled?: boolean;
 }
 
 const mapCourseChapters = (apiChapters: ApiChapter[]): LearningChapter[] => {
@@ -82,8 +80,6 @@ export function useLearnPageData({ slug, userId }: UseLearnPageDataParams): UseL
   const [error, setError] = useState<Error | null>(null);
   const [upgradeInfo, setUpgradeInfo] = useState<CourseUpgradeInfo | null>(null);
   const [isUpgrading, setIsUpgrading] = useState(false);
-  const [enrollmentId, setEnrollmentId] = useState<number | undefined>();
-  const [hasFaceEnrolled, setHasFaceEnrolled] = useState<boolean | undefined>();
 
   const fetchLearningData = useCallback(async () => {
     if (!slug || !userId) return;
@@ -111,13 +107,6 @@ export function useLearnPageData({ slug, userId }: UseLearnPageDataParams): UseL
       
       const upgrade = await checkCourseUpgrade(id);
       setUpgradeInfo(upgrade);
-
-      const enrollments = await getMyEnrollments();
-      const enrollment = enrollments.find(e => String(e.courseId) === id);
-      if (enrollment) {
-        setEnrollmentId(enrollment.enrollmentId);
-        setHasFaceEnrolled(enrollment.hasFaceEnrolled);
-      }
 
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch learning data'));
@@ -169,8 +158,6 @@ export function useLearnPageData({ slug, userId }: UseLearnPageDataParams): UseL
     upgradeInfo,
     isUpgrading,
     handleUpgrade,
-    enrollmentId,
-    hasFaceEnrolled,
   };
 }
 

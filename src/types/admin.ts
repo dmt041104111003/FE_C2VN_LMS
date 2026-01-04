@@ -1,9 +1,6 @@
 import type { ReactNode } from 'react';
-
-export type UserRole = 'USER' | 'INSTRUCTOR' | 'ADMIN';
-export type UserStatus = 'ACTIVE' | 'BANNED';
-
-export type LoginMethod = 'EMAIL_PASSWORD' | 'WALLET' | 'GOOGLE' | 'GITHUB';
+import type { UserRole, UserStatus, LoginMethod, SearchSuggestion } from './core.types';
+export type { UserRole, UserStatus, LoginMethod, SearchSuggestion } from './core.types';
 
 export interface AdminUser {
   id: string;
@@ -50,11 +47,6 @@ export interface UserRowProps {
   onToggleStatus: (userId: string, isBan: boolean) => void;
   onDelete: (userId: string) => void;
   onChangeRole: (userId: string, role: UserRole) => void;
-}
-
-export interface SearchSuggestion {
-  text: string;
-  type?: 'course' | 'instructor' | 'tag' | 'history' | 'USER' | 'INSTRUCTOR' | 'ADMIN';
 }
 
 export interface UserFiltersProps {

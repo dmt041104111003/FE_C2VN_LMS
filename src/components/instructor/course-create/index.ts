@@ -4,6 +4,7 @@ export { LectureEditor } from './LectureEditor';
 export { QuizEditor } from './QuizEditor';
 export { EditorCardHeader } from './EditorCardHeader';
 export { ImageUploader } from './ImageUploader';
+export { VideoUploader } from './VideoUploader';
 export { TagSelector } from './TagSelector';
 export { JsonEditor } from './JsonEditor';
 

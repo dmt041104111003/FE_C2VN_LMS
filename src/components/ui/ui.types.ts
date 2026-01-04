@@ -337,6 +337,9 @@ export interface VideoPlayerProps {
   onComplete?: () => void;
   onPlay?: () => void;
   onPause?: () => void;
+  preventSeeking?: boolean;
+  maxWatchedTime?: number;
+  onProgress?: (progress: number) => void;
 }
 
 export interface YTPlayer {
@@ -562,6 +565,9 @@ export interface SidebarLayoutProps {
   children: React.ReactNode;
   header?: SidebarLayoutHeaderProps;
   sidebarWidth?: string;
+  collapsible?: boolean;
+  rightSidebar?: React.ReactNode;
+  rightSidebarWidth?: string;
 }
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

@@ -42,6 +42,7 @@ const ERROR_MAP = new Map<string, string>([
   ['User cancelled', 'Bạn đã hủy thao tác.'],
   ['Không thể kết nối ví', 'Không thể kết nối ví. Vui lòng thử lại.'],
   ['Không thể lấy địa chỉ ví', 'Không thể lấy địa chỉ ví. Vui lòng thử lại.'],
+  ['Vui lòng xác minh khuôn mặt trước khi mua khóa học', 'Vui lòng xác minh khuôn mặt trước khi mua khóa học.'],
 ]);
 
 export const ERROR_MESSAGES: Record<string, string> = Object.fromEntries(ERROR_MAP);

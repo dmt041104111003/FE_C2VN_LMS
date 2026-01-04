@@ -23,8 +23,6 @@ interface UseEnrollmentProps {
 }
 
 interface ExtendedEnrollmentState extends EnrollmentState {
-  isFaceCaptureOpen: boolean;
-  capturedFaceImage: string | null;
   pendingWallet: CardanoWallet | null;
 }
 
@@ -32,8 +30,6 @@ const INITIAL_STATE: ExtendedEnrollmentState = {
   isDialogOpen: false,
   isWalletModalOpen: false,
   isProcessing: false,
-  isFaceCaptureOpen: false,
-  capturedFaceImage: null,
   pendingWallet: null,
 };
 
@@ -121,36 +117,14 @@ export function useEnrollment({ course, courseSlug, discountedPrice }: UseEnroll
     }
   }, [user?.id, isFree, enrollFreeUser, openWalletModal, updateState]);
 
-  const handleWalletSelect = useCallback((wallet: CardanoWallet) => {
+  const handleWalletSelect = useCallback(async (wallet: CardanoWallet) => {
     if (!user?.id || !cardanoPaymentMethod) return;
     
-    updateState({ 
-      isWalletModalOpen: false, 
-      isFaceCaptureOpen: true,
-      pendingWallet: wallet,
-    });
-  }, [user?.id, cardanoPaymentMethod, updateState]);
-
-  const processPaymentWithFace = useCallback(async (faceImage: string) => {
-    const wallet = state.pendingWallet;
-    if (!user?.id || !cardanoPaymentMethod || !wallet) return;
-    
-    updateState({ isFaceCaptureOpen: false, isProcessing: true, capturedFaceImage: faceImage });
+    updateState({ isWalletModalOpen: false, isProcessing: true, pendingWallet: wallet });
     
     let success = false;
     
     try {
-      toast.info('Đang xác minh khuôn mặt...');
-      
-      const { faceService } = await import('@/services/face');
-      const validateResult = await faceService.validate({ imageBase64: faceImage });
-      
-      if (!validateResult.success) {
-        throw new Error(validateResult.message || 'Xác minh khuôn mặt thất bại');
-      }
-      
-      const faceEmbedding = validateResult.message;
-      
       toast.info('Đang xử lý thanh toán...');
 
       const { txHash, senderAddress } = await sendPayment(
@@ -168,7 +142,6 @@ export function useEnrollment({ course, courseSlug, discountedPrice }: UseEnroll
         coursePaymentMethodId: cardanoPaymentMethod.id,
         priceAda: discountedPrice,
         txHash,
-        faceEmbedding,
       });
 
       if (!enrollmentResponse.id) {
@@ -183,16 +156,13 @@ export function useEnrollment({ course, courseSlug, discountedPrice }: UseEnroll
       toast.error(translateError(errorMsg));
     } finally {
       if (!success) {
-        updateState({ isProcessing: false, capturedFaceImage: null, pendingWallet: null });
+        updateState({ isProcessing: false, pendingWallet: null });
       }
     }
-  }, [state.pendingWallet, user?.id, cardanoPaymentMethod, course.id, discountedPrice, toast, updateState, navigateToLearn]);
+  }, [user?.id, cardanoPaymentMethod, course.id, discountedPrice, toast, updateState, navigateToLearn]);
 
   const closeDialog = useCallback(() => updateState({ isDialogOpen: false }), [updateState]);
   const closeWalletModal = useCallback(() => updateState({ isWalletModalOpen: false }), [updateState]);
-  const closeFaceCapture = useCallback(() => {
-    updateState({ isFaceCaptureOpen: false, pendingWallet: null });
-  }, [updateState]);
 
   return {
     state,
@@ -202,8 +172,6 @@ export function useEnrollment({ course, courseSlug, discountedPrice }: UseEnroll
     handleWalletSelect,
     closeDialog,
     closeWalletModal,
-    closeFaceCapture,
-    processPaymentWithFace,
   };
 }
 

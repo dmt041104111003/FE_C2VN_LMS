@@ -10,7 +10,7 @@ import {
   COURSE_TABLE,
   COURSE_MODAL_CONFIG,
 } from '@/constants/instructor';
-import { DEFAULT_MODAL_CONFIG } from '@/types/common';
+import { DEFAULT_MODAL_CONFIG } from '@/types/core.types';
 import type { InstructorCourse, InstructorModalType, InstructorModalState, CourseStatus, SearchSuggestion } from '@/types/instructor';
 import { InstructorLayout } from './InstructorLayout';
 import { CourseFilters } from './CourseFilters';

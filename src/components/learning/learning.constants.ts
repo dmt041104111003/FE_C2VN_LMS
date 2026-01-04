@@ -26,6 +26,7 @@ export const SHOW_MORE_TEXT = {
 } as const;
 
 export const QNA_TEXT = {
+  TITLE: 'Hỏi đáp',
   SHOW: 'Xem hỏi đáp',
   HIDE: 'Thu gọn',
 } as const;

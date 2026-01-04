@@ -120,8 +120,6 @@ export interface QuizSectionProps {
   userId: string;
   isAlreadyPassed?: boolean;
   onComplete: (passed: boolean, score: number) => void;
-  enrollmentId?: number;
-  enableFaceProctor?: boolean;
 }
 
 export interface QuizQuestionProps {
@@ -149,8 +147,6 @@ export interface LearningPageProps {
   upgradeInfo?: CourseUpgradeInfo | null;
   isUpgrading?: boolean;
   onUpgrade?: () => Promise<void>;
-  enrollmentId?: number;
-  enableFaceProctor?: boolean;
 }
 
 export interface QuizIntroProps {

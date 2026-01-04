@@ -34,7 +34,7 @@ import {
 
 function LoginFormComponent() {
   const router = useRouter();
-  const { loginWithEmail, loginWithWallet, loginWithGoogle, loginWithGithub, isLoading, isAuthenticated } = useAuth();
+  const { loginWithEmail, loginWithWallet, loginWithGoogle, loginWithGithub, isLoading, isAuthenticated, user } = useAuth();
   const toast = useToast();
   
   const [email, setEmail] = useState('');

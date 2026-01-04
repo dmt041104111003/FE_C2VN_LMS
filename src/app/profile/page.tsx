@@ -8,15 +8,8 @@ import { HEADER_SPACER } from '@/components/ui/ui.styles';
 import { useAuth } from '@/contexts';
 import { mapAuthUserToProfile } from '@/constants';
 import { getMyEnrollments, MyEnrollmentResponse } from '@/services/course';
-import { api } from '@/services/api';
+import { certificateService } from '@/services/certificate';
 import type { UserCourse, UserStats, UserCertificate } from '@/types/user';
-
-interface CertificateResponse {
-  id: number;
-  courseId: string;
-  courseTitle: string;
-  issuedAt: string;
-}
 
 function mapEnrollmentToUserCourse(e: MyEnrollmentResponse): UserCourse {
   return {
@@ -27,6 +20,8 @@ function mapEnrollmentToUserCourse(e: MyEnrollmentResponse): UserCourse {
     instructorName: e.instructorName || '',
     progress: Math.min(e.progressPercent || 0, 100),
     enrolledAt: e.enrolledAt,
+    enrollmentId: e.enrollmentId,
+    walletAddress: e.walletAddress,
   };
 }
 
@@ -41,17 +36,11 @@ function ProfileContent() {
       try {
         const [enrollments, certs] = await Promise.all([
           getMyEnrollments(),
-          api.get<CertificateResponse[]>('/api/certificates/me').catch(() => []),
+          certificateService.getMyCertificates().catch(() => []),
         ]);
         
         setCourses(enrollments.map(mapEnrollmentToUserCourse));
-        setCertificates((certs || []).map(c => ({
-          id: String(c.id),
-          courseId: c.courseId,
-          courseTitle: c.courseTitle,
-          issuedAt: c.issuedAt,
-        })));
-        
+        setCertificates(certs || []);
         
         const totalCompletedLectures = enrollments.reduce((sum, e) => sum + (e.completedLectures || 0), 0);
         setTotalHours(totalCompletedLectures);

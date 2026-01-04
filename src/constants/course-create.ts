@@ -33,7 +33,7 @@ export const COURSE_CREATE_LABELS = {
     addLecture: 'Thêm bài giảng',
     lectureTitle: 'Tên bài giảng',
     lecturePlaceholder: 'Nhập tên bài giảng...',
-    videoUrl: 'Link video YouTube',
+    videoUrl: 'Video bài giảng',
     videoPlaceholder: 'https://youtube.com/watch?v=...',
     content: 'Nội dung bài giảng',
     contentPlaceholder: 'Nhập nội dung bài giảng...',
@@ -211,6 +211,28 @@ export const isValidPrice = (price: number): boolean => price === 0 || price >= 
 
 export const COURSE_DRAFT_KEY = 'course_create_draft';
 export const COURSE_EDIT_DRAFT_KEY_PREFIX = 'course_edit_draft_';
+
+export const VIDEO_UPLOADER = {
+  LABELS: {
+    title: 'Video bài giảng',
+    youtubePlaceholder: 'https://youtube.com/watch?v=...',
+    uploadHint: 'MP4, WebM (tối đa 100MB)',
+    uploadBtn: 'Chọn video',
+    uploadSuccess: 'Tải lên thành công!',
+    uploadError: 'Tải lên thất bại',
+    changeVideo: 'Thay đổi video',
+  },
+  TABS: [
+    { key: 'youtube', label: 'YouTube' },
+    { key: 'upload', label: 'Tải lên' },
+  ],
+  STYLES: {
+    CONTENT: 'mt-4',
+    DROPZONE: 'flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[var(--border)] rounded-xl transition-colors',
+    DROPZONE_ACTIVE: 'cursor-pointer hover:border-[var(--accent)]',
+    DROPZONE_DISABLED: 'cursor-not-allowed opacity-50',
+  },
+} as const;
 
 export const COURSE_CREATE_TAB_ITEMS = {
   create: [
