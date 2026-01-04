@@ -11,7 +11,7 @@ export const HERO_CTA = 'inline-flex items-center px-6 py-3 border-2 border-[var
 
 export const FEATURES_SECTION = 'min-h-screen flex items-center bg-[var(--bg-alt)] py-12 md:py-16 px-4';
 export const FEATURES_CONTAINER = 'max-w-6xl mx-auto w-full';
-export const FEATURES_TITLE = 'text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 md:mb-6 lg:mb-8';
+export const FEATURES_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold text-center mb-4 md:mb-6';
 export const FEATURES_GRID = 'grid grid-cols-1 gap-2 md:grid-cols-5 md:grid-rows-5 md:h-[500px]';
 export const FEATURES_CARD_BASE = 'relative rounded-xl md:rounded-2xl overflow-hidden cursor-pointer min-h-[180px] sm:min-h-[200px] md:min-h-0';
 export const FEATURES_CARD_1 = "md:col-span-2 md:row-span-3 bg-[url('/landing/1.png')] bg-cover bg-center";
@@ -20,8 +20,8 @@ export const FEATURES_CARD_3 = "md:row-span-3 md:col-start-3 md:row-start-1 bg-[
 export const FEATURES_CARD_4 = "md:col-span-3 md:row-span-2 md:row-start-4 bg-[url('/landing/4.png')] bg-cover bg-center";
 export const FEATURES_CARD_OVERLAY = 'absolute inset-0 bg-black/50';
 export const FEATURES_CARD_CONTENT = 'relative z-10 h-full p-5 md:p-6 flex flex-col justify-end';
-export const FEATURES_CARD_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-white';
-export const FEATURES_CARD_DESC = 'text-base sm:text-lg text-white/80';
+export const FEATURES_CARD_TITLE = 'text-base sm:text-lg md:text-xl font-bold mb-1.5 md:mb-2 text-white';
+export const FEATURES_CARD_DESC = 'text-sm sm:text-base text-white/80';
 
 export const COURSES_SECTION = 'min-h-screen flex items-center py-12 md:py-16 px-4';
 export const COURSES_CONTAINER = 'max-w-6xl mx-auto w-full';
@@ -45,7 +45,7 @@ export const COURSES_CARD_IMAGE = 'absolute inset-0 w-full h-full object-cover o
 export const COURSES_CARD_GRADIENT = 'absolute inset-0 bg-black/40';
 export const COURSES_CARD_CONTENT = 'relative z-10 h-full p-5 md:p-6 flex flex-col justify-end';
 export const COURSES_CARD_BADGE = 'mb-2';
-export const COURSES_CARD_TITLE = 'font-bold text-xl md:text-2xl text-white line-clamp-2';
+export const COURSES_CARD_TITLE = 'font-bold text-sm sm:text-base md:text-lg text-white line-clamp-2';
 
 export const CTA_SECTION = 'h-screen bg-[var(--accent-light)] p-2 md:p-4';
 export const CTA_CONTAINER = 'w-full h-full';
