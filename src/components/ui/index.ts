@@ -204,6 +204,7 @@ export {
   CopyIcon,
   WarningIcon,
   ErrorCircleIcon,
+  SmartphoneIcon,
   SOCIAL_ICONS,
 } from './icons';
 export type { IconProps } from './icons';

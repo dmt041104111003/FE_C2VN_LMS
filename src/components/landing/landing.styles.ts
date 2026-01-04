@@ -11,8 +11,8 @@ export const HERO_CTA = 'inline-flex items-center px-6 py-3 border-2 border-[var
 
 export const FEATURES_SECTION = 'min-h-screen flex items-center bg-[var(--bg-alt)] py-12 md:py-16 px-4';
 export const FEATURES_CONTAINER = 'max-w-6xl mx-auto w-full';
-export const FEATURES_TITLE = 'text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-12 lg:mb-16';
-export const FEATURES_GRID = 'grid grid-cols-1 gap-3 md:grid-cols-5 md:grid-rows-5 md:h-[500px]';
+export const FEATURES_TITLE = 'text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-4 md:mb-6 lg:mb-8';
+export const FEATURES_GRID = 'grid grid-cols-1 gap-2 md:grid-cols-5 md:grid-rows-5 md:h-[500px]';
 export const FEATURES_CARD_BASE = 'relative rounded-xl md:rounded-2xl overflow-hidden cursor-pointer min-h-[180px] sm:min-h-[200px] md:min-h-0';
 export const FEATURES_CARD_1 = "md:col-span-2 md:row-span-3 bg-[url('/landing/1.png')] bg-cover bg-center";
 export const FEATURES_CARD_2 = "md:col-span-2 md:row-span-5 md:col-start-4 md:row-start-1 bg-[url('/landing/2.png')] bg-cover bg-center";
@@ -20,32 +20,32 @@ export const FEATURES_CARD_3 = "md:row-span-3 md:col-start-3 md:row-start-1 bg-[
 export const FEATURES_CARD_4 = "md:col-span-3 md:row-span-2 md:row-start-4 bg-[url('/landing/4.png')] bg-cover bg-center";
 export const FEATURES_CARD_OVERLAY = 'absolute inset-0 bg-black/50';
 export const FEATURES_CARD_CONTENT = 'relative z-10 h-full p-5 md:p-6 flex flex-col justify-end';
-export const FEATURES_CARD_TITLE = 'text-base sm:text-lg md:text-xl font-bold mb-2 md:mb-3 text-white';
-export const FEATURES_CARD_DESC = 'text-xs sm:text-sm text-white/80';
+export const FEATURES_CARD_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-white';
+export const FEATURES_CARD_DESC = 'text-base sm:text-lg text-white/80';
 
 export const COURSES_SECTION = 'min-h-screen flex items-center py-12 md:py-16 px-4';
 export const COURSES_CONTAINER = 'max-w-6xl mx-auto w-full';
-export const COURSES_HEADER = 'flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 md:mb-8 gap-3 md:gap-4';
+export const COURSES_HEADER = 'flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 md:mb-6 gap-3 md:gap-4';
 export const COURSES_HEADER_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold';
 
-export const COURSES_GRID_4 = 'grid grid-cols-2 grid-rows-4 gap-4 md:h-[600px]';
+export const COURSES_GRID_4 = 'grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-1.5 md:h-[600px]';
 export const COURSES_GRID_3 = 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:grid-rows-2';
-export const COURSES_GRID_2 = 'grid grid-cols-1 grid-rows-2 gap-2';
+export const COURSES_GRID_2 = 'grid grid-cols-1 sm:grid-rows-2 gap-2';
 export const COURSES_GRID_1 = 'grid grid-cols-1 gap-2';
 
 export const COURSES_CARD_BASE = 'relative rounded-xl sm:rounded-2xl overflow-hidden min-h-[200px] sm:min-h-[280px]';
 
-export const COURSES_CARD_1 = 'row-span-2';
-export const COURSES_CARD_2 = 'row-span-2';
-export const COURSES_CARD_3 = 'row-span-2 row-start-3';
-export const COURSES_CARD_4 = 'row-span-2 row-start-3';
+export const COURSES_CARD_1 = 'sm:row-span-2';
+export const COURSES_CARD_2 = 'sm:row-span-2';
+export const COURSES_CARD_3 = 'sm:row-span-2 sm:row-start-3';
+export const COURSES_CARD_4 = 'sm:row-span-2 sm:row-start-3';
 
 export const COURSES_CARD_2_LAYOUT = '';
 export const COURSES_CARD_IMAGE = 'absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none';
 export const COURSES_CARD_GRADIENT = 'absolute inset-0 bg-black/40';
 export const COURSES_CARD_CONTENT = 'relative z-10 h-full p-5 md:p-6 flex flex-col justify-end';
 export const COURSES_CARD_BADGE = 'mb-2';
-export const COURSES_CARD_TITLE = 'font-medium text-base md:text-lg text-white line-clamp-2';
+export const COURSES_CARD_TITLE = 'font-bold text-xl md:text-2xl text-white line-clamp-2';
 
 export const CTA_SECTION = 'h-screen bg-[var(--accent-light)] p-2 md:p-4';
 export const CTA_CONTAINER = 'w-full h-full';
@@ -62,10 +62,9 @@ export const CTA_CELL_9 = 'md:col-span-2 md:col-start-2 md:row-start-5 bg-white/
 export const CTA_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4';
 export const CTA_DESC = 'text-white/80 mb-4 md:mb-6 text-xs sm:text-sm md:text-base';
 
-export const DEMO_SECTION = 'py-12 md:py-20 px-4';
-export const DEMO_CONTAINER = 'w-full';
+export const DEMO_SECTION = 'min-h-screen flex items-center py-12 md:py-16 px-4';
+export const DEMO_CONTAINER = 'max-w-6xl mx-auto w-full';
 export const DEMO_CARD = 'bg-[var(--bg-alt)] rounded-2xl md:rounded-3xl p-8 md:p-12 lg:p-16';
-export const DEMO_SUBTITLE = 'text-xs sm:text-sm font-semibold uppercase tracking-wider text-[var(--text)] mb-3 md:mb-4';
-export const DEMO_TITLE = 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-[var(--text)] mb-3 md:mb-4';
-export const DEMO_DESC = 'text-base sm:text-lg md:text-xl text-[var(--text)]/70 mb-6 md:mb-8';
+export const DEMO_TITLE = 'text-xl sm:text-2xl md:text-3xl font-bold text-[var(--text)] mb-3 md:mb-4';
+export const DEMO_DESC = 'text-base sm:text-lg text-[var(--text)]/70 mb-6 md:mb-8';
 export const DEMO_FORM = 'flex flex-col sm:flex-row gap-3';

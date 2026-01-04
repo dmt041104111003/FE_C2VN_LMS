@@ -157,7 +157,7 @@ function CoursesComponent() {
           {isLoading ? (
             <>
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className={`${COURSES_CARD_BASE} ${CARD_GRID_STYLES_4[i - 1] || ''}`} rounded="lg" />
+                <Skeleton key={i} className={`${COURSES_CARD_BASE} ${i <= 4 ? CARD_GRID_STYLES_4[i - 1] : ''}`} rounded="lg" />
               ))}
             </>
           ) : (

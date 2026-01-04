@@ -848,6 +848,17 @@ const CopyIconComponent = ({ className }: IconProps) => (
 );
 export const CopyIcon = memo(CopyIconComponent);
 
+function SmartphoneIconComponent({ className = 'w-5 h-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="5" y="2" width="14" height="20" rx="2" />
+      <path d="M12 18h.01" />
+    </svg>
+  );
+}
+
+export const SmartphoneIcon = memo(SmartphoneIconComponent);
+
 export const SOCIAL_ICONS: Record<string, React.FC<IconProps>> = {
   github: GitHubIcon,
   youtube: YouTubeIcon,
