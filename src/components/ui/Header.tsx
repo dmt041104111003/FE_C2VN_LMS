@@ -61,7 +61,7 @@ import {
 function HeaderInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -74,7 +74,7 @@ function HeaderInner() {
       setUnreadCount(0);
       return;
     }
-    
+
     api.get<number>('/api/feedbacks/inbox/count')
       .then(count => setUnreadCount(count || 0))
       .catch(() => setUnreadCount(0));
@@ -101,7 +101,7 @@ function HeaderInner() {
     const [childPath, childQuery] = childHref.split('?');
     if (pathname !== childPath) return false;
     if (!childQuery) return true;
-    
+
     const childParams = new URLSearchParams(childQuery);
     for (const [key, value] of childParams.entries()) {
       if (searchParams.get(key) !== value) return false;
@@ -156,7 +156,9 @@ function HeaderInner() {
               <SearchIcon />
             </button>
 
-            {isAuthenticated && user ? (
+            {isLoading ? (
+              <div className="w-8 h-8 rounded-full bg-[var(--text)]/5 animate-pulse ml-2" />
+            ) : isAuthenticated && user ? (
               <>
                 <Link href={ROUTES.PROFILE_INBOX} className={`${HEADER_ICON_BTN} relative`}>
                   <MailIcon />
@@ -168,14 +170,14 @@ function HeaderInner() {
                 </Link>
 
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center gap-2 ml-2"
                   >
                     {userAvatar ? (
-                      <img 
-                        src={userAvatar} 
-                        alt={user?.fullName || 'User'} 
+                      <img
+                        src={userAvatar}
+                        alt={user?.fullName || 'User'}
                         className="w-8 h-8 rounded-full"
                       />
                     ) : (
@@ -196,46 +198,43 @@ function HeaderInner() {
                         </p>
                       </div>
                       {roleInfo?.href && (
-                        <Link 
-                          href={roleInfo.href} 
-                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
-                            isActive(roleInfo.href) 
-                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                        <Link
+                          href={roleInfo.href}
+                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${isActive(roleInfo.href)
+                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium'
                               : 'text-[var(--text)]/70'
-                          }`}
+                            }`}
                           onClick={() => setIsUserMenuOpen(false)}
                         >
                           <UsersIcon className="w-4 h-4" />
                           {roleInfo.label}
                         </Link>
                       )}
-                      <Link 
-                        href={ROUTES.PROFILE} 
-                        className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
-                          isActive(ROUTES.PROFILE) 
-                            ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                      <Link
+                        href={ROUTES.PROFILE}
+                        className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${isActive(ROUTES.PROFILE)
+                            ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium'
                             : 'text-[var(--text)]/70'
-                        }`}
+                          }`}
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <UserIcon className="w-4 h-4" />
                         Hồ sơ
                       </Link>
                       {user.hasPassword && (
-                        <Link 
-                          href={ROUTES.CHANGE_PASSWORD} 
-                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${
-                            isActive(ROUTES.CHANGE_PASSWORD) 
-                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium' 
+                        <Link
+                          href={ROUTES.CHANGE_PASSWORD}
+                          className={`flex items-center gap-2 px-4 py-2 text-sm hover:bg-[var(--text)]/5 ${isActive(ROUTES.CHANGE_PASSWORD)
+                              ? 'text-[var(--accent)] bg-[var(--accent)]/10 font-medium'
                               : 'text-[var(--text)]/70'
-                          }`}
+                            }`}
                           onClick={() => setIsUserMenuOpen(false)}
                         >
                           <LockIcon className="w-4 h-4" />
                           Đổi mật khẩu
                         </Link>
                       )}
-                      <button 
+                      <button
                         onClick={() => { setIsUserMenuOpen(false); logout(); }}
                         className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:bg-[var(--text)]/5"
                       >

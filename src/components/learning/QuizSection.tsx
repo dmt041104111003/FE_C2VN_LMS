@@ -8,10 +8,10 @@ import { useQuizState, useFullscreen } from '@/hooks';
 import { QuizIntro, QuizProgress, QuizQuestion, QuestionList, QuizExplanation } from './components';
 import { QUIZ } from './learning.styles';
 import { getPreviousQuizResult } from '@/services/course';
-import { 
-  buildAnswerMapsFromResult, 
-  buildAnswerMapsFromQuestions, 
-  calculateScore 
+import {
+  buildAnswerMapsFromResult,
+  buildAnswerMapsFromQuestions,
+  calculateScore
 } from '@/utils/quiz.utils';
 
 const LABELS = LEARNING_LABELS.quiz;
@@ -26,7 +26,7 @@ interface ActionButtonsProps {
   isAlreadyPassed?: boolean;
 }
 
-const ActionButtons = memo(function ActionButtons({ 
+const ActionButtons = memo(function ActionButtons({
   onRetry, onContinue, onSubmit, passed, isResults, isSubmitting, isAlreadyPassed,
 }: ActionButtonsProps) {
   if (isResults) {
@@ -43,7 +43,7 @@ const ActionButtons = memo(function ActionButtons({
   );
 });
 
-function QuizSectionComponent({ 
+function QuizSectionComponent({
   quiz, courseId, userId, isAlreadyPassed, onComplete,
 }: QuizSectionProps) {
   const toast = useToast();
@@ -54,7 +54,7 @@ function QuizSectionComponent({
 
   useEffect(() => {
     if (!isAlreadyPassed) return;
-    
+
     (async () => {
       setLoadingPrevious(true);
       const result = await getPreviousQuizResult(courseId, Number(quiz.id), userId);
@@ -70,7 +70,7 @@ function QuizSectionComponent({
   const currentQuestionNumber = state.currentIndex + 1;
 
   const forceExitQuiz = useCallback((message?: string) => {
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => { });
     toast.error(message || 'Bài kiểm tra bị hủy.');
     setTimeout(() => window.location.reload(), 500);
   }, [toast]);
@@ -114,7 +114,7 @@ function QuizSectionComponent({
   const handleSubmit = useCallback(() => {
     if (document.fullscreenElement) {
       isSubmittingRef.current = true;
-      document.exitFullscreen().catch(() => {});
+      document.exitFullscreen().catch(() => { });
     } else {
       actions.submit();
     }
@@ -153,7 +153,7 @@ function QuizSectionComponent({
     actionProps: ActionButtonsProps
   ) => {
     const isDisabled = actionProps.isSubmitting || false;
-    
+
     return (
       <div className={`${QUIZ.GRID} ${isDisabled ? 'pointer-events-none opacity-70' : ''}`}>
         <div className={QUIZ.GRID_SIDEBAR}>
@@ -161,7 +161,7 @@ function QuizSectionComponent({
             questions={quiz.questions}
             currentIndex={state.currentIndex}
             answers={answers}
-            onSelect={isDisabled ? () => {} : handleSelectQuestion}
+            onSelect={isDisabled ? () => { } : handleSelectQuestion}
             showResults={isResultMode}
             correctAnswers={isResultMode ? correctMap : undefined}
           />
@@ -174,7 +174,7 @@ function QuizSectionComponent({
             question={question}
             questionNumber={currentQuestionNumber}
             selectedAnswer={answers.get(question?.id || '')}
-            onAnswer={isResultMode || isDisabled ? () => {} : handleAnswer}
+            onAnswer={isResultMode || isDisabled ? () => { } : handleAnswer}
             showResult={isResultMode}
             correctAnswerSet={isResultMode ? correctMap.get(question?.id || '') : undefined}
             hideExplanation={isResultMode}
@@ -193,10 +193,10 @@ function QuizSectionComponent({
   };
 
   if (isAlreadyPassed) {
-    const { correctMap, explainMap, selectedMap } = previousResult 
+    const { correctMap, explainMap, selectedMap } = previousResult
       ? buildAnswerMapsFromResult(previousResult)
       : buildAnswerMapsFromQuestions(quiz.questions);
-    
+
     const scoreDisplay = previousResult ? calculateScore(previousResult) : 100;
     const currentQ = quiz.questions[state.currentIndex];
 
@@ -204,8 +204,8 @@ function QuizSectionComponent({
       <div>
         <QuizProgress current={currentQuestionNumber} total={totalQuestions} label={`${scoreDisplay}% · ${LABELS.passed}`} />
         <div className={QUIZ.MAIN_INNER}>
-          {renderQuizContent(selectedMap, correctMap, explainMap, currentQ, true, { 
-            isResults: true, passed: true, isAlreadyPassed: true, onContinue: handleContinue 
+          {renderQuizContent(selectedMap, correctMap, explainMap, currentQ, true, {
+            isResults: true, passed: true, isAlreadyPassed: true, onContinue: handleContinue
           })}
         </div>
       </div>
@@ -218,7 +218,7 @@ function QuizSectionComponent({
 
   if (state.showResults && attempt) {
     const scoreDisplay = Math.round(attempt.score);
-    
+
     return (
       <div>
         <QuizProgress current={currentQuestionNumber} total={totalQuestions} label={`${scoreDisplay}% · ${attempt.passed ? LABELS.passed : LABELS.failed}`} />
@@ -241,7 +241,7 @@ function QuizSectionComponent({
           timer={quiz.timeLimit ? state.timeLeft : undefined}
           isWarning={isTimeWarning}
         />
-        
+
         <div className={QUIZ.MAIN}>
           <div className={QUIZ.MAIN_INNER}>
             {renderQuizContent(state.answers, correctAnswersMap, explanationsMap, currentQuestion, false, {
@@ -252,11 +252,9 @@ function QuizSectionComponent({
       </div>
 
       {isSubmitting && (
-        <div className="absolute inset-0 bg-[var(--bg)]/60 flex items-center justify-center z-50">
-          <div className="bg-[var(--card)] rounded-xl p-6 shadow-lg flex flex-col items-center gap-3">
-            <Loading size="lg" />
-            <p className="text-sm text-[var(--text)]/70 font-medium">Đang nộp bài...</p>
-          </div>
+        <div className="absolute inset-0 bg-[var(--bg)]/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-[110]">
+          <Loading size="lg" />
+          <p className="text-sm text-[var(--text)]/70 font-medium">Đang nộp bài...</p>
         </div>
       )}
 
