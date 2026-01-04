@@ -18,8 +18,8 @@ export interface UserSearchParams {
   keyword?: string;
   role?: UserRole | '';
   status?: UserStatus | '';
-  page: number;
-  size: number;
+  page?: number;
+  size?: number;
 }
 
 export interface UserSearchResponse {
