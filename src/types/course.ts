@@ -171,3 +171,12 @@ export interface ChapterItemProps {
   onToggle: () => void;
   onPreview: (id: string) => void;
 }
+
+export interface CourseMetadataResponse {
+  code: number;
+  result?: {
+    title?: string;
+    description?: string;
+    thumbnail?: string;
+  };
+}
